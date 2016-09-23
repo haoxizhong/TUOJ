@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+		<body>
+				<%include header.ejs %>
+				<%include navigator.ejs %>
+
+				<form action="/login" method="post">
+						<div>
+								<label>Username:</label>
+								<input type="text" name="username"/>
+						</div>
+						<div>
+								<label>Password:</label>
+								<input type="password" name="password"/>
+						</div>
+						<div>
+								<input type="submit" value="Log In"/>
+						</div>
+				</form>
+
+
+				<!-- Bootstrap core JavaScript
+			================================================== -->
+			<!-- Placed at the end of the document so the pages load faster -->
+			<script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
+			<script src="/javascripts/bootstrap.min.js"></script>
+			<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+			<script src="/javascripts/ie10-viewport-bug-workaround.js"></script>
+		</body>
+</html>
+
+
