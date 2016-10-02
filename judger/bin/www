@@ -1,0 +1,7 @@
+// TODO run this app here
+var app = require('../app');
+var config = require('../config');
+
+app.initialize(config);
+app.start();
+
