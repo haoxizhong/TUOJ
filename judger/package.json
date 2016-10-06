@@ -6,6 +6,10 @@
 		"start": "node ./bin/www"
 	},
 	"dependencies": {
-		"request": "~2.75.0"
+        "step": "~0.0.6",
+		"request": "~2.75.0",
+        "nodegit": "~0.16.0",
+        "crypto": "~0.0.3",
+        "path": "~0.12.7"
 	}
 }

@@ -16,16 +16,19 @@ Currently, `cmd` can be one of the followings: `compile`, `exec`, `judge`, `scor
 ## compile
 	{ 
 		cmd: "compile", 
-		langs: [ { 
-			name: String, 
-			args: String 
-		} ] 
+        sourceId: Number, // from 0 to x-1
+		langs:  {
+            name: {
+			    args: String 
+            }
+		} 
 	}
 
 TUS supports multiple language submissions using the same TUS script by regarding `langs` as an array.
 ## exec
 	{ 
 		cmd: "exec", 
+		binId: Number,
 		timeLimit: Number,
 		// also: timeLimit: { lang: Number },
 		memLimit: Number,
@@ -36,18 +39,23 @@ TUS supports multiple language submissions using the same TUS script by regardin
 		// also: [ String ]
 	}
 
+`binId` indicates which target of `compile` command will be executed. (Numbered from 0)
+
 Time limit will be indicated by `MS` while memory limit indicated by `MB`.
 
 If they are not specificed ( also for a language ), it will be set as default.
 ## judge
 	{
 		cmd: "judge",
+		ansId: Number,
 		type: "default", // also "float", "spj" (temporarily not supported)
 		args: String,
 		spjId: String // not used 
 		stdOutputFile: String, 
 		// also: [ String ]
 	}
+
+`ansId` indicates which target of `run` command will be judged. (Numbered from 0)
 
 Judge allows comparing user output and standard output.
 
