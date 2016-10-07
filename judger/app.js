@@ -1,12 +1,13 @@
+var FetchReq = require('./routes/fetchReq');
 var app = function(cfg) {
 	var self = this;
 	self.loadCfg = function(cfg) {
-		self.config = cfg;
+		self.cfg = cfg;
 	};
 	self.loadCfg(cfg);
-	self.fetchReq = require('./routes/fetchReq');
+	self.fetchReq = new FetchReq(self.cfg);
     self.start = function() {
-        self.fetchReq();
+        self.fetchReq.run();
     }
 };
 

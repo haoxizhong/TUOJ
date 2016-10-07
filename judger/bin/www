@@ -1,7 +1,4 @@
-// TODO run this app here
-var app = require('../app');
+var App = require('../app');
 var config = require('../config');
-
-app.initialize(config);
+var app = new App(config);
 app.start();
-

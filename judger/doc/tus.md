@@ -69,15 +69,15 @@ If the last `exec` action fails, the result of `judge` will automatically be `0`
 ## score
 	{
 		cmd: "score",
-		compoments: [{
+		logic: {
 			fullScore: Number,
-			logic: Number
-			// also array and object combinations of $and, $or, $sum
-			// currently, objects and arrays are not supported
+			func: String,
+			// one of and, or, sum
+			compoments: Array
 		}]
 	}
 
-Generally, there is only one `score` in the end. It depends on results of `judge` actions.
+Generally, there is only one `score` in the end. It depends on results of `judge` actions. Judge results are numbered from 0.
 
 It returns the score of this judge request. 
 

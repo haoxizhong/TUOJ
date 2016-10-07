@@ -5,10 +5,11 @@ var Run = require('./run');
 var Judge = require('./judge');
 var Score = require('./score');
 
-module.exports = function(cfg) {
+module.exports = function(cfg, dataPath) {
     var self = this;
 	self.loadCfg = function(cfg) {
 		self.cfg = cfg;
+		self.dataPath = dataPath;
 	};
 	self.loadCfg(cfg);
     self.interpret = function(err) {

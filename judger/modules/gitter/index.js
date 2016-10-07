@@ -32,7 +32,7 @@ var ret = function(cfg) {
         }).catch(function(err) {
             callback(err);
         }).done(function() {
-            callback(false);
+            callback(false, self.path);
         });
     };
 };

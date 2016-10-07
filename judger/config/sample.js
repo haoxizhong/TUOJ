@@ -6,7 +6,8 @@ module.exports = {
 			username: 'sampleUsername',
 			password: 'samplePassword'
 		},
-		url: 'http://localhost:3333/api/judger/adopt',
+		fetchUrl: 'http://localhost:3333/api/judger/adopt',
+		uploadUrl: 'http://localhost:3333/api/judger/upload',
 		reqInterval: 1000
 	},
 	local: {
