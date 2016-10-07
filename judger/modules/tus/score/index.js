@@ -2,12 +2,13 @@ module.exports = function(cmd, data) {
     var self = this;
     self.cmd = cmd;
     self.tusStep = data.tusStep;
+    self.data = data;
     self.run = function(respond, callback) {
         try {
-            if (typeof(self.cmd.compoments) != 'array') {
+            if (typeof(self.cmd.compoments) != 'object') {
                 throw 'illegal score logic';
             }
-            var score = self.calc(cmd.logic);
+            var score = self.calc(self.cmd.compoments);
             respond({ tusStep: self.tusStep, score: score, isEnd: true });
             callback(0);
         } catch(error) {
@@ -16,9 +17,9 @@ module.exports = function(cmd, data) {
         }
     };
     self.calc = function(logic) {
-        if (typeof(logic) == 'number') {
-            if (data.judgeRes[logic]) {
-                return data.judgeRes[logic].score;
+        if (typeof(logic) == 'number' || typeof(logic) == 'string') {
+            if (self.data.res.judgeRes[logic]) {
+                return data.res.judgeRes[logic].score;
             } else {
                 return 0;
             }
@@ -32,11 +33,12 @@ module.exports = function(cmd, data) {
             if (logic.func == 'and') {
                 res = 1;
             }
-            if (funcs[logic.func] && typeof(logic.compoments) == 'array') {
+            if (funcs[logic.func] && typeof(logic.compoments) == 'object') {
                 var cFunc = funcs[logic.func];
-                logic.compoments.forEach(function(item) {
-                    res = cFunc(res, self.calc(item));
-                });
+                for (var i in logic.compoments) {
+                    var item = logic.compoments[i];
+                    res += cFunc(res, self.calc(item));
+                }
             }
             return res * logic.fullScore;
         }

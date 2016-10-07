@@ -10,7 +10,7 @@ const defaults = {
 module.exports = function(cmd, data) {
     var self = this;
     self.cmd = cmd;
-    self.id = data.res.runRes.length;
+    self.id = data.res.execRes.length;
     self.path = path.resolve(data.path, 'r' + self.id);;
     self.tusStep = data.tusStep;
     self.source = data.res.compileRes[cmd.binId];
@@ -21,11 +21,11 @@ module.exports = function(cmd, data) {
 				throw 'compile error';
 			}
 			fs.mkdirSync(self.path);
-			fs.copySync(self.source, path.resolve(self.path, 'exe'));
+			fs.copySync(self.source.target, path.resolve(self.path, 'exe'));
 			if (typeof(self.cmd.inputFile) == 'string') {
 				self.cmd.inputFile = [ self.cmd.inputFile ];
 			}
-			if (typeof(self.cmd.inputFile) != 'array') {
+			if (typeof(self.cmd.inputFile) != 'object') {
 				throw 'illegal script';
 			}
             self.cmd.inputFile.forEach(function(file, i) {
@@ -34,7 +34,7 @@ module.exports = function(cmd, data) {
             });
 		} catch (error) {
 			respond({ message: error, tusStep: self.tusStep, isEnd: cmd.haltOnFail });
-            data.res.runRes.push({
+            data.res.execRes.push({
                 error: error
             });
             return callback(cmd.haltOnFail);
@@ -44,7 +44,7 @@ module.exports = function(cmd, data) {
 		}
         var targetPath = path.resolve(self.path, 'r.stdout');
         var options = {
-            fileName: path.resolve(self.path, 'exe'),
+            fileName: './exe',
 			args: self.cmd.args,
             cwd: self.path,
             stdin: path.resolve(self.path, '0.in'),
@@ -58,22 +58,28 @@ module.exports = function(cmd, data) {
         if (runRes) {
             var errMsg = 'run error ' + runRes;
             respond({ msg: errMsg, isEnd: self.cmd.haltOnFail, tusStep: self.tusStep });
-            data.res.runRes.push({
+            data.res.execRes.push({
                 error: runRes
             });
             return callback(errMsg);
         }
 		try {
-			var runRes = JSON.parse(fs.readFileSync(path.resolve(self.path, 'r.log')));
-			data.res.runRes.push({
+            fs.ensureFileSync(path.resolve(self.path, 'r.log'));
+            var runRes = {};
+            try {
+                runRes = JSON.parse(String(fs.readFileSync(path.resolve(self.path, 'r.log'))));
+            } catch (error) {
+            }
+			data.res.execRes.push({
 				target: targetPath,
 				time: runRes.time,
 				mem: runRes.mem
 			});
-			callback(0);
+			respond({ message: 'exec done', tusStep: self.tusStep });
+			return callback(0);
 		} catch (error) {
 			respond({ message: error, tusStep: self.tusStep, isEnd: cmd.haltOnFail });
-            data.res.runRes.push({
+            data.res.execRes.push({
                 error: error
             });
             return callback(cmd.haltOnFail);

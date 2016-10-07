@@ -16,21 +16,22 @@ module.exports = function(mycfg) {
         Step(function() {
             request.post({
                 url: mycfg.wwwServer.fetchUrl,
-                formData: self.postData
+                form: self.postData
             }, this);
-        }, function(err, httpResponse, body) {
+        }, function(err, httpResponse, bodyStr) {
+			var body = (typeof(bodyStr) == 'string') ? JSON.parse(bodyStr) : bodyStr;
             if (!body || !body.runId) {
-				return this(err, mycfg.wwwServer.reqInterval);
+				return this(err ? err : 'no need', mycfg.wwwServer.reqInterval);
             }
             var next = this;
             Step(function() {
-                var gitter = new Gitter(mycfg.loal.gitter);
+                var gitter = new Gitter(mycfg.local.gitter);
                 gitter.updateProb(body.probGit, this);
             }, function(err, dataPath) {
                 if (err) {
                     return next(err);
                 }
-                var tus = new Tus(mycfg.local.tus, dataPath);;
+                var tus = new Tus(dataPath, mycfg.local.tus);;
                 tus.run(body, self.respondReq.uploadStatus, next);
             });
         }, function(err, timeout) {
@@ -39,7 +40,9 @@ module.exports = function(mycfg) {
 			}
             if (err) {
                 console.log((new Date).toLocaleString() + ': ' + err);
-            }
+            } else {
+                console.log((new Date).toLocaleString() + ': done');
+			}
             setTimeout(self.run, timeout);
         });
     };

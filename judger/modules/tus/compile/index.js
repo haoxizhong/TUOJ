@@ -2,7 +2,7 @@ var fs = require('fs-extra');
 var path = require('path');
 var exec = require('../../../modules/executer-ctrl');
 
-const langs = { 
+var langMods = { 
     'g++': require('./g++'),
     //'gcc': require('./gcc'),
     //'java': require('./java')
@@ -19,16 +19,21 @@ module.exports = function(cmd, data) {
         self.cmd.haltOnFail = true;
     }
     self.run = function(respond, callback) {
-        if (!langs[self.lang] || !cmd.langs || !cmd.langs[self.lang]) {
-            var errMsg = 'unsupported lang ' + self.lang;
-            respond({ msg: errMsg, isEnd: true, tusStep: self.tusStep });
+        try {
+            fs.mkdirSync(self.path);
+            if (!langMods[self.lang] || !cmd.langs || !cmd.langs[self.lang]) {
+                var errMsg = 'unsupported lang ' + self.lang;
+            }
+        } catch (error) {
+            respond({ msg: error, isEnd: true });
             data.res.compileRes.push({
-                error: errMsg
+                error: error
             });
-            return callback(errMsg);
+            return callback(error);
         }
         var targetPath = path.resolve(self.path, 'exe');
-        var options = langs[self.lang](data.sources[cmd.sourceId], self.path, targetPath, cmd.langs[self.lang].args.split(' '));
+        var langFunc = langMods[self.lang];
+        var options = langFunc(data.res.sources[cmd.sourceId], self.path, targetPath, cmd.langs[self.lang]);
         options.cwd = self.path;
         options.stdin = path.resolve(self.path, 'c' + self.id + '.stdin');
         options.stdout = path.resolve(self.path, 'c' + self.id + '.stdout');
@@ -36,7 +41,7 @@ module.exports = function(cmd, data) {
         var runRes = exec(options);
         if (runRes) {
             var errMsg = 'compile error ' + runRes;
-            respond({ msg: errMsg, isEnd: self.cmd.haltOnFail, tusStep: self.tusStep });
+            respond({ message: errMsg, isEnd: self.cmd.haltOnFail, tusStep: self.tusStep });
             data.res.compileRes.push({
                 error: errMsg
             });
@@ -45,6 +50,7 @@ module.exports = function(cmd, data) {
         data.res.compileRes.push({
             target: targetPath
         });
+        respond({ message: 'compile done' });
         callback(0);
     };
 };

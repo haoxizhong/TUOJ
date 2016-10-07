@@ -1,5 +1,6 @@
 var nodeGit = require('nodegit');
 var path = require('path');
+var fs = require('fs-extra');
 var crypto = require('crypto');
 
 function hash(str) {
@@ -20,15 +21,26 @@ var ret = function(cfg) {
         try {
             fs.readdirSync(self.path);
         } catch (err) {
-            nodeGit.clone(url, self.path).then(function(repo) {
-            }).catch(function(err) {
-                if (err) {
-                    callback(err);
-                }
-            });
+			nodeGit.Clone.clone(url, self.path).catch(function(err) {
+				if (err) {
+					callback(err);
+				}
+			});
         }
         nodeGit.Repository.open(self.path).then(function(repo) {
-            return repo.fetchAll({});
+            self.repo = repo;
+            return repo.fetchAll({
+                callbacks: {
+                    credentials: function(url, userName) {
+                        return nodeGit.Cred.sshKeyFromAgent(userName);
+                    },
+                    certificateCheck: function() {
+                        return 1;
+                    }
+                }
+            })
+        }).then(function() {
+            return self.repo.mergeBranches("master", "origin/master");
         }).catch(function(err) {
             callback(err);
         }).done(function() {

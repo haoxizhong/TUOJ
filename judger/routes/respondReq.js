@@ -4,14 +4,19 @@ module.exports = function(cfg) {
 	var self = this;
 	self.url = cfg.wwwServer.uploadUrl;
 	self.uploadStatus = function(data) {
-		request.post({
+		var postData = {
 			url: self.url,
-			formData: data
-		}, function(err, httpResponse, body) {
-			if (err) {
-				console.log('Status upload error = ' + err);
-			}
-		});
+			form: data
+		};
+		try {
+			request.post(postData, function(err, httpResponse, bodyStr) {
+                if (err) {
+                    console.log('Upload error ' + err);
+                }
+            });
+		} catch (error) {
+			console.log('Post error ' + error);
+		};
 	}
 }
 

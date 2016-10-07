@@ -1,11 +1,20 @@
 var Step = require('step');
-var Path = require('path');
+var path = require('path');
+var fs = require('fs-extra');
 var Compile = require('./compile');
-var Run = require('./run');
+var Exec = require('./exec');
 var Judge = require('./judge');
 var Score = require('./score');
 
-module.exports = function(cfg, dataPath) {
+const cmdMap = {
+	'compile': Compile,
+	'exec': Exec,
+	'judge': Judge,
+	'score': Score,
+	'end': -1
+};
+
+module.exports = function(dataPath, cfg) {
     var self = this;
 	self.loadCfg = function(cfg) {
 		self.cfg = cfg;
@@ -14,16 +23,8 @@ module.exports = function(cfg, dataPath) {
 	self.loadCfg(cfg);
     self.interpret = function(err) {
         if (err) {
-            self.respond({ tusStep: self.tusStep, message: errInfo, isEnd: true });
-            return self.callback(errInfo);
+            return self.callback(err);
         }
-        const cmdMap = {
-            'compile': Compile,
-            'run': Run,
-            'judge': Judge,
-            'score': Score,
-            'end': -1
-        };
         var curCmd = self.tus[self.tusStep];
         var curMod = cmdMap[curCmd.cmd];
         if (!curMod) {
@@ -35,38 +36,57 @@ module.exports = function(cfg, dataPath) {
             return self.callback(false);
         }
         var runner = new curMod(curCmd, self);
-        ++ self.tusStep;
-        return runner.run(self.respond, self.interpret);
+        return runner.run(function(data) {
+            if (!data.tusStep) {
+                data.tusStep = self.tusStep;
+            }
+            if (!data.cmd) {
+                if (self.tus[self.tusStep]) {
+                    data.cmd = self.tus[self.tusStep].cmd;
+                } else {
+                    data.cmd = 'unknown';
+                }
+            }
+            self.respond(data);
+        }, function(error) {
+            ++ self.tusStep;
+            self.interpret(error);
+        });
     };
     self.run = function(req, respond, callback) {
-        self.path = path.resolve(self.cfg.path, req.runId);
-        self.respond = reespond;
-        self.callback = callback;
-        self.res = {
+        self.path = path.resolve(self.cfg.path, String(req.runId));
+        self.respond = respond;
+        self.callback = function(error) {
+			if (self.cfg.clean) {
+				fs.removeSync(self.path);
+			}
+			callback(error);
+		};
+		self.res = {
             sources: [],
             compileRes: [],
-            runRes: [],
+            execRes: [],
             judgeRes: [],
             score: false
         };
         try {
+            self.tus = JSON.parse(fs.readFileSync(path.resolve(self.dataPath, 'tus.json')));
             fs.mkdirSync(self.path);
             if (typeof(req.answer) == 'string') {
                 req.answer = [ req.answer ];
             }
-            if (typeof(req.answer) == 'array') {
+            if (typeof(req.answer) == 'array' || typeof(req.answer) == 'object') {
                 req.answer.forEach(function(code, id) {
                     var sourcePath = path.resolve(self.path, 'answer' + id);
-                    fs.writeFileSync(sourcePath);
-                    self.sources.push(sourcePath);
+                    fs.writeFileSync(sourcePath, code);
+                    self.res.sources.push(sourcePath);
                 });
             } else {
-                throw "No answer file";
+                throw "no answer file";
             }
             self.lang = req.lang;
-            self.tus = req.tus;
-            if (typeof(self.tus) != 'array' || self.tus.length > self.cfg.maxLines) {
-                throw 'Illegal judge script';
+            if (typeof(self.tus) != 'object' || self.tus.length > self.cfg.maxLines) {
+                throw 'illegal judge script';
             } else {
                 self.tus.push({ cmd: "end" });
             }
