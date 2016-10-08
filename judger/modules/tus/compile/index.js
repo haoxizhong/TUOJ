@@ -35,10 +35,10 @@ module.exports = function(cmd, data) {
         var langFunc = langMods[self.lang];
         var options = langFunc(data.res.sources[cmd.sourceId], self.path, targetPath, cmd.langs[self.lang]);
         options.cwd = self.path;
-        options.stdin = path.resolve(self.path, 'c' + self.id + '.stdin');
-        options.stdout = path.resolve(self.path, 'c' + self.id + '.stdout');
-        options.stderr = path.resolve(self.path, 'c' + self.id + '.stderr');
-        var runRes = exec(options);
+        options.stdin = 'c' + self.id + '.stdin';
+        options.stdout = 'c' + self.id + '.stdout';
+        options.stderr = 'c' + self.id + '.stderr';
+        var runRes = exec.exec(options);
         if (runRes) {
             var errMsg = 'compile error ' + runRes;
             respond({ message: errMsg, isEnd: self.cmd.haltOnFail, tusStep: self.tusStep });

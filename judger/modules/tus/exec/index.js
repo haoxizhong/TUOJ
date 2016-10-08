@@ -47,14 +47,14 @@ module.exports = function(cmd, data) {
             fileName: './exe',
 			args: self.cmd.args,
             cwd: self.path,
-            stdin: path.resolve(self.path, '0.in'),
-            stdout: targetPath,
-            stderr: path.resolve(self.path, 'r.stderr'),
-			executerout: path.resolve(self.path, 'r.log'),
+            stdin: '0.in',
+            stdout: 'r.stdout',
+            stderr: 'r.stderr',
+			executerout: 'r.log',
             timeLimit: self.cmd.timeLimit ? self.cmd.timeLimit : defaults.timeLimit,
             memLimit: self.cmd.memLimit ? self.cmd.memLimit : defaults.memLimit,
         };
-        var runRes = exec(options);
+        var runRes = exec.exec(options);
         if (runRes) {
             var errMsg = 'run error ' + runRes;
             respond({ msg: errMsg, isEnd: self.cmd.haltOnFail, tusStep: self.tusStep });

@@ -52,11 +52,11 @@ module.exports = function(cmd, data) {
             fileName: './checker',
             args: args,
             cwd: self.path,
-            stdin: path.resolve(self.path, 'stdin'),
-            stdout: path.resolve(self.path, 'stdout'),
-            stderr: path.resolve(self.path, 'stderr'),
+            stdin: 'stdin',
+            stdout: 'stdout',
+            stderr: 'stderr',
         };
-        var runRes = exec(options);
+        var runRes = exec.exec(options);
         if (runRes) {
             var errMsg = 'checker error ' + runRes;
             respond({ msg: errMsg, isEnd: self.cmd.haltOnFail, tusStep: self.tusStep });

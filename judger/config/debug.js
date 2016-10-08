@@ -21,7 +21,7 @@ module.exports = {
         tus: {
             path: path.resolve(__dirname, '../../samples/test-data/runs/'),
 			maxLines: 256,
-            clean: true
+            clean: false
         },
 		sandbox: {
             path: path.resolve(__dirname, '../../samples/test-data/sandbox/tmp'),
