@@ -1,5 +1,7 @@
-#!/bin/bash 
+#!/bin/bash
 docker run -it -p 3388:3388 \
-	-v /Users/toby/Workspace/tuoj/judger/utils/sandbox/shared/shared:/home/judger/shared \
-	-v /Users/toby/Workspace/tuoj/judger/utils/sandbox/shared/data:/home/judger/data \
-	--name tuoj-sandbox tuoj-sandbox-image:2.1
+	  -v $(pwd)/shared/shared:/home/judger/shared \
+	  -v $(pwd)/shared/data:/home/judger/data \
+	  --cap-add SYS_PTRACE \
+	  --name tuoj-sandbox tuoj-sandbox-image:2.1
+
