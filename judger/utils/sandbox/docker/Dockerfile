@@ -19,4 +19,8 @@ ADD .vimrc /root/.vimrc
 
 ADD bin /home/judger/bin
 
+RUN apt-get install -y make
+WORKDIR /home/judger/bin
+RUN make
+
 WORKDIR /home/judger

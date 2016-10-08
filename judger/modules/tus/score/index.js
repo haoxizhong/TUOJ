@@ -18,8 +18,8 @@ module.exports = function(cmd, data) {
     };
     self.calc = function(logic) {
         if (typeof(logic) == 'number' || typeof(logic) == 'string') {
-            if (self.data.res.judgeRes[logic]) {
-                return data.res.judgeRes[logic].score;
+            if (self.data.scores[logic]) {
+                return data.scores[logic].score;
             } else {
                 return 0;
             }
@@ -37,7 +37,7 @@ module.exports = function(cmd, data) {
                 var cFunc = funcs[logic.func];
                 for (var i in logic.compoments) {
                     var item = logic.compoments[i];
-                    res += cFunc(res, self.calc(item));
+                    res = cFunc(res, self.calc(item));
                 }
             }
             return res * logic.fullScore;
@@ -45,3 +45,4 @@ module.exports = function(cmd, data) {
         return 0;
     };
 }
+

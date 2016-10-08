@@ -12,7 +12,7 @@ module.exports = function(cmd, data) {
     var self = this;
     self.cmd = cmd;
     self.lang = data.lang;
-    self.id = data.res.compileRes.length;
+    self.id = data.tusStep;
     self.path = path.resolve(data.path, 'c' + self.id);
     self.tusStep = data.tusStep;
     if (self.cmd.haltOnFail === undefined) {
@@ -26,30 +26,30 @@ module.exports = function(cmd, data) {
             }
         } catch (error) {
             respond({ msg: error, isEnd: true });
-            data.res.compileRes.push({
+            data.res[self.id] = {
                 error: error
-            });
+            };
             return callback(error);
         }
         var targetPath = path.resolve(self.path, 'exe');
         var langFunc = langMods[self.lang];
-        var options = langFunc(data.res.sources[cmd.sourceId], self.path, targetPath, cmd.langs[self.lang]);
+        var options = langFunc(data.sources[cmd.sourceId], self.path, targetPath, cmd.langs[self.lang]);
         options.cwd = self.path;
-        options.stdin = path.resolve(self.path, 'c' + self.id + '.stdin');
-        options.stdout = path.resolve(self.path, 'c' + self.id + '.stdout');
-        options.stderr = path.resolve(self.path, 'c' + self.id + '.stderr');
-        var runRes = exec(options);
-        if (runRes) {
-            var errMsg = 'compile error ' + runRes;
+        options.stdin = 'c' + self.id + '.stdin';
+        options.stdout = 'c' + self.id + '.stdout';
+        options.stderr = 'c' + self.id + '.stderr';
+        var runRes = exec.exec(options);
+        if (!runRes || runRes.error) {
+            var errMsg = 'compile error ' + runRes.error;
             respond({ message: errMsg, isEnd: self.cmd.haltOnFail, tusStep: self.tusStep });
-            data.res.compileRes.push({
+            data.res[self.id] = {
                 error: errMsg
-            });
+            };
             return callback(errMsg);
         }
-        data.res.compileRes.push({
+        data.res[self.id] = {
             target: targetPath
-        });
+        };
         respond({ message: 'compile done' });
         callback(0);
     };

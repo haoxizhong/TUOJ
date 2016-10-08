@@ -1,0 +1,40 @@
+[
+	{
+		"cmd": "compile",
+		"sourceId": 0,
+		"langs": {
+			"g++": {
+			}
+		}
+	}, {
+		"cmd": "exec",
+		"binId": 0,
+		"timeLimit": "1000",
+		"memLimit": "256",
+		"inputFile": "0.in"
+	}, {
+		"cmd": "judge",
+		"ansId": 1,
+		"checker": "default",
+		"stdOutputFile": "0.ans"
+	}, {
+		"cmd": "exec",
+		"binId": 0,
+		"timeLimit": "1000",
+		"memLimit": "256",
+		"inputFile": "1.in"
+	}, {
+		"cmd": "judge",
+		"ansId": "last",
+		"checker": "default",
+		"stdOutputFile": "1.ans"
+
+	}, {
+		"cmd": "score",
+		"compoments": {
+			"fullScore": 50,
+			"func": "sum",
+			"compoments": [ 0, 1 ]
+		}
+	}
+]

@@ -62,13 +62,9 @@ module.exports = function(dataPath, cfg) {
 			}
 			callback(error);
 		};
-		self.res = {
-            sources: [],
-            compileRes: [],
-            execRes: [],
-            judgeRes: [],
-            score: false
-        };
+		self.res = {};
+        self.scores = [];
+		self.sources = [];
         try {
             self.tus = JSON.parse(fs.readFileSync(path.resolve(self.dataPath, 'tus.json')));
             fs.mkdirSync(self.path);
@@ -79,7 +75,7 @@ module.exports = function(dataPath, cfg) {
                 req.answer.forEach(function(code, id) {
                     var sourcePath = path.resolve(self.path, 'answer' + id);
                     fs.writeFileSync(sourcePath, code);
-                    self.res.sources.push(sourcePath);
+                    self.sources.push(sourcePath);
                 });
             } else {
                 throw "no answer file";

@@ -1,5 +1,6 @@
 var cfgs = {
-	sample: './sample'
+	sample: './sample',
+    debug: './debug'
 };
-module.exports = require(cfgs.sample);
+module.exports = require(cfgs.debug);
 

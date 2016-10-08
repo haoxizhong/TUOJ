@@ -6,11 +6,15 @@ var exec = require('../../../modules/executer-ctrl');
 module.exports = function(cmd, data) {
     var self = this;
     self.cmd = cmd;
-    self.id = data.res.judgeRes.length;
-    self.path = path.resolve(data.path, 'j' + self.id);
     self.tusStep = data.tusStep;
+    self.id = self.tusStep;
     self.dataPath = data.dataPath;
-    self.source = data.res.execRes[cmd.ansId];
+    self.path = path.resolve(data.path, 'j' + self.id);
+	if (cmd.ansId == 'last') {
+		self.source = data.res[self.id - 1];
+    } else {
+        self.source = data.res[cmd.ansId];
+    }
     if (cmd.checker == 'default') {
         self.checker = path.resolve(__dirname, '../../../bin/fdiff');
     } else {
@@ -41,7 +45,7 @@ module.exports = function(cmd, data) {
             fs.writeFileSync(path.resolve(self.path, 'fullScore'), '100');
         } catch (error) {
             respond({ message: error, tusStep: self.tusStep, isEnd: cmd.haltOnFail });
-            data.res.judgeRes.push({
+            data.scores.push({
                 error: self.source.error,
 				score: 0
             });
@@ -52,15 +56,16 @@ module.exports = function(cmd, data) {
             fileName: './checker',
             args: args,
             cwd: self.path,
-            stdin: path.resolve(self.path, 'stdin'),
-            stdout: path.resolve(self.path, 'stdout'),
-            stderr: path.resolve(self.path, 'stderr'),
+            stdin: 'stdin',
+            stdout: 'stdout',
+            stderr: 'stderr',
         };
-        var runRes = exec(options);
-        if (runRes) {
+        var runRes = exec.exec(options);
+        if (!runRes || runRes.error) {
             var errMsg = 'checker error ' + runRes;
             respond({ msg: errMsg, isEnd: self.cmd.haltOnFail, tusStep: self.tusStep });
-            data.res.runRes.push({
+            data.scores.push({
+                score: 0,
                 error: runRes
             });
             return callback(errMsg);
@@ -71,7 +76,7 @@ module.exports = function(cmd, data) {
                 score: Number(fs.readFileSync(path.resolve(self.path, 'score'))) / 100,
 				extInfo: String(fs.readFileSync(path.resolve(self.path, 'extInfo')))
             };
-            data.res.judgeRes.push(res);
+            data.scores.push(res);
             respond({ 
                 message: 'judge done', 
                 score: res.score, 
@@ -80,7 +85,7 @@ module.exports = function(cmd, data) {
             return callback(0);
         } catch (error) {
             respond({ message: self.source.error, tusStep: self.tusStep, isEnd: cmd.haltOnFail });
-            data.res.judgeRes.push({
+            data.scores.push({
                 error: self.source.error,
 				score: 0
             });

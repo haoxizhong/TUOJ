@@ -10,10 +10,10 @@ const defaults = {
 module.exports = function(cmd, data) {
     var self = this;
     self.cmd = cmd;
-    self.id = data.res.execRes.length;
-    self.path = path.resolve(data.path, 'r' + self.id);;
     self.tusStep = data.tusStep;
-    self.source = data.res.compileRes[cmd.binId];
+    self.id = self.tusStep;
+    self.path = path.resolve(data.path, 'r' + self.id);;
+    self.source = data.res[cmd.binId];
     self.dataPath = data.dataPath;
     self.run = function(respond, callback) {
 		try {
@@ -34,9 +34,9 @@ module.exports = function(cmd, data) {
             });
 		} catch (error) {
 			respond({ message: error, tusStep: self.tusStep, isEnd: cmd.haltOnFail });
-            data.res.execRes.push({
+            data.res[self.id] = {
                 error: error
-            });
+            };
             return callback(cmd.haltOnFail);
 		}
 		if (typeof(self.cmd.args) == 'string') {
@@ -47,43 +47,26 @@ module.exports = function(cmd, data) {
             fileName: './exe',
 			args: self.cmd.args,
             cwd: self.path,
-            stdin: path.resolve(self.path, '0.in'),
-            stdout: targetPath,
-            stderr: path.resolve(self.path, 'r.stderr'),
-			executerout: path.resolve(self.path, 'r.log'),
+            stdin: '0.in',
+            stdout: 'r.stdout',
+            stderr: 'r.stderr',
             timeLimit: self.cmd.timeLimit ? self.cmd.timeLimit : defaults.timeLimit,
             memLimit: self.cmd.memLimit ? self.cmd.memLimit : defaults.memLimit,
         };
-        var runRes = exec(options);
-        if (runRes) {
-            var errMsg = 'run error ' + runRes;
+        var runRes = exec.exec(options);
+        if (!runRes || runRes.error) {
+            var errMsg = 'run error ' + runRes.error;
             respond({ msg: errMsg, isEnd: self.cmd.haltOnFail, tusStep: self.tusStep });
-            data.res.execRes.push({
-                error: runRes
-            });
-            return callback(errMsg);
-        }
-		try {
-            fs.ensureFileSync(path.resolve(self.path, 'r.log'));
-            var runRes = {};
-            try {
-                runRes = JSON.parse(String(fs.readFileSync(path.resolve(self.path, 'r.log'))));
-            } catch (error) {
+            if (self.cmd.haltOnFail) {
+                return callback(errMsg);
             }
-			data.res.execRes.push({
-				target: targetPath,
-				time: runRes.time,
-				mem: runRes.mem
-			});
-			respond({ message: 'exec done', tusStep: self.tusStep });
-			return callback(0);
-		} catch (error) {
-			respond({ message: error, tusStep: self.tusStep, isEnd: cmd.haltOnFail });
-            data.res.execRes.push({
-                error: error
-            });
-            return callback(cmd.haltOnFail);
-		}
+        }
+        if (!runRes.error) {
+            runRes.target = targetPath;
+        }
+        data.res[self.id] = runRes;
+        respond({ message: 'exec done', tusStep: self.tusStep, execInfo: runRes });
+        return callback(0);
     };
 };
 

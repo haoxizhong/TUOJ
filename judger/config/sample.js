@@ -22,11 +22,16 @@ module.exports = {
             path: path.resolve(__dirname, '../../samples/test-data/runs/'),
 			maxLines: 256,
             clean: true
-        }
+        },
+		sandbox: {
+            path: path.resolve(__dirname, '../../samples/test-data/sandbox/tmp'),
+            image: 'tuoj-sandbox-image:2.2'
+		}
 	}
 };
 
 fs.ensureDirSync(path.resolve(__dirname, '../../samples/test-data'));
 fs.ensureDirSync(module.exports.local.gitter.path);
 fs.ensureDirSync(module.exports.local.tus.path);
+fs.ensureDirSync(module.exports.local.sandbox.path);
 
