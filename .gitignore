@@ -1,0 +1,7 @@
+webserver/node_modules
+judger/node_modules
+samples/test-data
+samples/server
+samples/TUOJ-problem-sample/.git
+*.dSYM
+judger/bin/fdiff

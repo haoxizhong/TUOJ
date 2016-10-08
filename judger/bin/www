@@ -1,0 +1,4 @@
+var App = require('../app');
+var config = require('../config');
+var app = new App(config);
+app.start();
