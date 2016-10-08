@@ -27,12 +27,23 @@ var Executer = function() {
             cmdl += ' 1>' + stdout;
             cmdl += ' 2>' + stderr;
         }
+        if (options.timeLimit) {
+            cmdl += ' -t ' + options.timeLimit;
+        }
+        if (options.memLimit) {
+            cmdl += ' -m ' + options.memLimit;
+        }
         var containerId = hash(String(Date.now()));
         try {
-            cp.execFileSync('docker', ['run', '-p', '3388:3388', 
-                    '-v', options.cwd + ':/home/judger/shared', 
-                    '--name', containerId, self.cfg.image,
-                    'bin/sandbox_exec', cmdl]);
+            var dockerIO = [
+                'pipe',
+                fs.openSync(path.resolve(options.cwd, 'res.log'), 'w'),
+                fs.openSync(path.resolve(options.cwd, 'runtime.log'), 'w')
+            ];
+            var dockerArgs = ['run', '-p', '3388:3388', '-v', options.cwd + ':/home/judger/shared', '--name', containerId, self.cfg.image, 'bin/sandbox_exec', cmdl];
+            var stdo = cp.execFileSync('docker', dockerArgs, {
+                stdio: dockerIO
+            });
             cp.execFileSync('docker', ['rm', containerId]);
         } catch (err) {
             try {

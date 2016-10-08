@@ -10,10 +10,10 @@ const defaults = {
 module.exports = function(cmd, data) {
     var self = this;
     self.cmd = cmd;
-    self.id = data.res.execRes.length;
-    self.path = path.resolve(data.path, 'r' + self.id);;
     self.tusStep = data.tusStep;
-    self.source = data.res.compileRes[cmd.binId];
+    self.id = self.tusStep;
+    self.path = path.resolve(data.path, 'r' + self.id);;
+    self.source = data.res[cmd.binId];
     self.dataPath = data.dataPath;
     self.run = function(respond, callback) {
 		try {
@@ -34,9 +34,9 @@ module.exports = function(cmd, data) {
             });
 		} catch (error) {
 			respond({ message: error, tusStep: self.tusStep, isEnd: cmd.haltOnFail });
-            data.res.execRes.push({
+            data.res[self.id] = {
                 error: error
-            });
+            };
             return callback(cmd.haltOnFail);
 		}
 		if (typeof(self.cmd.args) == 'string') {
@@ -58,9 +58,9 @@ module.exports = function(cmd, data) {
         if (runRes) {
             var errMsg = 'run error ' + runRes;
             respond({ msg: errMsg, isEnd: self.cmd.haltOnFail, tusStep: self.tusStep });
-            data.res.execRes.push({
+            data.res[self.id] = {
                 error: runRes
-            });
+            };
             return callback(errMsg);
         }
 		try {
@@ -70,18 +70,18 @@ module.exports = function(cmd, data) {
                 runRes = JSON.parse(String(fs.readFileSync(path.resolve(self.path, 'r.log'))));
             } catch (error) {
             }
-			data.res.execRes.push({
+			data.res[self.id] = {
 				target: targetPath,
 				time: runRes.time,
 				mem: runRes.mem
-			});
+			};
 			respond({ message: 'exec done', tusStep: self.tusStep });
 			return callback(0);
 		} catch (error) {
 			respond({ message: error, tusStep: self.tusStep, isEnd: cmd.haltOnFail });
-            data.res.execRes.push({
+            data.res[self.id] = {
                 error: error
-            });
+            };
             return callback(cmd.haltOnFail);
 		}
     };

@@ -12,7 +12,7 @@ module.exports = function(cmd, data) {
     var self = this;
     self.cmd = cmd;
     self.lang = data.lang;
-    self.id = data.res.compileRes.length;
+    self.id = data.tusStep;
     self.path = path.resolve(data.path, 'c' + self.id);
     self.tusStep = data.tusStep;
     if (self.cmd.haltOnFail === undefined) {
@@ -26,14 +26,14 @@ module.exports = function(cmd, data) {
             }
         } catch (error) {
             respond({ msg: error, isEnd: true });
-            data.res.compileRes.push({
+            data.res[self.id] = {
                 error: error
-            });
+            };
             return callback(error);
         }
         var targetPath = path.resolve(self.path, 'exe');
         var langFunc = langMods[self.lang];
-        var options = langFunc(data.res.sources[cmd.sourceId], self.path, targetPath, cmd.langs[self.lang]);
+        var options = langFunc(data.sources[cmd.sourceId], self.path, targetPath, cmd.langs[self.lang]);
         options.cwd = self.path;
         options.stdin = 'c' + self.id + '.stdin';
         options.stdout = 'c' + self.id + '.stdout';
@@ -42,14 +42,14 @@ module.exports = function(cmd, data) {
         if (runRes) {
             var errMsg = 'compile error ' + runRes;
             respond({ message: errMsg, isEnd: self.cmd.haltOnFail, tusStep: self.tusStep });
-            data.res.compileRes.push({
+            data.res[self.id] = {
                 error: errMsg
-            });
+            };
             return callback(errMsg);
         }
-        data.res.compileRes.push({
+        data.res[self.id] = {
             target: targetPath
-        });
+        };
         respond({ message: 'compile done' });
         callback(0);
     };

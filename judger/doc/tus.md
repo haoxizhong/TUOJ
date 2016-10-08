@@ -39,7 +39,9 @@ TUS supports multiple language submissions using the same TUS script by regardin
 		// also: [ String ]
 	}
 
-`binId` indicates which target of `compile` command will be executed. (Numbered from 0)
+`binId` indicates which target will be executed. (Numbered from 0)
+
+Note that targets of `compile` and `exec` are all numbered according to its position in the whole script since 0.
 
 Time limit will be indicated by `MS` while memory limit indicated by `MB`.
 
@@ -55,7 +57,7 @@ If they are not specificed ( also for a language ), it will be set as default.
 		// also: [ String ]
 	}
 
-`ansId` indicates which target of `run` command will be judged. (Numbered from 0)
+`ansId` indicates which target will be judged. (Numbered from 0)
 
 Judge allows comparing user output and standard output.
 
@@ -77,7 +79,7 @@ If the last `exec` action fails, the result of `judge` will automatically be `0`
 		}]
 	}
 
-Generally, there is only one `score` in the end. It depends on results of `judge` actions. Judge results are numbered from 0.
+Generally, there is only one `score` in the end. It depends on results of `judge` actions. Judge results are uniquely numbered from 0.
 
 It returns the score of this judge request. 
 
