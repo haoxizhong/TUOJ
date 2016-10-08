@@ -1,5 +1,5 @@
 #!/bin/bash 
 docker run -it -p 3388:3388 \
-	-v /Users/toby/Workspace/tuoj/dev/shared/shared:/home/judger/shared \
-	-v /Users/toby/Workspace/tuoj/dev/shared/data:/home/judger/data \
-	--name tuoj-judger2 tuoj-judger-image:2.0
+	-v /Users/toby/Workspace/tuoj/judger/utils/sandbox/shared/shared:/home/judger/shared \
+	-v /Users/toby/Workspace/tuoj/judger/utils/sandbox/shared/data:/home/judger/data \
+	--name tuoj-sandbox tuoj-sandbox-image:2.1

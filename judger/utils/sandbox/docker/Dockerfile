@@ -12,7 +12,8 @@ apt-get install -y python && \
 apt-get install -y fpc 
 
 RUN mkdir -p /home/judger && \
-mkdir -p /root/.ssh 
+mkdir -p /root/.ssh  && \
+mkdir -p /home/judger/tmp
 
 ADD .vimrc /root/.vimrc
 

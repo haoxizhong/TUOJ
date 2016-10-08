@@ -1,2 +1,2 @@
 #!/bin/bash 
-docker build -t tuoj-judger-image:2.0 ./docker
+docker build -t tuoj-sandbox-image:2.1 ./docker

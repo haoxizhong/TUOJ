@@ -11,8 +11,6 @@
 #include<sys/reg.h>
 #include<sys/signal.h>
 #include<sys/resource.h>
-
-
 #include"configure.h"
 using namespace std;
 
@@ -29,25 +27,27 @@ using namespace std;
 int timelimit;
 int memorylimit;
 char command[MAXBUF];
+bool debug;
+ofstream resfile(HOME_PATH "/tmp/.result");
 
-void PrintRes(int x,FILE *fdet)
+void PrintRes(int x)
 {
 		if (x==RS_AC)
-				fprintf(fdet,"Accept\n");
+				resfile<<"Accept\n";
 		else if (x==RS_WA)
-				fprintf(fdet,"Wrong Answer\n");
+				resfile<<"Wrong Answer\n";
 		else if (x==RS_TLE)
-				fprintf(fdet,"Time Limit Exceed\n");
+				resfile<<"Time Limit Exceed\n";
 		else if (x==RS_MLE)
-				fprintf(fdet,"Memory Limit Exceed\n");
+				resfile<<"Memory Limit Exceed\n";
 		else if (x==RS_RE)
-				fprintf(fdet,"Runtime Error\n");
+				resfile<<"Runtime Error\n";
 		else if (x==RS_SYE)
-				fprintf(fdet,"System Error\n");
+				resfile<<"System Error\n";
 		else if (x==RS_CE)
-				fprintf(fdet,"Compile Error\n");
+				resfile<<"Compile Error\n";
 		else if (x==RS_FE)
-				fprintf(fdet,"File Error\n");
+				resfile<<"File Error\n";
 }
 
 void Init(int argc,char* argv[])
@@ -55,7 +55,7 @@ void Init(int argc,char* argv[])
 		char result;
 		timelimit = 1000;
 		memorylimit = 256;
-		while (~(result =(char) getopt(argc,argv,"t:m:")))
+		while (~(result =(char) getopt(argc,argv,"t:m:d")))
 		{
 				switch(result)
 				{
@@ -65,6 +65,9 @@ void Init(int argc,char* argv[])
 								//printf("%c,%s\n",result,optarg);
 						case 'm':
 								sscanf(optarg,"%d",&memorylimit);
+								break;
+						case 'd':
+								debug=true;
 								break;
 				}
 		}
@@ -84,7 +87,6 @@ int Run()
 		pid_t child;
 		if (!(child=fork()))
 		{
-				cerr<<"Inside..."<<endl;
 				rlimit rm_cpu_old,rm_cpu_new;
 				getrlimit(RLIMIT_CPU,&rm_cpu_old);
 				rm_cpu_new.rlim_cur=timelimit/1000+1;
@@ -97,7 +99,9 @@ int Run()
 				rm_as_old.rlim_max=(memorylimit+1)*1024*1024;
 				setrlimit(RLIMIT_AS,&rm_as_new);
 
+				if (debug)cerr<<"Begin Run..."<<endl;
 				int status = system(command);
+				if (debug)cerr<<"Finish Run..."<<endl;
 
 				setrlimit(RLIMIT_AS,&rm_as_old);
 				setrlimit(RLIMIT_CPU,&rm_cpu_old);
@@ -116,8 +120,8 @@ int Run()
 				wait4(child,&status,WUNTRACED,&rusa);
 				int cur_Time=(int)rusa.ru_utime.tv_sec*1000+(int)rusa.ru_utime.tv_usec/1000;
 				int cur_Memory=(int)rusa.ru_maxrss;
-				cerr<<cur_Time<<" "<<cur_Memory<<endl;
-				cerr<<timelimit<<" "<<memorylimit*1024<<endl;
+				resfile<<cur_Time<<" "<<cur_Memory<<endl;
+				if (debug)cerr<<"Time & Memory:"<<cur_Time<<" "<<cur_Memory<<endl;
 				if (WIFEXITED(status))
 				{
 						if (!WEXITSTATUS(status))
@@ -155,10 +159,12 @@ void Final()
 int main(int argc, char* argv[])
 {
 		Init(argc,argv);
-		cerr<<"Init finish..."<<endl;
-		cerr<<"Command:"<<command<<endl;
+	//	cerr<<"Init finish..."<<endl;
+		if (debug)cerr<<"Command:"<<command<<endl;
 		int status=Run();
-		PrintRes(status,stderr);
+		PrintRes(status);
 		Final();
+		resfile.close();
+		system("cp " HOME_PATH "/tmp/.result "SHARED_PATH);
 		return 0;
 }
