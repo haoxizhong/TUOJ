@@ -46,12 +46,19 @@ var Executer = function() {
             });
             cp.execFileSync('docker', ['rm', containerId]);
         } catch (err) {
-            try {
-            } catch(errRm) {
-            }
-            return err;
+            return { error: err };
         }
-        return 0;
+        var resStr = String(fs.readFileSync(path.resolve(options.cwd, '.result'))).split('\n');
+        var tmStr = resStr[0].split(' ');
+        var res = {
+            time: Number(tmStr[0]),
+            memory: Number(tmStr[1]),
+            error: resStr[1]
+        };
+        if (res.error == 'Accept') {
+            res.error = 0;
+        }
+        return res;
     };
 };
 

@@ -25,7 +25,7 @@ module.exports = {
         },
 		sandbox: {
             path: path.resolve(__dirname, '../../samples/test-data/sandbox/tmp'),
-            image: 'tuoj-judger-image:2.0'
+            image: 'tuoj-sandbox-image:2.2'
 		}
 	}
 };

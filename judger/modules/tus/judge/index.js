@@ -61,7 +61,7 @@ module.exports = function(cmd, data) {
             stderr: 'stderr',
         };
         var runRes = exec.exec(options);
-        if (runRes) {
+        if (!runRes || runRes.error) {
             var errMsg = 'checker error ' + runRes;
             respond({ msg: errMsg, isEnd: self.cmd.haltOnFail, tusStep: self.tusStep });
             data.scores.push({

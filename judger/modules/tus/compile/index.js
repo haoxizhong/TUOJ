@@ -39,8 +39,8 @@ module.exports = function(cmd, data) {
         options.stdout = 'c' + self.id + '.stdout';
         options.stderr = 'c' + self.id + '.stderr';
         var runRes = exec.exec(options);
-        if (runRes) {
-            var errMsg = 'compile error ' + runRes;
+        if (!runRes || runRes.error) {
+            var errMsg = 'compile error ' + runRes.error;
             respond({ message: errMsg, isEnd: self.cmd.haltOnFail, tusStep: self.tusStep });
             data.res[self.id] = {
                 error: errMsg

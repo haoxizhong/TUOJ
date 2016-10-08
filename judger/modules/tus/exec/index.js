@@ -50,40 +50,23 @@ module.exports = function(cmd, data) {
             stdin: '0.in',
             stdout: 'r.stdout',
             stderr: 'r.stderr',
-			executerout: 'r.log',
             timeLimit: self.cmd.timeLimit ? self.cmd.timeLimit : defaults.timeLimit,
             memLimit: self.cmd.memLimit ? self.cmd.memLimit : defaults.memLimit,
         };
         var runRes = exec.exec(options);
-        if (runRes) {
-            var errMsg = 'run error ' + runRes;
+        if (!runRes || runRes.error) {
+            var errMsg = 'run error ' + runRes.error;
             respond({ msg: errMsg, isEnd: self.cmd.haltOnFail, tusStep: self.tusStep });
-            data.res[self.id] = {
-                error: runRes
-            };
-            return callback(errMsg);
-        }
-		try {
-            fs.ensureFileSync(path.resolve(self.path, 'r.log'));
-            var runRes = {};
-            try {
-                runRes = JSON.parse(String(fs.readFileSync(path.resolve(self.path, 'r.log'))));
-            } catch (error) {
+            if (self.cmd.haltOnFail) {
+                return callback(errMsg);
             }
-			data.res[self.id] = {
-				target: targetPath,
-				time: runRes.time,
-				mem: runRes.mem
-			};
-			respond({ message: 'exec done', tusStep: self.tusStep });
-			return callback(0);
-		} catch (error) {
-			respond({ message: error, tusStep: self.tusStep, isEnd: cmd.haltOnFail });
-            data.res[self.id] = {
-                error: error
-            };
-            return callback(cmd.haltOnFail);
-		}
+        }
+        if (!runRes.error) {
+            runRes.target = targetPath;
+        }
+        data.res[self.id] = runRes;
+        respond({ message: 'exec done', tusStep: self.tusStep, execInfo: runRes });
+        return callback(0);
     };
 };
 
