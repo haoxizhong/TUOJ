@@ -50,6 +50,7 @@ module.exports = function(cmd, data) {
             stdin: '0.in',
             stdout: 'r.stdout',
             stderr: 'r.stderr',
+            sysLimit: true,
             timeLimit: self.cmd.timeLimit ? self.cmd.timeLimit : defaults.timeLimit,
             memLimit: self.cmd.memLimit ? self.cmd.memLimit : defaults.memLimit,
         };
