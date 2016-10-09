@@ -1,0 +1,15 @@
+access -1
+arch_prctl 2
+brk -1
+close -1
+execve 1
+exit_group 1
+fstat -1
+mmap -1
+mprotect -1
+munmap 2
+open -1
+read -1
+write -1
+getcwd 2
+arch_prctl 2

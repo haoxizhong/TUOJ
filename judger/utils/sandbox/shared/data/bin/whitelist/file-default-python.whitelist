@@ -1,0 +1,10 @@
+/dev/urandom -1
+/etc/ld.so.cache -1
+/dev/tty -1
+/etc/nsswitch.conf -1
+/etc/passwd -1
+^/lib/x86_64-linux-gnu
+^/usr/lib/python2.7
+^/usr/local/lib/python2.7/dist-packages
+$/python
+^/home/judger/bin/test/python
