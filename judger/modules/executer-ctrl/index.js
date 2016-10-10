@@ -12,23 +12,16 @@ function hash(str) {
 var Executer = function() {
     var self = this;
     self.refreshContainer = function() {
-        if (self.containerId) {
-            var oldContainerId = self.containerId;
-            setTimeout(function() {
-                var dockerArgs = ['rm', oldContainerId];
-                var stdo = cp.execFileSync('docker', dockerArgs, {
-                    stdio: self.dockerIO
-                });
-            }, 60000);
-        }
+		if (self.cfg.containerId) {
+			self.containerId = self.cfg.containerId;
+			return;
+		}
         self.containerId = hash(String(Date.now()));
-        var dockerArgs = ['run', '-d', '-v', self.path + ':/home/judger/shared', '--name', self.containerId, self.cfg.image, 'sleep', String(self.cfg.refreshInterval / 1000 + 1)];
+        var dockerArgs = ['run', '-d', '-v', self.path + ':/home/judger/shared', '--name', self.containerId, self.cfg.image, 'bin/pause'];
         fs.ensureDirSync(self.path);
         var stdo = cp.execFileSync('docker', dockerArgs, {
             stdio: self.dockerIO
         });
-        // TODO refresh container after a period of time without breaking current process
-        setTimeout(self.refreshContainer, self.cfg.refreshInterval);
     }
     self.loadCfg = function(cfg) {
         self.cfg = cfg;
@@ -60,7 +53,7 @@ var Executer = function() {
             cmdl += ' -m ' + options.memLimit;
         }
         try {
-            //fs.emptyDirSync(self.path);
+            fs.emptyDirSync(self.path);
             fs.copySync(options.cwd, self.path);
             var dockerArgs = ['exec', self.containerId, 'bin/sandbox_exec', cmdl];
             if (!options.sysLimit) {
@@ -69,8 +62,9 @@ var Executer = function() {
             cp.execFileSync('docker', dockerArgs, {
                 stdio: self.dockerIO
             });
-            fs.removeSync(options.cwd);
+			console.log(cmdl);
             fs.copySync(self.path, options.cwd);
+            fs.emptyDirSync(self.path);
          } catch (err) {
              return { error: err };
         }

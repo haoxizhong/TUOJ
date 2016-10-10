@@ -25,7 +25,7 @@ module.exports = {
         },
 		sandbox: {
             path: path.resolve(__dirname, '../../samples/test-data/sandbox/'),
-            image: 'tuoj-sandbox-image:3.2',
+            image: 'tuoj-sandbox-image:3.3',
             refreshInterval: 999999999 * 86400000
 		}
 	}
