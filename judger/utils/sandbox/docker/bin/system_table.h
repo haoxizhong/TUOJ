@@ -1,4 +1,5 @@
-
+#ifndef __TUOJ_SYSTEM_TABLE_H__
+#define __TUOJ_SYSTEM_TABLE_H__
 const char* sysid[314]=
 {
 		"read",
@@ -316,3 +317,4 @@ const char* sysid[314]=
 		"kcmp",
 		"finit_module",
 };
+#endif

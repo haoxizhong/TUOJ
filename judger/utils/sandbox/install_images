@@ -1,2 +1,2 @@
 #!/bin/bash 
-docker build -t tuoj-sandbox-image:3.3 ./docker
+docker build -t tuoj-sandbox-image:3.4 ./docker

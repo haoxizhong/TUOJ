@@ -6,7 +6,6 @@
 #include<vector>
 #include<cstdlib>
 #include<unistd.h>
-#include"json/json.h"
 #include"configure.h"
 using namespace std;
 
