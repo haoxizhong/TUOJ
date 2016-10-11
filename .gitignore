@@ -1,6 +1,6 @@
 webserver/node_modules
 judger/node_modules
 samples/test-data
-samples/server
+samples/server/node_modules
 *.dSYM
 judger/bin/fdiff
