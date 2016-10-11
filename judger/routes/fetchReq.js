@@ -36,7 +36,7 @@ module.exports = function(mycfg) {
             });
         }, function(err, timeout) {
 			if (timeout === undefined) {
-				timeout = 0;
+				timeout = self.cfg.local.wwwServer.reqInterval;
 			}
             if (err) {
                 console.log((new Date).toLocaleString() + ': ' + err);
