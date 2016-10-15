@@ -1,6 +1,25 @@
-webserver/node_modules
-judger/node_modules
+# Project
 samples/test-data
-samples/server/node_modules
 *.dSYM
 judger/bin/fdiff
+
+# npm
+node_modules
+*.log
+*.log.*
+*.gz
+
+# OS X
+.DS_Store*
+Icon?
+._*
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Linux
+.directory
+*~
+
