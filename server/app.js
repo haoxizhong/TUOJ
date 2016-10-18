@@ -37,6 +37,9 @@ app.use('/problems',upload);
 
 app.post('/api/judger/adopt', function(req, res) {
 	judge.findOne({'pd':0},function(err,x){
+		if (!x) {
+			return res.send({});
+		}
 		x.pd=1
 		x.save()
 		res.send(x);

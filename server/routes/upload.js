@@ -14,7 +14,7 @@ router.post('/[0-9]+/[A-Z]/upload',function(req,res,next){
 		var problemid=posturl[2]
 		
 		var originname=files.inputfile[0].originalFilename
-		var nowpath='./'+files.inputfile[0].path.replace(/\\/g,"\/")
+		var nowpath='./'+files.inputfile[0].path;//.replace(/\\/g,"\/")
 		
 		console.log(originname+'\n')
 		console.log(fields)
