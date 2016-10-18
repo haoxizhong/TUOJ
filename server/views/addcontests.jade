@@ -1,0 +1,18 @@
+form(method='POST', action='addcontests/added')
+	| 起始时间：
+	input(type='date', name='startdate')
+	input(type='time', name='starttime')
+	br
+	| 终止时间：
+	input(type='date', name='enddate')
+	input(type='time', name='endtime')
+	br
+	| 比赛名称：
+	input(type='text', name='contestname')
+	br
+	textarea(name='gitlist', cols='70', rows=20)
+	br
+	input(type='submit', value='Submit')
+
+
+	
