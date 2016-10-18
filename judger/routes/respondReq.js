@@ -3,7 +3,11 @@ var request = require('request');
 module.exports = function(cfg) {
 	var self = this;
 	self.url = cfg.wwwServer.uploadUrl;
+	self.setId = function(runId) {
+		self.runId = runId;
+	}
 	self.uploadStatus = function(data) {
+        data.runId = self.runId;
 		var postData = {
 			url: self.url,
 			form: data

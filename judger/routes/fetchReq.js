@@ -24,6 +24,7 @@ module.exports = function(mycfg) {
             if (!body || !body.runId) {
 				return this(err ? err : 'no need', mycfg.wwwServer.reqInterval);
             }
+            self.respondReq.setId(body.runId);
             var next = this;
             Step(function() {
                 var gitter = new Gitter(mycfg.local.gitter);
