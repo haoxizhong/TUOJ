@@ -10,7 +10,7 @@ var app = function(cfg) {
 	self.loadCfg(cfg);
 	self.fetchReq = new FetchReq(self.cfg);
     self.start = function() {
-        self.fetchReq.run();
+        self.fetchReq.run(self.cfg.wwwServer.reqInterval);
     }
 };
 

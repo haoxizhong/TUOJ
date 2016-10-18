@@ -12,7 +12,8 @@ module.exports = function(mycfg) {
 		judgerType: mycfg.judgerType
 	});
     self.respondReq = new RespondReq(mycfg);
-    self.run = function() {
+    self.run = function(timeout) {
+		self.timeout = timeout;
         Step(function() {
             request.post({
                 url: mycfg.wwwServer.fetchUrl,
@@ -36,7 +37,7 @@ module.exports = function(mycfg) {
             });
         }, function(err, timeout) {
 			if (timeout === undefined) {
-				timeout = self.cfg.local.wwwServer.reqInterval;
+				timeout = self.timeout;
 			}
             if (err) {
                 console.log((new Date).toLocaleString() + ': ' + err);
