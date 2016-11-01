@@ -9,6 +9,9 @@ node_modules
 *.log.*
 *.gz
 
+# bower
+bower_components
+
 # OS X
 .DS_Store*
 Icon?
