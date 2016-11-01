@@ -17,7 +17,7 @@ router.get('/login',function(req,res,next) {
 	else	
 		next()
 },function(req,res,next){
-	res.render('login',{});
+	res.render('login',{user:req.session.user});
 });
 
 router.get('/logout',function(req,res,next){

@@ -14,8 +14,8 @@ router.post('/[0-9]+/[A-Z]/upload',function(req,res,next){
 		var problemid=posturl[2]
 		
 		var originname=files.inputfile[0].originalFilename
-		var nowpath='./'+files.inputfile[0].path;//.replace(/\\/g,"\/")
-		
+		//var nowpath='./'+files.inputfile[0].path;//.replace(/\\/g,"\/")
+		var nowpath='./'+files.inputfile[0].path.replace(/\\/g,"\/")
 		console.log(originname+'\n')
 		console.log(fields)
 		var newjudge=new judge;
@@ -24,7 +24,10 @@ router.post('/[0-9]+/[A-Z]/upload',function(req,res,next){
 		judge.count(function(err,x){
 			newjudge.runId=x+1
 			newjudge.lang=fields.language[0]
+			newjudge.userid=req.session.user
+			newjudge.contestid=parseInt(contestid)
 			newjudge.pd=0
+			newjudge.score=0
 			newjudge.answer=String(fs.readFileSync(nowpath))
 			contest.findOne({'id':parseInt(contestid)},function(err,x){
 				newjudge.probGit=x.gitlist[problemid.charCodeAt()-65]

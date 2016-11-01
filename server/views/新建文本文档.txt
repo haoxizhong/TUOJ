@@ -1,0 +1,9 @@
+login
+homepage
+head
+frame
+editcontests
+addcontests
+contest_home
+contest_problem
+contest

@@ -64,7 +64,7 @@ app.post('/api/judger/adopt', function(req, res) {
 		if (!x) {
 			return res.send({});
 		}
-		x.pd=1
+		pd=1
 		x.save()
 		res.send(x);
 	})
@@ -79,7 +79,8 @@ app.post('/api/judger/upload', function(req, res) {
 		if (cmd=='score'){
 			var id=parseInt(req.body.runId);
 			judge.findOne({'runId':id},function(err,x){
-				x.pd=parseInt(req.body.score)
+				x.pd=2
+				x.score=parseInt(req.body.score)
 				x.save()
 			})
 			console.log(req.body.runId,req.body.score);

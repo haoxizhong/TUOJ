@@ -23,10 +23,14 @@ var type2= new Schema({
 
 var type3= new Schema({
 	runId: Number,
+	userid: String,
+	contestid: Number,
 	probGit: String,
 	lang: String,
 	answer: [String],
-	pd: Number
+	pd: Number,
+	score : Number
+	
 });
 
 exports.user=mongoose.model('user',type1)

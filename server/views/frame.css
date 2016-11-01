@@ -45,6 +45,17 @@ body {
 	box-sizing:border-box;
 }
 
+.kuang_add{
+	background-color:white;
+	position:relative;
+	margin-right:auto;
+	margin-left:auto;
+	width:800px;
+	height:600px;
+	border:1px solid rgb(185,185,185);
+	box-sizing:border-box;
+}
+
 .leftup{
 	font-size:20;
 	color:#3B5998;
@@ -59,6 +70,16 @@ body {
 	margin-left:auto;
 	width:300px;
 	height:210px;
+	font-size:18px;
+}
+
+.center_add{
+	position:relative;
+	margin-top:50px;
+	margin-right:auto;
+	margin-left:auto;
+	width:550px;
+	height:450px;
 	font-size:18px;
 }
 

@@ -11,6 +11,7 @@
     "debug": "~2.2.0",
     "express": "~4.13.1",
     "express-session": "^1.14.1",
+    "fs-extra": "^1.0.0",
     "jade": "~1.11.0",
     "markdown": "^0.5.0",
     "mongoose": "~4.6.3",

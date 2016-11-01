@@ -1,16 +1,17 @@
 include head.jade
-p this is the #{problemid} problem in No.#{contestid} contest!
+div(class="article")
+	p this is the #{problemid} problem in No.#{contestid} contest!
 
-p #{gitt}
+	p #{gitt}
 
-p 
-	!{probmd}
+	p 
+		!{probmd}
 
-form(method='POST',action='/problems/#{contestid}/#{problemid}/upload',enctype='multipart/form-data')
-	select(name='language')
-		option(value='g++') g++
-		option(value='gcc') gcc
-	br
-	input(name='inputfile',type='file',multiple='multiple')
-	br
-	input(type='submit')
+	form(method='POST',action='/problems/#{contestid}/#{problemid}/upload',enctype='multipart/form-data')
+		select(name='language')
+			option(value='g++') g++
+			option(value='gcc') gcc
+		br
+		input(name='inputfile',type='file',multiple='multiple')
+		br
+		input(type='submit')

@@ -1,6 +1,10 @@
 include head.jade
-ul
-	- for (var i = 0; i < contestlist.length; ++i) {
-		a(href='contests/#{contestlist[i].id}') #{contestlist[i].id} #{contestlist[i].name} #{contestlist[i].starttime} #{contestlist[i].endtime}
-		br
-	- }
+div(class="article")
+	ul
+		- for (var i = 0; i < contestlist.length; ++i) {
+			a(href='contests/#{contestlist[i].id}') #{contestlist[i].id} #{contestlist[i].name} #{contestlist[i].starttime} #{contestlist[i].endtime}
+			- if (power)
+				button
+					a(href='addcontests/#{contestlist[i].id}') 管理比赛
+			br
+		- }
