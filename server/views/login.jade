@@ -1,0 +1,16 @@
+include head.jade
+
+div(class="article")
+	div(class="kuang")
+		p(class="leftup") 登录进入tuoj
+		form(class="center" method='POST',action='/login')
+			| 用户名：
+			input(type='text',name='username')
+			br
+			br
+			| 密码&nbsp&nbsp：
+			input(type='password',name='userpass')
+			
+			ul(class="rd")
+				li: input(style='font-size:18px; font-family:"等线"' type='submit',value='登录' )
+				li: button(style='font-size:18px; font-family:"等线"'): a(href='/') 返回首页

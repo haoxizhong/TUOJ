@@ -6,10 +6,12 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var fs = require('fs');
 var mongoose = require('mongoose')
+var session = require('express-session')
 mongoose.connect('mongodb://127.0.0.1/tuojdata')
 
 var contest=require('./models/user').contest
 var judge=require('./models/user').judge
+var user=require('./models/user').user
 
 var homepage = require('./routes/homepage');
 var contests = require('./routes/contests');
@@ -17,6 +19,19 @@ var addcontests = require('./routes/addcontests')
 var upload = require('./routes/upload')
 
 var app = express();
+
+var userfilter = function(req,res,next){
+	if (!req.session.user)
+		return res.redirect('/')
+	next()
+}
+
+var adminfilter = function(req,res,next){
+	if (!req.session.admin)
+		return res.redirect('/')
+	next()
+	
+}
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -29,9 +44,18 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(session({
+	secret:'tuojguys',
+	cookie:{maxAge:1000*60*10},
+	resave: true,
+	saveUninitialized: false
+}))	
 
-app.use('/', homepage);
-app.use('/contests', contests);
+app.use('/contests',userfilter);
+app.use('/addcontests',adminfilter);
+
+app.use('/',homepage);
+app.use('/contests',contests);
 app.use('/addcontests',addcontests);
 app.use('/problems',upload);
 
@@ -52,8 +76,14 @@ app.post('/api/judger/upload', function(req, res) {
 	if (req.body.isEnd) {
 		var cmd=req.body.cmd
 		// judge score exec compile
-		if (cmd=='score')
+		if (cmd=='score'){
+			var id=parseInt(req.body.runId);
+			judge.findOne({'runId':id},function(err,x){
+				x.pd=parseInt(req.body.score)
+				x.save()
+			})
 			console.log(req.body.runId,req.body.score);
+		}
 	}
 	res.send({});
 });

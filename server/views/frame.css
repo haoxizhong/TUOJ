@@ -1,0 +1,74 @@
+
+body {
+	font-family:"黑体"
+}
+.frame{
+	position:absolute;
+	background-color:#584b4f;
+	width:100%;
+	top:0%;
+	height:80px;
+}
+.frame a {
+	color:inherit;
+	color:white;
+	font-size :25;
+	margin:10px;
+	text-decoration:none;
+}
+
+.frame li{
+	display:inline-block;
+}
+
+.article{
+	position:absolute;
+	top:100px;
+	width:100%;
+	color:black;
+}
+
+.article a{
+	color:inhreit;
+	text-decoration:none;
+	color:black;
+}
+
+.kuang{
+	background-color:white;
+	position:relative;
+	margin-right:auto;
+	margin-left:auto;
+	width:480px;
+	height:300px;
+	border:1px solid rgb(185,185,185);
+	box-sizing:border-box;
+}
+
+.leftup{
+	font-size:20;
+	color:#3B5998;
+	font-family:"等线";
+	top:0%;
+}
+
+.center{
+	position:relative;
+	margin-top:50px;
+	margin-right:auto;
+	margin-left:auto;
+	width:300px;
+	height:210px;
+	font-size:18px;
+}
+
+.rd{
+	position:absolute;
+	bottom:0;
+	right:-20px;
+}
+
+.rd li{
+	margin:10px;
+	display:inline-block;
+}

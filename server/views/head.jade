@@ -1,0 +1,10 @@
+style
+	include frame.css
+div(class="frame")
+	ul
+		li: a(href="/contests") 比赛列表
+		li: a(href="/addcontests") 添加比赛
+		- if (!user)
+			li: a(href="/login") 登录
+		- else
+			li: a(href="/logout") 注销

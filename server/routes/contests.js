@@ -7,6 +7,23 @@ var contest = require('../models/user').contest
 
 /* GET users listing. */
 
+var delet=function(path){
+	var flag=0
+	fs.readdir(path,function(err,files){
+		for(var i=0;i<files.length;i++){
+			var filepath=files[i]
+			fs.stat(filepath,function(err,stats){
+				if (stats.isFile())
+					fs.unlinkSync(filepath)
+				else	
+					if (stats.isDirectory())
+						delet(filepath)
+			});
+		}
+		fs.rmdirSync(path)
+	});
+}
+
 var getID=function(getpath) {
 	var tmp=0
 	for (tmp=1;tmp<getpath.length;tmp++)
@@ -43,6 +60,7 @@ router.get('/[0-9]+/problems/[A-Z]',function(req,res,next){
 		git.Clone(probgit,'tmpprob').then(function(repository){
 			var filepath='./tmpprob/doc/description.md'
 			var probmd=markdown.toHTML(String(fs.readFileSync(filepath)))
+			delet('./tmpprob')
 			res.render('contest_problem',{'probmd':probmd,'contestid':contestID,'problemid':problemID,'gitt':x.gitlist[problemID.charCodeAt()-65]})
 		},function(err){console.log(err)});//.catch((err)=>console.log(err))
 	})

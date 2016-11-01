@@ -3,7 +3,8 @@ var Schema = mongoose.Schema;
 
 var type1= new Schema({
 	userid: String,
-	userpassword: String
+	userpassword: String,
+	power: Number
 });
 
 var type2= new Schema({
