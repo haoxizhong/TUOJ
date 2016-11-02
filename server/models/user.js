@@ -1,27 +1,27 @@
 var mongoose = require("mongoose");
 var Schema = mongoose.Schema;
 
-var type1= new Schema({
+var User = new Schema({
 	userid: String,
 	userpassword: String,
 	power: Number
 });
 
-var type2= new Schema({
+var Contest = new Schema({
 	id: Number,
 	starttime: {
 		date: String,
-		time: String,
+		time: String
 	},
 	endtime: {
 		date: String,
-		time: String,
+		time: String
 	},
 	name: String,
 	gitlist: [String]
 });
 
-var type3= new Schema({
+var Judge = new Schema({
 	runId: Number,
 	userid: String,
 	contestid: Number,
@@ -33,6 +33,6 @@ var type3= new Schema({
 	
 });
 
-exports.user=mongoose.model('user',type1)
-exports.contest=mongoose.model('contest',type2)
-exports.judge=mongoose.model('judge',type3)
+exports.user=mongoose.model('user', User);
+exports.contest=mongoose.model('contest', Contest);
+exports.judge=mongoose.model('judge', Judge);
