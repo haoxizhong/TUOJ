@@ -1,7 +1,34 @@
-doctype html
-html
-  head
-    title= title
-    link(rel='stylesheet', href='/stylesheets/style.css')
-  body
-    block content
+head
+	- if (title)
+		title= title
+	- else
+		title TUOJ
+	meta(name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no')
+	link(rel='stylesheet' href='/bower_components/bootstrap/dist/css/bootstrap.min.css')
+	link(rel='stylesheet' href='/stylesheets/style.css')
+	script(src='/bower_components/bootstrap/dist/js/bootstrap.min.js')
+	script(src='/bower_components/jquery/dist/jquery.min.js')
+body
+	div.wrapper
+		div.container
+			nav.navbar.navbar-default
+				div.navbar-header
+					a.navbar-brand(href='/') TUOJ
+				ul.nav.navbar-nav
+					li
+						a(href="/contests") 比赛列表
+					li
+						a(href="/addcontests") 添加比赛
+				ul.nav.navbar-nav.navbar-right
+					- if (!user)
+						li
+							a(href="/login") 登录
+					- else
+						li
+							a Hi #{user}
+						li
+							a(href="/logout") 注销
+		div.content-main
+			div.container
+				block content
+	

@@ -1,11 +1,13 @@
-include head.jade
-div(class="article")
-	p this is the No.#{contestid} contest
-	a(href='/contests/#{contestid}/status') status
-	br
+extends layout
 
-	- for(var i = 0 ; i < gitlist.length;i++){
-		- var ch = String.fromCharCode(i + 65)
-		a(href='/contests/#{contestid}/problems/#{ch}') #{ch}
+block content
+	div(class="article")
+		p this is the No.#{contestid} contest
+		a(href='/contests/#{contestid}/status') status
 		br
-	- }
+	
+		- for(var i = 0 ; i < gitlist.length;i++){
+			- var ch = String.fromCharCode(i + 65)
+			a(href='/contests/#{contestid}/problems/#{ch}') #{ch}
+			br
+		- }

@@ -1,9 +1,10 @@
-include head.jade
+extends layout
 
-div(class="article")
-	p this is status list for the No.#{contestid} contest
-	ul
-		- for (var i = 0; i<judgelist.length; i++) {
-			li #{judgelist[i].runId}&nbsp#{judgelist[i].userid}&nbsp#{judgelist[i].score}
-			br
-		- }
+block content
+	div(class="article")
+		p this is status list for the No.#{contestid} contest
+		ul
+			- for (var i = 0; i<judgelist.length; i++) {
+				li #{judgelist[i].runId}&nbsp#{judgelist[i].userid}&nbsp#{judgelist[i].score}
+				br
+			- }

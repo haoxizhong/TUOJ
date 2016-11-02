@@ -1,17 +1,19 @@
-include head.jade
-div(class="article")
-	p this is the #{problemid} problem in No.#{contestid} contest!
+extends layout
 
-	p #{gitt}
-
-	p 
-		!{probmd}
-
-	form(method='POST',action='/problems/#{contestid}/#{problemid}/upload',enctype='multipart/form-data')
-		select(name='language')
-			option(value='g++') g++
-			option(value='gcc') gcc
-		br
-		input(name='inputfile',type='file',multiple='multiple')
-		br
-		input(type='submit')
+block content
+	div(class="article")
+		p this is the #{problemid} problem in No.#{contestid} contest!
+	
+		p #{gitt}
+	
+		p 
+			!{probmd}
+	
+		form(method='POST',action='/problems/#{contestid}/#{problemid}/upload',enctype='multipart/form-data')
+			select(name='language')
+				option(value='g++') g++
+				option(value='gcc') gcc
+			br
+			input(name='inputfile',type='file',multiple='multiple')
+			br
+			input(type='submit')
