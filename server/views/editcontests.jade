@@ -1,24 +1,29 @@
 extends layout
 
 block content
-	div(class="article")
-		div(class="kuang_add")
-			p(class="leftup") 请编辑#{contestname}比赛！
-			form(class="" method='POST', action='/addcontests/#{contestid}/edited')
-				| 起始时间：
-				input(type='date', name='startdate', value='#{startdate}')
-				input(type='time', name='starttime', value='#{starttime}')
-				br
-				| 终止时间：
-				input(type='date', name='enddate', value='#{enddate}')
-				input(type='time', name='endtime', value='#{endtime}')
-				br
-				| 比赛名称：
-				input(type='text', name='contestname',value='#{contestname}')
-				br
-				textarea(name='gitlist', cols='70', rows=20) #{tex}
-				br
-				input(class="rd" style='font-size:18px; font-family:"等线";' type='submit', value='Submit')
+	div.container
+		p 编辑比赛#{contestname}
+		form(class="" method='POST', action='/addcontests/#{contestid}/edited')
+			div.from-group
+				label 起始时间
+				div.row
+					div.col-xs-6
+						input.from-control(type='date', name='startdate', value='#{startdate}')
+					div.col-xs-6
+						input.from-control(type='time', name='starttime', value='#{starttime}')
+			div.from-group
+				label 终止时间
+				div.row
+					div.col-xs-6
+						input.from-control(type='date', name='enddate', value='#{enddate}')
+					div.col-xs-6
+						input.from-control(type='time', name='endtime', value='#{endtime}')
+			div.from-group
+				label 比赛名称
+				input.from-control(type='text', name='contestname',value='#{contestname}')
+			div.form-group
+				label 题目列表
+				textarea.from-control(name='gitlist', cols='70', rows=6) #{tex}
+			div.form-group
+				input.btn.btn-primary(type='submit' value='创建')
 	
-	
-		
