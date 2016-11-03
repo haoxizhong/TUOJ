@@ -1,10 +1,20 @@
 extends contest_layout
 
 block content_contest
-	div(class="article")
+	div.container-fluid
 		p this is status list for the No.#{contestid} contest
-		ul
-			- for (var i = 0; i<judgelist.length; i++) {
-				li #{judgelist[i].runId}&nbsp#{judgelist[i].userid}&nbsp#{judgelist[i].score}
-				br
-			- }
+		table.table
+			thead
+				tr
+					th #
+					th 题目
+					th 用户
+					th 得分
+			tbody
+				- for (var i in judgelist) {
+					tr
+						td #{i}
+						td 你没记题目编号!?
+						td #{judgelist[i].userid}
+						td #{judgelist[i].score}
+				- }
