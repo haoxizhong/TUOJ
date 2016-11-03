@@ -9,12 +9,17 @@ block content_contest
 					th #
 					th 题目
 					th 用户
+					th 状态
 					th 得分
 			tbody
+				- var statusText = { 0: '等待分配评测资源', 1: '评测中', 2: '评测结束' };
 				- for (var i in judgelist) {
 					tr
 						td #{i}
-						td 你没记题目编号!?
+						td 
+							a(href='/contests/#{contestid}/problems/#{judgelist[i].probid}') #{judgelist[i].probid}
 						td #{judgelist[i].userid}
+						td #{statusText[judgelist[i].pd]}
 						td #{judgelist[i].score}
 				- }
+

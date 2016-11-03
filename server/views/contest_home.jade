@@ -8,8 +8,8 @@ block content
 					div.col-xs-10
 						p
 							a(href='contests/#{contestlist[i].id}') #{contestlist[i].id}: #{contestlist[i].name} 
-						p 开始时间: #{contestlist[i].starttime} 
-						p 结束时间: #{contestlist[i].endtime}
+						p 开始时间: #{contestlist[i].starttime.date} #{contestlist[i].starttime.time}
+						p 结束时间: #{contestlist[i].endtime.date} #{contestlist[i].endtime.time}
 					div.col-xs-2
 						- if (power)
 							button.btn.btn-primary(onclick="window.location='addcontests/#{contestlist[i].id}'") 管理

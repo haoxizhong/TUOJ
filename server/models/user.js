@@ -26,11 +26,12 @@ var Judge = new Schema({
 	userid: String,
 	contestid: Number,
 	probGit: String,
+	probid: String,
 	lang: String,
 	answer: [String],
 	pd: Number,
-	score : Number
-	
+	score : Number,
+	tusStep: Number,
 });
 
 exports.user=mongoose.model('user', User);

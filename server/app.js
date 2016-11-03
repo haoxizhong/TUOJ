@@ -58,36 +58,7 @@ app.use('/',homepage);
 app.use('/contests',contests);
 app.use('/addcontests',addcontests);
 app.use('/problems',upload);
-
-app.post('/api/judger/adopt', function(req, res) {
-	judge.findOne({'pd':0},function(err,x){
-		if (!x) {
-			return res.send({});
-		}
-		pd=1
-		x.save()
-		res.send(x);
-	})
-});
-
-app.post('/api/judger/upload', function(req, res) {
-	
-	console.log((new Date()).toLocaleTimeString() + ': ' + JSON.stringify(req.body));
-	if (req.body.isEnd) {
-		var cmd=req.body.cmd
-		// judge score exec compile
-		if (cmd=='score'){
-			var id=parseInt(req.body.runId);
-			judge.findOne({'runId':id},function(err,x){
-				x.pd=2
-				x.score=parseInt(req.body.score)
-				x.save()
-			})
-			console.log(req.body.runId,req.body.score);
-		}
-	}
-	res.send({});
-});
+app.use('/api', require('./routes/api'));
 
 // error handlers
 // development error handler
