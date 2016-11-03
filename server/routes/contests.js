@@ -46,7 +46,7 @@ router.get('/[0-9]+',function(req,res,next){
 	var contestID=getID(req.path)
 	contest.findOne({'id':parseInt(contestID)},function(err,x){
 		//console.log(x.gitlist)
-		res.render('contest',{'contestid':contestID,'gitlist':x.gitlist,'user':req.session.user})
+		res.render('contest',{'contestid':contestID,'gitlist':x.gitlist,'user':req.session.user,'power':req.session.admin})
 	})
 }) 
 
@@ -68,7 +68,7 @@ router.get('/[0-9]+/status',function(req,res,next){
 		judge.find(attr, this);
 	}, function(err, judgelist){
 		//console.log(judgelist)
-		res.render('contest_status',{'contestid':contestID,'user':req.session.user,'judgelist':judgelist})
+		res.render('contest_status',{'contestid':contestID,'user':req.session.user,'judgelist':judgelist,'power':req.session.admin})
 	});
 })
 
@@ -83,7 +83,7 @@ router.get('/[0-9]+/problems/[A-Z]',function(req,res,next){
 			var probmd=markdown.toHTML(String(fs.readFileSync(filepath)))
 			fse.remove('./tmpprob',function(err){
 				//console.log(err);
-				res.render('contest_problem',{'user':req.session.user,'probmd':probmd,'contestid':contestID,'problemid':problemID,'gitt':x.gitlist[problemID.charCodeAt()-65]})
+				res.render('contest_problem',{'user':req.session.user,'probmd':probmd,'contestid':contestID,'problemid':problemID,'gitt':x.gitlist[problemID.charCodeAt()-65],'power':req.session.admin})
 			})
 		},function(err){
 			console.log(err)
