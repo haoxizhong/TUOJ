@@ -1,5 +1,9 @@
 extends contest_layout
 
+append head
+	script(type="text/x-mathjax-config") MathJax.Hub.Config({ tex2jax: { inlineMath: [ ['$','$'], ["\\(","\\)"] ], processEscapes: true } });
+	script(type='text/javascript' src='/bower_components/MathJax/MathJax.js?config=TeX-AMS_HTML')
+
 block content_contest
 	div.row
 		div.col-xs-9

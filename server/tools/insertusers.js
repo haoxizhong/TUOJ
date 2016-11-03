@@ -12,11 +12,11 @@ var userList = [{
 }];
 
 userList.forEach(function(userInfo) {
-    user.update({}, { $set: userInfo }, { upsert: true }, function(err) {
+    user.update({ userid: userInfo.userid }, { $set: userInfo }, { upsert: true }, function(err) {
         if (err) {
             return console.warn(err);
         }
-        console.log('done');
+        console.log(userInfo.userid + ' inserted');
     });
 });
 
