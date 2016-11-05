@@ -6,7 +6,7 @@ var fs = require('fs')
 var fse = require('fs-extra')
 var contest = require('../models/user').contest
 var judge = require('../models/user').judge
-
+var path = require("path");
 /* GET users listing. */
 
 var delet=function(path){
@@ -58,20 +58,21 @@ router.get('/[0-9]+/status',function(req,res,next){
 })
 
 router.get('/[0-9]+/problems/[A-Z]',function(req,res,next){
-	var contestID=getID(req.path)
-	var problemID=req.path.substr(-1)
-	
-	contest.findOne({'id':parseInt(contestID)},function(err,x){
-		var probgit=x.gitlist[problemID.charCodeAt()-65]
-		git.Clone(probgit,'tmpprob').then(function(repository){
-			var filepath='./tmpprob/files/description.md'
-			var probmd=markdown.toHTML(String(fs.readFileSync(filepath)))
-			fse.remove('./tmpprob',function(err){
-				console.log(err);
-				res.render('contest_problem',{'user':req.session.user,'probmd':probmd,'contestid':contestID,'problemid':problemID,'gitt':x.gitlist[problemID.charCodeAt()-65]})
-			})
-		},function(err){console.log(err)});//.catch((err)=>console.log(err))
-	})
+    var contestID=getID(req.path)
+    var problemID=req.path.substr(-1)
+    problemID = problemID.charCodeAt() - 'A'.charCodeAt();
+    contest.findOne({'id': parseInt(contestID)}, function (err, x) {
+        var filepath = path.join(x.getProblemRepo(problemID), "files", "description.md");
+        var probmd = markdown.toHTML(String(fs.readFileSync(filepath)));
+        res.render('contest_problem', {
+            'user': req.session.user,
+            'probmd': probmd,
+            'contestid': contestID,
+            'problemid': problemID,
+            'gitt': x.gitlist[problemID]
+        });
+    });
+
 })
 
 module.exports = router;

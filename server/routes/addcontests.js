@@ -1,6 +1,45 @@
 var express = require('express');
 var router = express.Router();
 var contest = require('../models/user').contest
+var path = require("path");
+var randomstring = require("randomstring");
+var fse = require("fs-extra");
+var git = require("nodegit");
+
+// Import configurations
+var CONFIG = require("../config");
+var PROB_DIR = CONFIG.PROB_DIR;
+var TMP_DIR = CONFIG.TMP_DIR;
+
+
+var updateProblems = function(contest) {
+    for (var i = 0 ; i < contest.gitlist.length; i++) {
+        url = contest.gitlist[i];
+        tmp_repo = randomstring.generate(8);
+
+        repo = contest.getProblemRepo(i);
+        tmp_repo = path.join(TMP_DIR, tmp_repo);
+
+        // WTF... I hate async paradigm now. // via Chenyao2333
+
+        (function(url, repo, tmp_repo) {
+            git.Clone(url, tmp_repo).then(function (repository) {
+                //console.log("Repo: " + repo);
+                fse.remove(repo, function (err) {
+                    if (err) return console.log(err);
+                    fse.move(tmp_repo, repo, function (err) {
+                        if (err) return console.log(err);
+                        console.log("Successfully cloned into " + repo);
+                    });
+                });
+            }, function (err) {
+                // TODO: threw error
+                console.log(err)
+            });
+        })(url, repo, tmp_repo);
+
+    }
+};
 
 var getID=function(getpath) {
 	var tmp=0
@@ -74,6 +113,7 @@ router.post('/[0-9]+/edited',function(req,res,next){
 			for (var i=0;i<len;i++)
 				newcontest.gitlist.push(txt[i])
 			newcontest.save()
+            updateProblems(newcontest);
 		})
 	}
 	
@@ -114,6 +154,7 @@ router.post('/added',function(req,res,next){
 			for (var i=0;i<len;i++)
 				newcontest.gitlist.push(txt[i])
 			newcontest.save()
+			updateProblems(newcontest);
 			console.log(newcontest)
 		})
 	}

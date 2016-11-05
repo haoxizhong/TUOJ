@@ -1,5 +1,8 @@
 var mongoose = require("mongoose");
 var Schema = mongoose.Schema;
+var path = require("path");
+
+var PROB_DIR = require("../config.js").PROB_DIR;
 
 var User = new Schema({
 	userid: String,
@@ -20,6 +23,16 @@ var Contest = new Schema({
 	name: String,
 	gitlist: [String]
 });
+
+// TODO: Split users.js into independent files.
+
+Contest.methods.getProblemRepo = function (id) {
+	if (id < this.gitlist.length) {
+		return path.join(PROB_DIR, "contest_" + String(this.id), "problem_" + String(id));
+	} else {
+		throw "id is greater than the number of problems."
+	}
+};
 
 var Judge = new Schema({
 	runId: Number,
