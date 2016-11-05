@@ -1,0 +1,15 @@
+extends layout
+
+block content
+	div.container-fluid
+		div.row
+			ul.nav.nav-pills
+				li 
+					a(href='/contests/#{contestid}') 题目列表
+				li 
+					a(href='/contests/#{contestid}/status') 评测状态
+				- if (power)
+					li
+						a(href='/addcontests/#{contestid}') 管理比赛
+	div.container-fluid
+		block content_contest

@@ -1,23 +1,29 @@
-include head.jade
+extends layout
 
-div(class="article")
-	div(class="kuang_add")
-		p(class="leftup") 请为tuoj添加一场比赛！
-		form(class="" method='POST', action='/addcontests/added')
-			| 起始时间：
-			input(type='date', name='startdate')
-			input(type='time', name='starttime')
-			br
-			| 终止时间：
-			input(type='date', name='enddate')
-			input(type='time', name='endtime')
-			br
-			| 比赛名称：
-			input(type='text', name='contestname')
-			br
-			textarea(name='gitlist', cols='70', rows=20)
-			br
-			input(class="rd" style='font-size:18px; font-family:"等线";' type='submit', value='Submit')
-
-
+block content
+	div.container
+		p 为TUOJ添加一场比赛
+		form(method='POST', action='/addcontests/added')
+			div.from-group
+				label 起始时间
+				div.row
+					div.col-xs-6
+						input.form-control(type='date', name='startdate')
+					div.col-xs-6
+						input.form-control(type='time', name='starttime')
+			div.from-group
+				label 终止时间
+				div.row
+					div.col-xs-6
+						input.form-control(type='date', name='enddate')
+					div.col-xs-6
+						input.form-control(type='time', name='endtime')
+			div.from-group
+				label 比赛名称
+				input.form-control(type='text', name='contestname')
+			div.form-group
+				label 题目列表
+				textarea.form-control(name='gitlist' rows='6')
+			div.form-group
+				input.btn.btn-primary(type='submit' value='创建')
 	

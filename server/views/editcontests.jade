@@ -1,23 +1,29 @@
-include head.jade
+extends layout
 
-div(class="article")
-	div(class="kuang_add")
-		p(class="leftup") 请编辑#{contestname}比赛！
+block content
+	div.container
+		p 编辑比赛: #{contestname}
 		form(class="" method='POST', action='/addcontests/#{contestid}/edited')
-			| 起始时间：
-			input(type='date', name='startdate', value='#{startdate}')
-			input(type='time', name='starttime', value='#{starttime}')
-			br
-			| 终止时间：
-			input(type='date', name='enddate', value='#{enddate}')
-			input(type='time', name='endtime', value='#{endtime}')
-			br
-			| 比赛名称：
-			input(type='text', name='contestname',value='#{contestname}')
-			br
-			textarea(name='gitlist', cols='70', rows=20) #{tex}
-			br
-			input(class="rd" style='font-size:18px; font-family:"等线";' type='submit', value='Submit')
-
-
+			div.form-group
+				label 起始时间
+				div.row
+					div.col-xs-6
+						input.form-control(type='date', name='startdate', value='#{startdate}')
+					div.col-xs-6
+						input.form-control(type='time', name='starttime', value='#{starttime}')
+			div.form-group
+				label 终止时间
+				div.row
+					div.col-xs-6
+						input.form-control(type='date', name='enddate', value='#{enddate}')
+					div.col-xs-6
+						input.form-control(type='time', name='endtime', value='#{endtime}')
+			div.form-group
+				label 比赛名称
+				input.form-control(type='text', name='contestname',value='#{contestname}')
+			div.form-group
+				label 题目列表
+				textarea.form-control(name='gitlist', cols='70', rows=6) #{tex}
+			div.form-group
+				input.btn.btn-primary(type='submit' value='修改')
 	

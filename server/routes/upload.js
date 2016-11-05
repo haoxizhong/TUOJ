@@ -28,6 +28,8 @@ router.post('/[0-9]+/[A-Z]/upload',function(req,res,next){
 			newjudge.contestid=parseInt(contestid)
 			newjudge.pd=0
 			newjudge.score=0
+			newjudge.probid = problemid;
+			newjudge.tusStep = -1;
 			newjudge.answer=String(fs.readFileSync(nowpath))
 			contest.findOne({'id':parseInt(contestid)},function(err,x){
 				newjudge.probGit=x.gitlist[problemid.charCodeAt()-65]

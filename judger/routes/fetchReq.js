@@ -45,7 +45,7 @@ module.exports = function(mycfg) {
             } else {
                 console.log((new Date).toLocaleString() + ': done');
 			}
-           setTimeout(self.run, timeout);
+			setTimeout(self.run, timeout);
         });
     };
 };

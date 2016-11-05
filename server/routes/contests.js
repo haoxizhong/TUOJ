@@ -4,8 +4,10 @@ var git = require('nodegit')
 var markdown = require('markdown').markdown
 var fs = require('fs')
 var fse = require('fs-extra')
+var Step = require('step');
 var contest = require('../models/user').contest
 var judge = require('../models/user').judge
+var user = require('../models/user').user
 var path = require("path");
 /* GET users listing. */
 
@@ -43,18 +45,31 @@ router.get('/', function(req, res, next) {
 router.get('/[0-9]+',function(req,res,next){
 	var contestID=getID(req.path)
 	contest.findOne({'id':parseInt(contestID)},function(err,x){
-		console.log(x.gitlist)
-		res.render('contest',{'contestid':contestID,'gitlist':x.gitlist,'user':req.session.user})
+		//console.log(x.gitlist)
+		res.render('contest',{'contestid':contestID,'gitlist':x.gitlist,'user':req.session.user,'power':req.session.admin})
 	})
 }) 
 
 router.get('/[0-9]+/status',function(req,res,next){
 	var contestID=getID(req.path)
-	console.log(contestID)
-	judge.find({contestid:parseInt(contestID)},function(err,judgelist){
-		console.log(judgelist)
-		res.render('contest_status',{'contestid':contestID,'user':req.session.user,'judgelist':judgelist})
-	})
+	//console.log(contestID)
+	var attr = {
+		contestid:parseInt(contestID),
+	};
+	Step(function() {
+		user.findOne({ userid: req.session.user }, this);
+	}, function(err, doc) {
+		if (!doc) {
+			return res.redirect('/login'), undefined;
+		}
+		if (!doc.power) {
+			attr.userid = req.session.user;
+		}
+		judge.find(attr, this);
+	}, function(err, judgelist){
+		//console.log(judgelist)
+		res.render('contest_status',{'contestid':contestID,'user':req.session.user,'judgelist':judgelist,'power':req.session.admin})
+	});
 })
 
 router.get('/[0-9]+/problems/[A-Z]',function(req,res,next){

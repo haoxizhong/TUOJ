@@ -1,9 +1,25 @@
-include head.jade
+extends contest_layout
 
-div(class="article")
-	p this is status list for the No.#{contestid} contest
-	ul
-		- for (var i = 0; i<judgelist.length; i++) {
-			li #{judgelist[i].runId}&nbsp#{judgelist[i].userid}&nbsp#{judgelist[i].score}
-			br
-		- }
+block content_contest
+	div.container-fluid
+		h3 Status list for contest #{contestid}
+		table.table
+			thead
+				tr
+					th #
+					th 题目
+					th 用户
+					th 状态
+					th 得分
+			tbody
+				- var statusText = { 0: '等待分配评测资源', 1: '评测中', 2: '评测结束' };
+				- for (var i in judgelist) {
+					tr
+						td #{i}
+						td 
+							a(href='/contests/#{contestid}/problems/#{judgelist[i].probid}') #{judgelist[i].probid}
+						td #{judgelist[i].userid}
+						td #{statusText[judgelist[i].pd]}
+						td #{judgelist[i].score}
+				- }
+
