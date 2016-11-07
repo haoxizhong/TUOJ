@@ -75,16 +75,16 @@ router.get('/[0-9]+/status',function(req,res,next){
 router.get('/[0-9]+/problems/[A-Z]',function(req,res,next){
     var contestID=getID(req.path)
     var problemID=req.path.substr(-1)
-    problemID = problemID.charCodeAt() - 'A'.charCodeAt();
+	var problemID_int = problemID.charCodeAt() - 'A'.charCodeAt();
     contest.findOne({'id': parseInt(contestID)}, function (err, x) {
-        var filepath = path.join(x.getProblemRepo(problemID), "files", "description.md");
+        var filepath = path.join(x.getProblemRepo(problemID_int), "files", "description.md");
         var probmd = markdown.toHTML(String(fs.readFileSync(filepath)));
         res.render('contest_problem', {
             'user': req.session.user,
             'probmd': probmd,
             'contestid': contestID,
             'problemid': problemID,
-            'gitt': x.gitlist[problemID]
+            'gitt': x.gitlist[problemID_int]
         });
     });
 
