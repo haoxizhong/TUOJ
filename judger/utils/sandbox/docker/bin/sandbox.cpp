@@ -78,19 +78,19 @@ void Sandbox_t::let_sysft_assign(string str)
 void Sandbox_t::PrintRes(int x)
 {
 		if (x==RS_AC)
-				resfile<<"Accept\n";
+				resfile<<"Accepted\n";
 		else if (x==RS_WA)
 				resfile<<"Wrong Answer\n";
 		else if (x==RS_TLE)
-				resfile<<"Time Limit Exceed\n";
+				resfile<<"Time Limit Exceeded\n";
 		else if (x==RS_MLE)
-				resfile<<"Memory Limit Exceed\n";
+				resfile<<"Memory Limit Exceeded\n";
 		else if (x==RS_RE)
 				resfile<<"Runtime Error\n";
 		else if (x==RS_SYE)
 				resfile<<"System Error\n";
 		else if (x==RS_CE)
-				resfile<<"Compile Error\n";
+				resfile<<"Compilation Error\n";
 		else if (x==RS_FE)
 				resfile<<"File Error\n";
 		else if (x==RS_DGP)
