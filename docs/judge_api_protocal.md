@@ -71,7 +71,6 @@ POST /api/judge/update_results
 {
      "run_id": 32,
      "token": "faf3ar42q34",
-     "total_cases": 10,
      "results": {
           "1": {
                "status": "Compilation Error",
