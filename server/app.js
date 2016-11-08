@@ -7,7 +7,12 @@ var bodyParser = require('body-parser');
 var fs = require('fs');
 var mongoose = require('mongoose')
 var session = require('express-session')
-mongoose.connect('mongodb://127.0.0.1/tuojdata')
+var MongoStore = require('connect-mongo')(session);
+
+var EXPRESS_SESSION = require("./config.js").EXPRESS_SESSION;
+
+mongoose.connect('mongodb://127.0.0.1/tuojdata');
+EXPRESS_SESSION.store = new MongoStore({ mongooseConnection: mongoose.connection });
 
 var contest=require('./models/user').contest
 var judge=require('./models/user').judge
@@ -44,12 +49,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(session({
-	secret:'tuojguys',
-	cookie:{maxAge:1000*60*10},
-	resave: true,
-	saveUninitialized: false
-}))	
+
+app.use(session(EXPRESS_SESSION));
 
 app.use('/contests',userfilter);
 app.use('/addcontests',adminfilter);
