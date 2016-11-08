@@ -7,7 +7,7 @@ module.exports = function(cfg) {
 		self.runId = runId;
 	}
 	self.uploadStatus = function(data) {
-        data.runId = self.runId;
+        data.run_id = self.runId;
 		var postData = {
 			url: self.url,
 			form: data

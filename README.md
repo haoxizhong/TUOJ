@@ -1,7 +1,7 @@
 # TUOJ
 Let's discover a new world.
 
-Let's make Tri-UOJ.
+Special onsite version for CCSP
 
 # Initialize server
 You should install `npm` and `bower` first.
@@ -16,3 +16,4 @@ If not, run the commands below.
 If you want to automatically add a power user, run
 
 	node tools/insertuser.js
+
