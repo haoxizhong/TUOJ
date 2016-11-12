@@ -1,50 +1,43 @@
 var express = require('express');
 var router = express.Router();
 
-var user = require('../models/user').user
+var User = require('../models/user.js');
 /* GET home page. */
 
 router.get('/', function(req, res, next) {
-	var sess=req.session
-	console.log(sess.user)
-	res.render('homepage', { title: 'OnsiteJudge for Tuoj' ,user: sess.user});
+	var session = req.session;
+	// console.log(session.user);
+	res.render('homepage', {
+        title: "CCF CCSP",
+        user: session.user,
+        is_admin: req.session.is_admin
+	});
 });
 
 router.get('/login',function(req,res,next) {
-	console.log(req.session)
-	if (req.session.user)
-		res.redirect('/')
-	else	
-		next()
-},function(req,res,next){
-	res.render('login',{user:req.session.user});
+	console.log(req.session);
+	if (req.session.user) {
+	    return next(new Error("Please logout first!"));
+    }
+    res.render('login',{user:req.session.user});
 });
 
-router.get('/logout',function(req,res,next){
-	console.log(req.session)
-	if (req.session.user)
-		next()
-	else	
-		res.redirect('/');
-},function(req,res,next){
-	req.session.destroy()
-	res.redirect('/');
+router.get('/logout', function(req, res, next){
+    req.session.destroy();
+    res.redirect('/');
 });
 
 router.post('/login',function(req,res,next){
-	var id=req.body.username
-	var pw=req.body.userpass
-	console.log(req.session)
-	user.findOne({'userid':id,'userpassword':pw},function(err,x){
-		if (!x) {
-			console.log('login error!')
-			return res.redirect('/login')
+	var username = req.body.username;
+	var password = req.body.password;
+	User.findOne({"username": username, "password": password}, function(err,x){
+        if (!x) {
+            err = new Error("Error Username or Password");
+            return next(err);
 		}
-		console.log(id+' login successful')
-		req.session.user=id
-		if (x.power)
-			req.session.admin=1
-		res.redirect('/')
-	})
+		req.session.user = username;
+		req.session.is_admin = x.is_admin;
+        res.redirect('/')
+	});
 });
 module.exports = router;
