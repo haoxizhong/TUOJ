@@ -22,11 +22,11 @@ module.exports = function(cfg) {
                 extInfo: data.extError
             };
         } else {
-            res.results[data.judgeId] = {
+            res.results[data.judgeStep] = {
                 status: data.message,
                 extInfo: data.extError,
                 time: data.time,
-                memeory: data.memory,
+                memory: data.memory,
             }
         }
 		var postData = {

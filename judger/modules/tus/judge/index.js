@@ -7,7 +7,7 @@ module.exports = function(cmd, data) {
     var self = this;
     self.cmd = cmd;
     self.tusStep = data.tusStep;
-    self.judgeStep = data.judgeStep;
+    self.judgeStep = ++ data.judgeStep;
     self.id = self.tusStep;
     self.dataPath = data.dataPath;
     self.path = path.resolve(data.path, 'j' + self.id);
@@ -24,6 +24,7 @@ module.exports = function(cmd, data) {
     self.run = function(sysRespond, callback) {
         self.respond = sysRespond;
         var respond = function(res) {
+			res.judgeStep = self.judgeStep;
             res.time = self.source.time;
             res.memory = self.source.memory;
             self.respond(res);
@@ -51,7 +52,7 @@ module.exports = function(cmd, data) {
             fs.copySync(self.checker, path.resolve(self.path, 'checker'));
             fs.writeFileSync(path.resolve(self.path, 'fullScore'), '100');
         } catch (error) {
-            respond({ status: 'Wrong Answer', extError: error, isEnd: self.cmd.haltOnFail, tusStep: self.tusStep, judgeStep: self.judgeStep, });
+            respond({ status: 'Wrong Answer', extError: error, isEnd: self.cmd.haltOnFail, tusStep: self.tusStep });
             data.scores.push({
                 error: self.source.error,
 				score: 0
@@ -70,7 +71,7 @@ module.exports = function(cmd, data) {
         var runRes = exec.exec(options);
         if (!runRes || runRes.error) {
             var errMsg = 'checker error ' + runRes;
-            respond({ status: 'Wrong Answer', extError: errMsg, isEnd: self.cmd.haltOnFail, tusStep: self.tusStep, judgeStep: self.judgeStep, });
+            respond({ status: 'Wrong Answer', extError: errMsg, isEnd: self.cmd.haltOnFail, tusStep: self.tusStep });
             data.scores.push({
                 score: 0,
                 error: runRes
@@ -91,7 +92,7 @@ module.exports = function(cmd, data) {
             });
             return callback(0);
         } catch (error) {
-            respond({ message: self.source.error, tusStep: self.tusStep, judgeStep: self.judgeStep, isEnd: cmd.haltOnFail });
+            respond({ message: self.source.error, tusStep: self.tusStep, isEnd: cmd.haltOnFail });
             data.scores.push({
                 error: self.source.error,
 				score: 0
