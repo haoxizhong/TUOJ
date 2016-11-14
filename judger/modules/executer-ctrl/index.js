@@ -62,10 +62,11 @@ var Executer = function() {
             cp.execFileSync('docker', dockerArgs, {
                 stdio: self.dockerIO
             });
-			// console.log(cmdl);
+			//console.log(cmdl);
             fs.copySync(self.path, options.cwd);
             fs.emptyDirSync(self.path);
          } catch (err) {
+             //console.log(err);
              return { error: err };
         }
         try {

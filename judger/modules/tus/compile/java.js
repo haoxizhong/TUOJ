@@ -18,7 +18,7 @@ module.exports = function(source, workPath, target, oargs) {
     }
     args.push('Main.java');
     var ret = {
-        fileName: 'javac',
+        fileName: '/usr/bin/javac',
         args: args
     };
     return ret;

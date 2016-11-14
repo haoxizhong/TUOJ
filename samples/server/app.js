@@ -28,13 +28,19 @@ app.use('/users', users);
 
 var runId = 0;
 app.post('/api/judge/get_task/acm', function(req, res) {
-	var data = {
+	var dataG = {
 		run_id:  ++ runId,
 		lang: 'g++',
 		probGit: 'https://github.com/reyux/tuoj-problem-sample',
 		answer: [ String(fs.readFileSync('./public/apb.cc')) ]
 	};
-	res.send(data);
+	var dataJ = {
+		run_id:  ++ runId,
+		lang: 'java',
+		probGit: 'https://github.com/reyux/tuoj-problem-sample',
+		answer: [ String(fs.readFileSync('./public/apb.java')) ]
+	};
+	res.send(dataJ);
 });
 app.post('/api/judge/update_results', function(req, res) {
 	console.log((new Date()).toLocaleTimeString() + ': ' + JSON.stringify(req.body));
