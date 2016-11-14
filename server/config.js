@@ -1,4 +1,6 @@
 var path = require("path");
+var multer  = require('multer');
+
 
 config = {
     BASE_DIR: __dirname,
@@ -12,8 +14,9 @@ config = {
         cookie:{maxAge:1000*60*10},
         resave: true,
         saveUninitialized: false
-    }
+    },
 
+    MULTER_UPLOAD: multer({dest: path.join(__dirname, "data", "tmp", "uploads")})
 };
 
 module.exports = config;

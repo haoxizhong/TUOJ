@@ -63,6 +63,7 @@ app.use("/addcontests", admin_required);
 
 // add router
 app.use("/", require("./routes/homepage"));
+app.use("/problem_pool/", require("./routes/problem_pool"));
 // app.use('/contests',contests);
 // app.use('/addcontests',addcontests);
 // app.use('/problems',upload);
