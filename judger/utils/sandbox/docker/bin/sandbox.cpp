@@ -180,7 +180,7 @@ int Sandbox_t::Run()
 				}
 				if (do_ptrace)ptrace(PTRACE_TRACEME, 0, NULL, NULL);
 				if (!do_debug)freopen(TMP_PATH"/.stdout","w",stdout);
-				//if (!do_debug)freopen(TMP_PATH"/.stderr","w",stderr);
+				if (!do_debug)freopen(TMP_PATH"/.stderr","w",stderr);
 				int status;
 				if (action == "javac")
 				{
@@ -193,9 +193,9 @@ int Sandbox_t::Run()
 						status = execl("/usr/bin/python","/usr/bin/python",command.c_str(),NULL);
 				}else if (action == "execute")
 				{
-						cerr<<"excute:"<<update_command(command.c_str()).c_str()<<"...";;
+						//cerr<<"excute:"<<update_command(command.c_str()).c_str()<<"...";;
 						status = execl("/bin/bash","/bin/bash","-c",update_command(command.c_str()).c_str(),NULL);
-						cerr<<"done..";
+						//cerr<<"done..";
 				}else if (action == "command")
 				{
 						char tbuf[MAXBUF];
@@ -205,7 +205,7 @@ int Sandbox_t::Run()
 						chdir(tbuf);
 				}
 				if (!do_debug)fclose(stdout);
-				//	if (!do_debug)fclose(stderr);
+				if (!do_debug)fclose(stderr);
 				if (do_limit)
 				{
 						setrlimit(RLIMIT_AS,&rm_as_old);
@@ -228,7 +228,7 @@ int Sandbox_t::Run()
 				int timer;
 				if (!(timer = fork()))//add timer and kill the process after 50ms over deadline
 				{
-						usleep((timelimit+5000)*1000);
+						usleep(timelimit*1200);
 						cerr<<"Timer killed"<<endl;
 						kill(child,9);
 						exit(0);
@@ -237,15 +237,19 @@ int Sandbox_t::Run()
 				int status;
 				while(1) //cycle for ptracing system calls
 				{
-						wait4(child,&status,WCONTINUED,&rusa);
-						//		cerr<<"Break..."<<endl;
+						wait4(child,&status,__WALL,&rusa);
+						//	cerr<<"Break..."<<endl;
 						//	cerr<<(int)rusa.ru_utime.tv_sec*1000000+(int)rusa.ru_utime.tv_usec<<endl;
 						if(WIFEXITED(status))
 								break;
 						if (!WIFEXITED(status) && !WEXITSTATUS(status))
 								break;
+						//cout<<WIFEXITED(status)<<" "<<WEXITSTATUS(status)<<endl;
 						struct user_regs_struct regs;
 						if (do_ptrace)ptrace(PTRACE_GETREGS, child,NULL,&regs);  
+						if (do_debug)cerr<<sysid[regs.REG_SYSCALL]<<" "<<status<<endl;
+						if (regs.REG_SYSCALL >1000)//MLE?
+								break;
 						if (regs.REG_SYSCALL == 2)
 						{
 								string fn=read_string_from_regs(regs.REG_ARG0,child);
@@ -254,7 +258,7 @@ int Sandbox_t::Run()
 								{
 										if (!do_pwhitelist)
 										{
-												cerr<<"File <"<<fn<<"> is forbidden!\n"<<endl;
+												cerr<<"File <"<<fn<<"> is forbidden!"<<endl;
 												return RS_DGP;
 										}else
 										{
@@ -266,8 +270,11 @@ int Sandbox_t::Run()
 						{
 								if (!do_pwhitelist)
 								{
-										cerr<<"Unsafe System Call<"<<sysid[regs.REG_SYSCALL]<<">"<<endl;
+										cerr<<(int)regs.REG_SYSCALL<<endl;
+										cerr<<"Unsafe System Call<"<<regs.REG_SYSCALL<<">"<<sysid[regs.REG_SYSCALL]<<endl;
 										resfile<<-1<<" "<<-1<<endl;
+										kill(timer,9);
+										if (do_debug)cerr<<"Kill timer"<<endl;
 										return RS_DGP;
 								}else
 								{
@@ -277,7 +284,7 @@ int Sandbox_t::Run()
 						if (do_ptrace)ptrace(PTRACE_SYSCALL,child, NULL, NULL);
 				}
 				kill(timer,9);
-				//cerr<<"Kill timer"<<endl;
+				if (do_debug)cerr<<"Kill timer"<<endl;
 				int cur_Time=(int)rusa.ru_utime.tv_sec*1000+(int)rusa.ru_utime.tv_usec/1000;
 				int cur_Memory=(int)rusa.ru_maxrss;
 				printf("%d %d\n",cur_Time,cur_Memory);
@@ -310,7 +317,7 @@ int Sandbox_t::Run()
 						else if (cur_Memory>memorylimit*1024)
 								return RS_MLE;
 						else
-								return RS_SYE;
+								return RS_MLE;
 				}
 		}
 }
