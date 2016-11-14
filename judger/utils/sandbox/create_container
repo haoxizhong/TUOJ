@@ -3,4 +3,4 @@ docker run -it -p 3388:3388 \
 	  -v $(pwd)/shared/shared:/home/judger/shared \
 	  -v $(pwd)/shared/data:/home/judger/data \
 	  --cap-add SYS_PTRACE \
-	  --name tuoj-sandbox2 tuoj-sandbox-image:3.4
+	  --name tuoj-sandbox7 tuoj-sandbox-image:3.4

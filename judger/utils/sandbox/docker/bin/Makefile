@@ -5,13 +5,13 @@ EXE = helloworld \
 target:$(EXE)
 
 helloworld:helloworld.cpp
-	g++ helloworld.cpp -o helloworld -g
+	g++ helloworld.cpp -o helloworld -g -Wall
 
 safe_exec:safe_exec.cpp
-	g++ safe_exec.cpp -o safe_exec -g
+	g++ safe_exec.cpp -o safe_exec -g -Wall
 
 sandbox_exec:sandbox_exec.cpp sandbox.cpp filter.cpp sandbox.h filter.h
-	g++ sandbox_exec.cpp sandbox.cpp filter.cpp -o sandbox_exec -g
+	g++ sandbox_exec.cpp sandbox.cpp filter.cpp -o sandbox_exec -g -Wall
 
 clean:
 	rm $(EXE)

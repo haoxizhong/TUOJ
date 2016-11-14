@@ -22,6 +22,8 @@ class Sandbox_t
 {
 		bool do_debug;
 		bool do_ptrace;
+		bool do_limit;
+		bool do_pwhitelist;
 		int timelimit;
 		int memorylimit;
 		string action;
@@ -32,8 +34,11 @@ class Sandbox_t
 		public:
 		Sandbox_t();
 		~Sandbox_t();
+		void print_args();
 		void set_debug(bool debug);
 		void set_ptrace(bool pt);
+		void set_limit(bool fl);
+		void set_pwhitelist(bool pw);
 		void set_timelimit(int timelimit);
 		void set_memorylimit(int memorylimit);
 		void set_action(string action);

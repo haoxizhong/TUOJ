@@ -2,14 +2,15 @@ FROM ubuntu
 
 MAINTAINER mhy12345 <maohanyang789@163.com>
 
-RUN apt-get update
-
-RUN apt-get install -y git && \
+RUN apt-get update && \
+apt-get install -y git && \
 apt-get install -y vim && \
 apt-get install -y g++ && \
-apt-get install -y gdb && \
-apt-get install -y python && \
-apt-get install -y fpc 
+apt-get install -y gdb
+
+RUN apt-get install -y python && \
+apt-get install -y fpc  && \
+apt-get install -y openjdk-8-jdk
 
 RUN mkdir -p /home/judger && \
 mkdir -p /root/.ssh  && \
