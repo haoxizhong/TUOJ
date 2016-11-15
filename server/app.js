@@ -60,10 +60,11 @@ var admin_required = function(req,res,next) {
 };
 app.use("/contests", login_required);
 app.use("/addcontests", admin_required);
+app.use("/problem_pool", admin_required);
 
 // add router
 app.use("/", require("./routes/homepage"));
-app.use("/problem_pool/", require("./routes/problem_pool"));
+app.use("/problem_pool", require("./routes/problem_pool"));
 // app.use('/contests',contests);
 // app.use('/addcontests',addcontests);
 // app.use('/problems',upload);

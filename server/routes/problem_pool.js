@@ -14,7 +14,24 @@ router.get("/", function(req, res, next) {
 });
 
 
-router.get("/[0-9]+", function(req, res, next) {
+router.get("/:id(\\d+)", function(req, res, next) {
+    var id = parseInt(req.params.id);
+    Problem.findOne({_id: id}, function (err, p) {
+        if (err) return next(err);
+        if (!p) return next(); // 404
+
+        try {
+            var description = p.getDescriptionHTML();
+        } catch(err) {
+            var description = JSON.stringify(err);
+        }
+        res.render("preview_problem", {
+            "user": req.session.user,
+            "is_admin": req.session.is_admin,
+            "p": p,
+            "description": description
+        });
+    });
 
 });
 
@@ -26,16 +43,25 @@ router.post("/new_problem", function(req, res, next) {
     }
 
     Problem.new(git_url, function (err, p) {
+        if (err) return next(err);
         p.update(function (err, p) {
             console.log(p);
         });
+        return res.redirect("/problem_pool/" + p._id);
     });
-
-    return res.redirect("/problem_pool");
 });
 
-router.post("/[0-9]+/update", function(req, res, next) {
+router.post("/:id(\\d+)/update", function(req, res, next) {
+    var id = parseInt(req.params.id);
+    Problem.findOne({_id: id}, function (err, p) {
+        if (err) return next(err);
+        if (!p) return next(); // 404
 
+        p.update(function (err, p) {
+           console.log(p);
+        });
+    });
+    res.redirect("/problem_pool/" + id);
 });
 
 module.exports = router;

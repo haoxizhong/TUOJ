@@ -9,7 +9,7 @@ block content
                     -   p = problems[i]
                     div.row
                         p
-                            a(href="problem_pool/${p._id}") #{p._id}:#{p.title}
+                            a(href="problem_pool/#{p._id}") #{p._id}:#{p.title}
                     hr
                     - }
         div.col-xs-3
@@ -17,10 +17,10 @@ block content
                 div.panel.panel-default
                     div.panel-heading
                         p 新建题目
-                div.panel-body
-                    div.form-group
-                        label Git库地址
-                        input.form-control(type="text", name="git_url")
-                div.panel-footer
-                    div.form-group
-                        input.btn.btn-success(type='submit' value='新建')
+                    div.panel-body
+                        div.form-group
+                            label Git库地址
+                            input.form-control(type="text", name="git_url")
+                    div.panel-footer
+                        div.form-group
+                            input.btn.btn-success(type='submit' value='新建')

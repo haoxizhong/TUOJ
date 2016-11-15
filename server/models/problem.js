@@ -5,6 +5,7 @@ var path = require("path");
 var fse = require("fs-extra");
 var git = require("nodegit");
 var randomstring = require("randomstring");
+var markdown = require("markdown").markdown;
 
 var PROB_DIR = require("../config.js").PROB_DIR;
 var TMP_DIR  = require("../config.js").TMP_DIR;
@@ -31,6 +32,12 @@ Problem.statics.new = function(git_url, callback) {
     p.save(callback);
 };
 
+Problem.methods.getDescriptionHTML = function() {
+    var description_path = path.join(this.getRepoPath(), "files", "description.md");
+    var description = markdown.toHTML(String(fse.readFileSync(description_path)));
+    return description;
+};
+
 Problem.methods.updateInfo = function(json_file, callback) {
     try {
         var info = fse.readFileSync(json_file);
@@ -40,6 +47,7 @@ Problem.methods.updateInfo = function(json_file, callback) {
         this.title = info.title;
         this.meta = info.meta;
         this.subtasks = info.subtasks;
+        this.status = "Success";
         this.save(callback);
     } catch(err) {
         return callback(err);
