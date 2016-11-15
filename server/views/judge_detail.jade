@@ -1,7 +1,8 @@
 extends layout
 
 append head
-	script(src='/bower_components/highlighter.js/dist/highlighter.min.js')
+	link(rel='stylesheet' href='/bower_components/highlightjs/styles/default.css')
+	script(src='/bower_components/highlightjs/highlight.pack.min.js')
 	script hljs.initHighlightingOnLoad();
 
 block content

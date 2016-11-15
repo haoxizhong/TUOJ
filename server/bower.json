@@ -17,6 +17,6 @@
   "dependencies": {
     "bootstrap": "^3.3.7",
     "MathJax": "^2.7.0",
-    "highlighter.js": "^1.0.0"
+    "highlightjs": "^9.8.0"
   }
 }
