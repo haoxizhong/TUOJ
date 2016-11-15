@@ -6,8 +6,10 @@ var Judge = new Schema({
     user: {type: Number, ref: "User"},
     contest: {type: Number, ref: "Contest"},
     problem: {type: Number, ref: "Problem"},
-    subtask: Number,
-    submitted_time: String, // TODO: Use timestamp instead of String
+    subtask_id: Number,
+
+    submitted_time: Number,
+    judge_time: Number,
 
     // solution information
     lang: String,
@@ -16,7 +18,7 @@ var Judge = new Schema({
     // judge result
     status: String,
     score: Number,
-    case_count: Number,
+    cases_count: Number,
     results: [
         {
             status: String,
