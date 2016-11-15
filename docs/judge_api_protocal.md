@@ -72,7 +72,7 @@ POST /api/judge/update_results
      "run_id": 32,
      "token": "faf3ar42q34",
      "results": {
-          "1": {
+          "0": {
                "status": "Compilation Error",
                "time": 0, // ms
                "memory": 0, // kB

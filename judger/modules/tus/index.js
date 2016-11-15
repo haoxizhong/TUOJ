@@ -21,6 +21,7 @@ module.exports = function(dataPath, cfg) {
 		self.dataPath = dataPath;
 	};
 	self.loadCfg(cfg);
+	self.judgeStep = 0;
     self.interpret = function(err) {
         if (err) {
             return self.callback(err);
