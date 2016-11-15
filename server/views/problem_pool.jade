@@ -9,11 +9,11 @@ block content
                     -   p = problems[i]
                     div.row
                         p
-                            a(href="problem_pool/#{p._id}") #{p._id}:#{p.title}
+                            a(href="#{p._id}") #{p._id}:#{p.title}
                     hr
                     - }
         div.col-xs-3
-            form(method='POST',action="/problem_pool/new_problem")
+            form(method='POST',action="new_problem")
                 div.panel.panel-default
                     div.panel-heading
                         p 新建题目

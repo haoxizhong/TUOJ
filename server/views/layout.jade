@@ -20,7 +20,10 @@ body
 						a(href="/contests") 比赛列表
 					- if (is_admin)
 						li
+							a(href="problem_pool") 题目池
+						li
 							a(href="/addcontests") 添加比赛
+
 				div.collapse.navbar-collapse
 					ul.nav.navbar-nav.navbar-right
 						- if (!user)
