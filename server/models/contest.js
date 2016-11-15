@@ -6,7 +6,7 @@ var Contest = new Schema({
     start_time: Number,
     end_time: Number,
     name: String,
-    problems: [{ type: Number, ref: "Problem"}]
+    problems: [{ type: Number, ref: "problem"}]
 });
 Contest.plugin(autoIncrement.plugin, "Contest");
 

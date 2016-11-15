@@ -30,4 +30,4 @@ var Judge = new Schema({
 });
 Judge.plugin(autoIncrement.plugin, "Judge");
 
-exports.Judge = mongoose.model("judge", Judge);
+module.exports = mongoose.model("judge", Judge);
