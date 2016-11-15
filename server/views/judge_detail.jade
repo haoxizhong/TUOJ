@@ -1,0 +1,24 @@
+extends layout
+
+append head
+	script(src='/bower_components/highlighter.js/dist/highlighter.min.js')
+	script hljs.initHighlightingOnLoad();
+
+block content
+	div.row
+		table.table
+			thead
+				tr
+					th #
+					th 提交者
+					th 题目编号
+			tbody
+				tr
+					td #{ res.id }
+					td #{ res.userid }
+					td 
+						a(href='TODO') #{ res.probid }
+	div.row
+		pre
+			code(class="#{ res.lang }") res.code
+
