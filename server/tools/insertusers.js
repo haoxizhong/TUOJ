@@ -1,6 +1,6 @@
 var mongoose = require('mongoose')
 mongoose.connect('mongodb://127.0.0.1/tuojdata')
-var user=require('../models/user').user
+var user=require('../models/models').user
 
 var userList = [{
 	userid: 'root',

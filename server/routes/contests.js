@@ -5,9 +5,9 @@ var markdown = require('markdown').markdown
 var fs = require('fs')
 var fse = require('fs-extra')
 var Step = require('step');
-var contest = require('../models/user').contest
-var judge = require('../models/user').judge
-var user = require('../models/user').user
+var contest = require('../models/models').contest
+var judge = require('../models/models').judge
+var user = require('../models/models').user
 var path = require("path");
 /* GET users listing. */
 

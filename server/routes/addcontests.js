@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var contest = require('../models/user').contest
+var contest = require('../models/models').contest
 var path = require("path");
 var randomstring = require("randomstring");
 var fse = require("fs-extra");
@@ -13,7 +13,7 @@ var TMP_DIR = CONFIG.TMP_DIR;
 
 
 var updateProblems = function(contest) {
-    for (var i = 0 ; i < contest.gitlist.length; i++) {
+    for (var i = 0 ; i < contest.problems; i++) {
         url = contest.gitlist[i];
         tmp_repo = randomstring.generate(8);
 

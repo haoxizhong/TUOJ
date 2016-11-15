@@ -1,5 +1,5 @@
 var router = require('express').Router(); 
-var judge = require('../../models/user').judge;
+var judge = require('../../models/models').judge;
 
 router.post('/adopt', function(req, res) {
 	judge.findOne({'pd':0},function(err,x){
