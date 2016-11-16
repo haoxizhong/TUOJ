@@ -13,13 +13,8 @@ block content_contest
 					th 得分
 			tbody
 				- var statusText = { 0: '等待分配评测资源', 1: '评测中', 2: '评测结束' };
-				- for (var i in judgelist) {
+				- for (var i=0;i<judgelist.length;i++) {
 					tr
 						td #{i}
-						td 
-							a(href='/contests/#{contestid}/problems/#{judgelist[i].probid}') #{judgelist[i].probid}
-						td #{judgelist[i].userid}
-						td #{statusText[judgelist[i].pd]}
-						td #{judgelist[i].score}
 				- }
 

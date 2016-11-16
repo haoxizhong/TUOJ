@@ -3,6 +3,7 @@ samples/test-data
 *.dSYM
 judger/bin/fdiff
 *.swp
+datas
 
 # npm
 node_modules

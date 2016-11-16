@@ -4,11 +4,13 @@ var git = require('nodegit')
 var markdown = require('markdown').markdown
 var fs = require('fs')
 var fse = require('fs-extra')
-var Step = require('step');
-var contest = require('../models/models').contest
-var judge = require('../models/models').judge
-var user = require('../models/models').user
+var Step = require('step')
+var contest = require('../models/contest.js')
+var problem = require('../models/problem.js')
+var judge = require('../models/judge.js')
+var user = require('../models/user.js')
 var path = require("path");
+var upload = require("../config.js").MULTER_UPLOAD;
 /* GET users listing. */
 
 var delet=function(path){
@@ -28,66 +30,101 @@ var delet=function(path){
 	});
 }
 
-var getID=function(getpath) {
-	var tmp=0
-	for (tmp=1;tmp<getpath.length;tmp++)
-			if (getpath[tmp]>'9' || getpath[tmp]<'0')
-				break
-	return getpath.slice(1,tmp)
-}
-
 router.get('/', function(req, res, next) {
 	contest.find({},function(err,contestlist){
-		res.render('contest_home',{'contestlist':contestlist,'user':req.session.user,'power':req.session.admin})
+		dict={'user':req.session.user,'is_admin':req.session.is_admin}
+		dict.contestlist=contestlist
+		res.render('contest_home',dict)
 	})
 });
 
-router.get('/[0-9]+',function(req,res,next){
-	var contestID=getID(req.path)
-	contest.findOne({'id':parseInt(contestID)},function(err,x){
-		//console.log(x.gitlist)
-		res.render('contest',{'contestid':contestID,'gitlist':x.gitlist,'user':req.session.user,'power':req.session.admin})
+router.get('/:id([0-9]+)',function(req,res,next){
+	var contestid=parseInt(req.params.id)
+	contest.findOne({_id:contestid}).populate('problems').exec(function(err,x){
+		if (err) next(err)
+		if (!x) next()
+		
+		dict={'user':req.session.user,"is_admin":req.session.is_admin}
+		dict.contestid=contestid
+		dict.problems=x.problems
+		dict.start=x.start_time
+		dict.end=x.end_time
+		console.log(x.problems[0])
+		res.render('contest',dict)
+		// contest: contains hrefs leading to problems and status
 	})
 }) 
 
-router.get('/[0-9]+/status',function(req,res,next){
-	var contestID=getID(req.path)
+router.get('/:id([0-9]+)/status',function(req,res,next){
+	var contestid=parseInt(req.params.id)
 	//console.log(contestID)
-	var attr = {
-		contestid:parseInt(contestID),
-	};
+	var attr = {'contest':contestid}
 	Step(function() {
-		user.findOne({ userid: req.session.user }, this);
-	}, function(err, doc) {
-		if (!doc) {
-			return res.redirect('/login'), undefined;
-		}
-		if (!doc.power) {
-			attr.userid = req.session.user;
-		}
+		attr.user = req.session.uid;
 		judge.find(attr, this);
 	}, function(err, judgelist){
 		//console.log(judgelist)
-		res.render('contest_status',{'contestid':contestID,'user':req.session.user,'judgelist':judgelist,'power':req.session.admin})
+		dict={'user':req.session.user,'is_admin':req.session.is_admin}
+		dict.contestid=contestid
+		dict.judgelist=judgelist
+		
+		res.render('contest_status',dict)
 	});
 })
 
-router.get('/[0-9]+/problems/[A-Z]',function(req,res,next){
-    var contestID=getID(req.path)
-    var problemID=req.path.substr(-1)
-	var problemID_int = problemID.charCodeAt() - 'A'.charCodeAt();
-    contest.findOne({'id': parseInt(contestID)}, function (err, x) {
-        var filepath = path.join(x.getProblemRepo(problemID_int), "files", "description.md");
-        var probmd = markdown.toHTML(String(fs.readFileSync(filepath)));
-        res.render('contest_problem', {
-            'user': req.session.user,
-            'probmd': probmd,
-            'contestid': contestID,
-            'problemid': problemID,
-            'gitt': x.gitlist[problemID_int]
-        });
-    });
+router.get('/:cid([0-9]+)/problems/:pid([0-9]+)',function(req,res,next){
+    var contestid=parseInt(req.params.cid)
+	var problemid=parseInt(req.params.pid)
+    
+	problem.findOne({_id: problemid}, function (err, x) {
+		if (err) next(err)
+		if (!x) next()
+			
+		try {
+            var description = x.getDescriptionHTML();
+        } catch(err) {
+            var description = JSON.stringify(err);
+        }
+		
+		dict={'user':req.session.user,"is_admin":req.session.is_admin}
+		dict.problem=x
+		dict.description=description
+		dict.problemid=problemid
+		dict.contestid=contestid
+		
+		res.render('contest_problem',dict)
+    })
 
+})
+
+router.post('/:cid([0-9]+)/problems/:pid([0-9]+)/upload',upload.single('inputfile'),function(req,res,next){
+	if (typeof(req.file) === undefined) {
+        return next(new Error("Undefined file."));
+    }
+	
+	var contestid=parseInt(req.params.cid)
+	var problemid=parseInt(req.params.pid)
+	
+	var newjudge = new judge({
+		user:req.session.uid,
+		contest:contestid,
+		problem:problemid,
+		subtask_id:0,
+		
+		submitted_time:Date.now(),
+
+		// solution information
+		lang: req.body.language,
+		source_file: '?',
+
+		// judge result
+		status: 'Waiting',
+		cases_count: 0,
+		results: []
+	})
+	console.log(newjudge)
+	newjudge.save(function(err,x){console.log(err)})
+    res.redirect('/contests/'+contestid+'/status');
 })
 
 module.exports = router;

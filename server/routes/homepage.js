@@ -37,6 +37,7 @@ router.post('/login',function(req,res,next){
 		}
 		req.session.user = username;
 		req.session.is_admin = x.is_admin;
+		req.session.uid = x._id
         res.redirect('/')
 	});
 });

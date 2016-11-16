@@ -11,7 +11,7 @@ config = {
 
     EXPRESS_SESSION: {
         secret:'grejpomvit98c39cmjrfasdolc',
-        cookie:{maxAge:1000*60*10},
+        cookie:{maxAge:1000*60*60*24*30},
         resave: true,
         saveUninitialized: false
     },
