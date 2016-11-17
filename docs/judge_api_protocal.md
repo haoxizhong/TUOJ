@@ -36,6 +36,13 @@ GET /api/judge/get_task/acm
 }
 ~~~
 
+如果没有任务
+~~~
+{
+     "run_id": -1 // run_id为-1
+}
+~~~
+
 # 向评测机返回评测结果
 
 POST /api/judge/update_results
