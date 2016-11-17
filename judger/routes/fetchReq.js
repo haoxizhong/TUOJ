@@ -48,7 +48,9 @@ module.exports = function(mycfg) {
             } else {
                 console.log((new Date).toLocaleString() + ': done');
 			}
-		//	setTimeout(self.run, timeout);
+			if (!mycfg.singleRun) {
+				setTimeout(self.run, timeout);
+			}
         });
     };
 };
