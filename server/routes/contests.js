@@ -11,6 +11,8 @@ var judge = require('../models/judge.js')
 var user = require('../models/user.js')
 var path = require("path");
 var upload = require("../config.js").MULTER_UPLOAD;
+var randomstring = require('randomstring');
+var SOURCE_DIR = require('../config').SOURCE_DIR;
 /* GET users listing. */
 
 var delet=function(path){
@@ -101,30 +103,40 @@ router.post('/:cid([0-9]+)/problems/:pid([0-9]+)/upload',upload.single('inputfil
 	if (typeof(req.file) === undefined) {
         return next(new Error("Undefined file."));
     }
-	
-	var contestid=parseInt(req.params.cid)
-	var problemid=parseInt(req.params.pid)
-	
-	var newjudge = new judge({
-		user:req.session.uid,
-		contest:contestid,
-		problem:problemid,
-		subtask_id:0,
-		
-		submitted_time:Date.now(),
+    var suffix = {"g++": ".cpp", "gcc": ".c"};
+	source_file = randomstring.generate(15) + suffix[req.body.language];
 
-		// solution information
-		lang: req.body.language,
-		source_file: '?',
+	var contestid=parseInt(req.params.cid);
+	var problemid=parseInt(req.params.pid);
 
-		// judge result
-		status: 'Waiting',
-		cases_count: 0,
-		results: []
-	})
-	console.log(newjudge)
-	newjudge.save(function(err,x){console.log(err)})
-    res.redirect('/contests/'+contestid+'/status');
-})
+	Step(function() {
+		fse.move(req.file.path, path.join(SOURCE_DIR, source_file), this);
+	}, function(err) {
+		if (err) return next(err);
+
+		var newjudge = new judge({
+			user:req.session.uid,
+			contest:contestid,
+			problem:problemid,
+			subtask_id:0,
+
+			submitted_time:Date.now(),
+
+			// solution information
+			lang: req.body.language,
+			source_file: source_file,
+
+			// judge result
+			status: 'Waiting',
+			cases_count: 0,
+			results: []
+		});
+
+		newjudge.save(this);
+	}, function (err, newjudge) {
+		if (err) return next(err);
+		res.redirect('/contests/'+contestid+'/status');
+	});
+});
 
 module.exports = router;
