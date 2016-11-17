@@ -11,7 +11,7 @@
 
 # 获得一个评测任务
 
-GET /api/judge/get_task/acm
+POST /api/judge/get_task/acm
 
 ## Request body
 
