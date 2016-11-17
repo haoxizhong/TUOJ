@@ -11,7 +11,7 @@
 
 # 获得一个评测任务
 
-GET /api/judge/get_task/acm
+POST /api/judge/get_task/acm
 
 ## Request body
 
@@ -33,6 +33,13 @@ GET /api/judge/get_task/acm
      "total_cases": 10,
      "data_md5": "4b4dc93fafa1298f95e731ebac7725d1",
      "data_url": "http://tuoj.com/download/t3.zip"
+}
+~~~
+
+如果没有任务
+~~~
+{
+     "run_id": -1 // run_id为-1
 }
 ~~~
 
