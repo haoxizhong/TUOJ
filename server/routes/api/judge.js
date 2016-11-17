@@ -17,7 +17,7 @@ router.post('/get_task/acm', function (req, res) {
 		x.judge_start_time = Date.now();
 		x.save(function (err, x) {
 			if (err) return next(err);
-			res.send({
+			info = {
 				'run_id': x._id,
 				'lang': x.lang,
 				'source_url': x.getSourceURL(),
@@ -25,7 +25,12 @@ router.post('/get_task/acm', function (req, res) {
 				'total_cases': x.case_count,
 				'data_md5': x.problem.data_md5,
 				'data_url': x.problem.getDataURL()
-			});
+			};
+			if (x.problem.subtasks && x.problem.subtasks.length > 1) {
+				info['source_url'] = new Array(x.problem.subtasks.length);
+				info['source_url'][x.subtask_id] = x.getSourceURL();
+			}
+			res.send(info);
 		});
 	});
 });
