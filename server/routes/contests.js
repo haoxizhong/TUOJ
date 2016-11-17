@@ -117,10 +117,20 @@ router.post('/:cid([0-9]+)/problems/:pid([0-9]+)/upload',upload.single('inputfil
                 source_file: source_file,
 
                 // judge result
+                score: 0,
                 status: 'Waiting',
                 case_count: p.subtasks[0].testcase_count,
                 results: []
             });
+            for (var i = 0;  i < newjudge.case_count + 1; i++) {
+                newjudge.results.push({
+                    score: 0,
+                    memory: 0,
+                    time: 0,
+                    status: "Waiting"
+                });
+            }
+            console.log(newjudge);
 
             newjudge.save(this);
         }, function (err, newjudge) {

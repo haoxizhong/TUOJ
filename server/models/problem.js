@@ -102,4 +102,9 @@ Problem.methods.getDataURL = function() {
     return urljoin(SITE_URL, 'test_data', this.data);
 };
 
+Problem.methods.getPerCaseScore = function (subtask_id) {
+    var s = this.subtasks[subtask_id];
+    return s.score / s.testcase_count;
+};
+
 module.exports = mongoose.model("problem", Problem);

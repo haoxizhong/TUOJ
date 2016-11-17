@@ -57,7 +57,7 @@ POST /api/judge/update_results
 
      "results": {
           "0": { // 0 用来表示编译情况
-               "status": "Compilation Succeded"
+               "status": "Compilation Success"
           }
           "1": { // 测试点必须在1至total_cases之间
                "status": "Accepted",
