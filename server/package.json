@@ -15,6 +15,7 @@
     "fs-extra": "^1.0.0",
     "jade": "~1.11.0",
     "markdown": "^0.5.0",
+    "md5-file": "^3.1.1",
     "mongoose": "~4.6.3",
     "mongoose-auto-increment": "^5.0.1",
     "morgan": "~1.6.1",
@@ -23,6 +24,7 @@
     "nodegit": "~0.16.0",
     "randomstring": "^1.1.5",
     "serve-favicon": "~2.3.0",
-    "step": "0.0.6"
+    "step": "0.0.6",
+    "zip-folder": "^1.0.0"
   }
 }

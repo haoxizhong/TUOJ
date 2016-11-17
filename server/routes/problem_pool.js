@@ -53,10 +53,12 @@ router.post("/new_problem", function(req, res, next) {
 
 router.post("/:id(\\d+)/update", function(req, res, next) {
     var id = parseInt(req.params.id);
+    var git_url = req.body.git_url.trim();
     Problem.findOne({_id: id}, function (err, p) {
         if (err) return next(err);
         if (!p) return next(); // 404
 
+        p.git_url = git_url;
         p.update(function (err, p) {
            console.log(p);
         });
