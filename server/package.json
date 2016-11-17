@@ -25,6 +25,7 @@
     "randomstring": "^1.1.5",
     "serve-favicon": "~2.3.0",
     "step": "0.0.6",
+    "url-join": "^1.1.0",
     "zip-folder": "^1.0.0"
   }
 }
