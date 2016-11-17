@@ -8,10 +8,12 @@ var randomstring = require("randomstring");
 var markdown = require("markdown").markdown;
 var zipFolder = require('zip-folder');
 var md5File = require('md5-file');
+var urljoin = require('url-join');
 
 var PROB_DIR = require("../config.js").PROB_DIR;
 var TMP_DIR  = require("../config.js").TMP_DIR;
 var TESTDATA_DIR = require('../config').TESTDATA_DIR;
+var SITE_URL = require('../config').SITE_URL;
 
 var Problem = new Schema({
     git_url: String,
@@ -94,6 +96,10 @@ Problem.methods.update = function(callback) {
 
 Problem.methods.getRepoPath = function() {
     return path.join(PROB_DIR, this.repo_name);
+};
+
+Problem.methods.getDataURL = function() {
+    return urljoin(SITE_URL, 'test_data', this.data);
 };
 
 module.exports = mongoose.model("problem", Problem);

@@ -10,6 +10,8 @@ config = {
     TMP_DIR: path.join(__dirname, "data", "tmp"),
     SOURCE_DIR: path.join(__dirname, 'public', 'source'),
     TESTDATA_DIR: path.join(__dirname, 'public', 'test_data'),
+    SITE_URL: 'http://localhost:3333',
+    TOKEN: 'faf3ar42q34',
 
     EXPRESS_SESSION: {
         secret:'grejpomvit98c39cmjrfasdolc',
