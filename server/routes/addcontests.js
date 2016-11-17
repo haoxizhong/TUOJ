@@ -60,7 +60,7 @@ router.post('/added',function(req,res,next){
 	newcontest.start_time=int_start
 	newcontest.end_time=int_end
 	for (var i=0;i<len;i++)
-		newcontest.problems.push(parseInt(problemlist[i])).
+		newcontest.problems.push(parseInt(problemlist[i]))
 	newcontest.save(function(err, x) {
 		console.log(err)
 		console.log(newcontest)
