@@ -13,24 +13,6 @@ var path = require("path");
 var upload = require("../config.js").MULTER_UPLOAD;
 var randomstring = require('randomstring');
 var SOURCE_DIR = require('../config').SOURCE_DIR;
-/* GET users listing. */
-
-var delet=function(path){
-	var flag=0
-	fs.readdir(path,function(err,files){
-		for(var i=0;i<files.length;i++){
-			var filepath=files[i]
-			fs.stat(filepath,function(err,stats){
-				if (stats.isFile())
-					fs.unlinkSync(filepath)
-				else	
-					if (stats.isDirectory())
-						delet(filepath)
-			});
-		}
-		fs.rmdirSync(path)
-	});
-}
 
 router.get('/', function(req, res, next) {
 	contest.find({},function(err,contestlist){
@@ -100,7 +82,8 @@ router.get('/:cid([0-9]+)/problems/:pid([0-9]+)',function(req,res,next){
 })
 
 router.post('/:cid([0-9]+)/problems/:pid([0-9]+)/upload',upload.single('inputfile'),function(req,res,next){
-	if (typeof(req.file) === undefined) {
+	if (typeof(req.file) == 'undefined') {
+        console.log("xx");
         return next(new Error("Undefined file."));
     }
     var suffix = {"g++": ".cpp", "gcc": ".c"};
@@ -109,34 +92,42 @@ router.post('/:cid([0-9]+)/problems/:pid([0-9]+)/upload',upload.single('inputfil
 	var contestid=parseInt(req.params.cid);
 	var problemid=parseInt(req.params.pid);
 
-	Step(function() {
-		fse.move(req.file.path, path.join(SOURCE_DIR, source_file), this);
-	}, function(err) {
-		if (err) return next(err);
+    contest.findOne({_id: contestid}).populate('problems').exec(function (err, x) {
+        if (err) return next(err);
+        if (problemid >= x.problems.length) return next();
+        p = x.problems[problemid];
 
-		var newjudge = new judge({
-			user:req.session.uid,
-			contest:contestid,
-			problem:problemid,
-			subtask_id:0,
+        Step(function() {
+            fse.move(req.file.path, path.join(SOURCE_DIR, source_file), this);
+        }, function(err) {
+            if (err) return next(err);
 
-			submitted_time:Date.now(),
+            var newjudge = new judge({
+                user:req.session.uid,
+                contest: x._id,
+                problem: p._id,
 
-			// solution information
-			lang: req.body.language,
-			source_file: source_file,
+                problem_id: problemid,
+                subtask_id:0,
 
-			// judge result
-			status: 'Waiting',
-			cases_count: 0,
-			results: []
-		});
+                submitted_time:Date.now(),
 
-		newjudge.save(this);
-	}, function (err, newjudge) {
-		if (err) return next(err);
-		res.redirect('/contests/'+contestid+'/status');
-	});
+                // solution information
+                lang: req.body.language,
+                source_file: source_file,
+
+                // judge result
+                status: 'Waiting',
+                case_count: p.subtasks[0].testcase_count,
+                results: []
+            });
+
+            newjudge.save(this);
+        }, function (err, newjudge) {
+            if (err) return next(err);
+            res.redirect('/contests/'+contestid+'/status');
+        });
+    });
 });
 
 module.exports = router;

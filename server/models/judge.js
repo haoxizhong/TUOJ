@@ -6,6 +6,8 @@ var Judge = new Schema({
     user: {type: Number, ref: "User"},
     contest: {type: Number, ref: "Contest"},
     problem: {type: Number, ref: "Problem"},
+
+    problem_id: Number,
     subtask_id: Number,
 
     submitted_time: Number,
@@ -18,7 +20,7 @@ var Judge = new Schema({
     // judge result
     status: String,
     score: Number,
-    cases_count: Number,
+    case_count: Number,
     results: [
         {
             status: String,
