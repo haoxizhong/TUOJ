@@ -17,7 +17,6 @@ module.exports = function(mycfg) {
     self.run = function(timeout) {
 		self.timeout = timeout;
         Step(function() {
-            console.log(mycfg.wwwServer.fetchUrl);
             request.post({
                 url: mycfg.wwwServer.fetchUrl,
                 form: self.postData

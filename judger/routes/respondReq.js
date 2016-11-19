@@ -12,7 +12,7 @@ module.exports = function(cfg) {
             return;
         }
 		var res = {
-            token: 'sometoken',
+            token: cfg.wwwServer.verify.token,
             run_id: self.runId,
             results: {},
         };
