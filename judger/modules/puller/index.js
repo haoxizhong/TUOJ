@@ -1,8 +1,9 @@
 var request = require('request');
+var path = require('path');
 var Step = require('step');
 var fs = require('fs-extra');
-var curl = require('node-curl');
 var unzip = require('unzip');
+var stream = require('stream');
 
 module.exports = function(cfg) {
 	var self = this;
@@ -16,14 +17,15 @@ module.exports = function(cfg) {
 		try {
 			fs.readdirSync(self.path);
 		} catch (err) {
-			curl(url, function(err) {
-				if (err) {
-					callback(err);
-				} else {
-					this.body.pipe(unzip.Extract({ path: self.path }));
-					callback(false, self.path);
-				}
-			});
+            request(url).pipe(unzip.Extract({ 
+                path: self.path 
+            })).on('finish', function() {
+                callback(false, self.path);
+            }).on('error', function(err) {
+                console.log('error = ' + err);
+                callback(err);
+            });
 		}
+        callback(false, self.path);
 	};
 }

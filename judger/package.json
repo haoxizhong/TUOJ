@@ -1,17 +1,19 @@
 {
-	"name": "TUOJ-JudgeClient",
-	"version": "0.0.0",
-	"private": true,
-	"scripts": {
-		"start": "node ./bin/www"
-	},
-	"dependencies": {
-        "step": "~0.0.6",
-		"request": "~2.75.0",
-        "nodegit": "~0.16.0",
-        "crypto": "~0.0.3",
-        "path": "~0.12.7",
-		"fs-extra": "~0.30.0",
-		"querystring": "~0.2.0"
-	}
+  "name": "TUOJ-JudgeClient",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www"
+  },
+  "dependencies": {
+    "crypto": "~0.0.3",
+    "fs-extra": "~0.30.0",
+    "nodegit": "~0.16.0",
+    "path": "~0.12.7",
+    "querystring": "~0.2.0",
+    "request": "~2.75.0",
+    "request-json": "^0.6.1",
+    "step": "~0.0.6",
+    "unzip": "^0.1.11"
+  }
 }

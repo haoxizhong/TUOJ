@@ -8,10 +8,9 @@ block content_contest
 	div.row
 		div.col-xs-9
 			div.panel.panel-default
-				div.panel-heading
-					p Problem #{problemid} in Contest #{contestid}
 				div.panel-body
-					!{description}
+					h2.text-center #{title}
+					p !{description}
 		div.col-xs-3
 			form(method='POST',action='/contests/#{contestid}/problems/#{problemid}/upload',enctype='multipart/form-data')
 				div.panel.panel-default

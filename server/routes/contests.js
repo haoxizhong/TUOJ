@@ -58,13 +58,13 @@ router.get('/:id([0-9]+)/status/:page([0-9]+)',function(req,res,next){
 		for(var i=0;i<len;i++){
 			var judict={};
 			console.log(judgelist[i].user.username)
-			judict.id=i;
+			judict.id=judgelist[i]._id;
 			judict.title=judgelist[i].problem.title;
 			judict.user=judgelist[i].user.username;
 			judict.status=judgelist[i].status;
 			judict.score=judgelist[i].score;
 			var newtime=new Date();
-			newtime.setTime(Date.now()*1000);
+			newtime.setTime(judgelist[i].submitted_time);
 			judict.time=newtime.toLocaleString();
 			jlist.push(judict);
 		}
@@ -86,25 +86,28 @@ router.post('/:id([0-9]+)/skip',function(req,res,next){
 router.get('/:cid([0-9]+)/problems/:pid([0-9]+)',function(req,res,next){
     var contestid=parseInt(req.params.cid)
 	var problemid=parseInt(req.params.pid)
-    
-	problem.findOne({_id: problemid}, function (err, x) {
+    contest.findOne({_id: contestid}).populate("problems").exec(function (err, c) {
 		if (err) next(err)
-		if (!x) next()
-			
+		if (!c || problemid < 0 || problemid > c.problems.length) next()
+
+		p = c.problems[problemid];
+		// console.log(p);
+
 		try {
-            var description = x.getDescriptionHTML();
-        } catch(err) {
-            var description = JSON.stringify(err);
-        }
-		
-		dict={'user':req.session.user,"is_admin":req.session.is_admin}
-		dict.problem=x
-		dict.description=description
-		dict.problemid=problemid
-		dict.contestid=contestid
-		
-		res.render('contest_problem',dict)
-    })
+			var description = p.getDescriptionHTML();
+		} catch (err) {
+			var description = JSON.stringify(err);
+		}
+
+		dict = {'user': req.session.user, "is_admin": req.session.is_admin}
+		dict.title = p.title;
+		dict.problem = p;
+		dict.description = description;
+		dict.problemid = problemid;
+		dict.contestid = contestid;
+		// console.log(dict);
+		res.render('contest_problem', dict);
+	});
 
 })
 
@@ -162,7 +165,7 @@ router.post('/:cid([0-9]+)/problems/:pid([0-9]+)/upload',upload.single('inputfil
             newjudge.save(this);
         }, function (err, newjudge) {
             if (err) return next(err);
-            res.redirect('/contests/'+contestid+'/status');
+            res.redirect('/contests/'+contestid+'/status/1');
         });
     });
 });

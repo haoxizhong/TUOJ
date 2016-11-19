@@ -7,4 +7,5 @@ sample.local.tus.clean = false;
 sample.wwwServer.fetchUrl = 'http://localhost:3023/api/judge/get_task/acm';
 sample.wwwServer.uploadUrl = 'http://localhost:3023/api/judge/update_results';
 sample.debug = true;
+sample.wwwServer.verify.token = 'faf3ar42q34';
 module.exports = sample;

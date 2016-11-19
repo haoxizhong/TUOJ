@@ -5,7 +5,7 @@ module.exports = function(source, workPath, target, oargs) {
     if (typeof(args) == 'string') {
         args = args.split(' ');
     }
-    fs.copySync(source, path.resolve(workPath, 'source.cpp'));
+    fs.writeFileSync(path.resolve(workPath, 'source.cpp'), source);
     var args = [];
     if (typeof(oargs) == 'string') {
         args = oargs.split(' ');
