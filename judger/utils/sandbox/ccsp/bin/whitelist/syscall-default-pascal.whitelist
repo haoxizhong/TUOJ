@@ -1,0 +1,13 @@
+execve 1
+exit_group 1
+getrlimit 2
+ioctl -1
+readlink 2
+rt_sigaction 8
+write -1
+open -1
+read -1
+mmap -1
+close -1
+time -1
+munmap -1
