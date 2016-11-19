@@ -1,0 +1,39 @@
+# Project
+samples/test-data
+*.dSYM
+judger/bin/fdiff
+*.swp
+
+# npm
+node_modules
+*.log
+*.log.*
+*.gz
+
+# bower
+bower_components
+
+# OS X
+.DS_Store*
+Icon?
+._*
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Linux
+.directory
+*~
+
+# Idea
+.idea
+
+# Binary
+judger/bin/sandbox_exec
+judger/utils/sandbox/ccsp/bin/helloworld
+judger/utils/sandbox/ccsp/bin/pause
+judger/utils/sandbox/ccsp/bin/safe_exec
+judger/utils/sandbox/ccsp/bin/sandbox_exec
+server/data/problems/
