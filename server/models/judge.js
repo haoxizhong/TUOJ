@@ -61,7 +61,7 @@ Judge.methods.updateStatus = function (results, callback) {
         if (s.status == "Waiting") {
             finished = false;
         } else {
-            if (s.status != "Accepted" && s.status != "Compilation Success" && status != "Running") {
+            if (s.status != "Accepted" && s.status != "Compilation Success" && status == "Running") {
                 status = s.status;
             }
         }
