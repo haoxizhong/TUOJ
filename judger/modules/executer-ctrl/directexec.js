@@ -40,19 +40,20 @@ var Executer = function() {
             cmdl += ' -m ' + options.memLimit;
         }
         try {
+            var args = [cmdl];
             fs.emptyDirSync(self.path);
             fs.copySync(options.cwd, self.path);
             if (!options.sysLimit) {
-                dockerArgs.push('-r');
+                args.push('-r');
             }
-            cp.execFileSync(path.resolve(__dirname, '../../../../bin/sandbox_exec'), dockerArgs, {
+            cp.execFileSync(path.resolve(__dirname, '../../bin/sandbox_exec'), args, {
                 stdio: self.dockerIO,
                 cwd: self.path
             });
-			//console.log(cmdl);
             fs.copySync(self.path, options.cwd);
             fs.emptyDirSync(self.path);
          } catch (err) {
+             console.log('run error = ' + err);
              //console.log(err);
              return { error: err };
         }
@@ -69,6 +70,9 @@ var Executer = function() {
             }
             return res;
         } catch(error) {
+            return {
+                time: -1, memory: -1
+            };
             return { error: error };
         }
     };

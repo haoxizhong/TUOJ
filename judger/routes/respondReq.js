@@ -31,13 +31,15 @@ module.exports = function(cfg) {
         }
 		var postData = {
 			url: self.url,
-			form: res
+            method: 'POST',
+            json: res
 		};
 		try {
-			request.post(postData, function(err, httpResponse, bodyStr) {
+			request(postData, function(err, httpResponse, bodyStr) {
                 if (err) {
                     console.log('Upload error ' + err);
                 }
+                console.log(bodyStr);
             });
 		} catch (error) {
 			console.log('Post error ' + error);

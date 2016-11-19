@@ -28,7 +28,7 @@ module.exports = function(cmd, data) {
                 });
             } else {
                 sysRespond({
-                    message: 'Compilation Succeeded'
+                    message: 'Compilation Succeess'
                 });
             }
         };
