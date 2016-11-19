@@ -1,0 +1,26 @@
+extends layout
+
+block content
+    div.row
+        div.col-xs-9
+            div(class="article")
+                ul
+                    - for (var i = 0; i < problems.length; ++i) {
+                    -   p = problems[i]
+                    div.row
+                        p
+                            a(href="/problem_pool/#{p._id}") #{p._id}:#{p.title}
+                    hr
+                    - }
+        div.col-xs-3
+            form(method='POST',action="/problem_pool/new_problem")
+                div.panel.panel-default
+                    div.panel-heading
+                        p 新建题目
+                    div.panel-body
+                        div.form-group
+                            label Git库地址
+                            input.form-control(type="text", name="git_url")
+                    div.panel-footer
+                        div.form-group
+                            input.btn.btn-success(type='submit' value='新建')

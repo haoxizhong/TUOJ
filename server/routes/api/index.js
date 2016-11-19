@@ -1,3 +1,3 @@
 var router = require('express').Router();
-router.use('/judger', require('./judger'));
+router.use('/judge', require('./judge'));
 module.exports = router;

@@ -4,90 +4,167 @@ var git = require('nodegit')
 var markdown = require('markdown').markdown
 var fs = require('fs')
 var fse = require('fs-extra')
-var Step = require('step');
-var contest = require('../models/user').contest
-var judge = require('../models/user').judge
-var user = require('../models/user').user
-var path = require("path");
-/* GET users listing. */
-
-var delet=function(path){
-	var flag=0
-	fs.readdir(path,function(err,files){
-		for(var i=0;i<files.length;i++){
-			var filepath=files[i]
-			fs.stat(filepath,function(err,stats){
-				if (stats.isFile())
-					fs.unlinkSync(filepath)
-				else	
-					if (stats.isDirectory())
-						delet(filepath)
-			});
-		}
-		fs.rmdirSync(path)
-	});
-}
-
-var getID=function(getpath) {
-	var tmp=0
-	for (tmp=1;tmp<getpath.length;tmp++)
-			if (getpath[tmp]>'9' || getpath[tmp]<'0')
-				break
-	return getpath.slice(1,tmp)
-}
+var Step = require('step')
+var contest = require('../models/contest.js')
+var problem = require('../models/problem.js')
+var judge = require('../models/judge.js')
+var user = require('../models/user.js')
+var path = require('path')
+var upload = require('../config.js').MULTER_UPLOAD
+var randomstring = require('randomstring')
+var SOURCE_DIR = require('../config').SOURCE_DIR
 
 router.get('/', function(req, res, next) {
 	contest.find({},function(err,contestlist){
-		res.render('contest_home',{'contestlist':contestlist,'user':req.session.user,'power':req.session.admin})
+		dict={'user':req.session.user,'is_admin':req.session.is_admin}
+		dict.contestlist=contestlist
+		res.render('contest_home',dict)
 	})
 });
 
-router.get('/[0-9]+',function(req,res,next){
-	var contestID=getID(req.path)
-	contest.findOne({'id':parseInt(contestID)},function(err,x){
-		//console.log(x.gitlist)
-		res.render('contest',{'contestid':contestID,'gitlist':x.gitlist,'user':req.session.user,'power':req.session.admin})
+router.get('/:id([0-9]+)',function(req,res,next){
+	var contestid=parseInt(req.params.id)
+	contest.findOne({_id:contestid}).populate('problems').exec(function(err,x){
+		if (err) next(err)
+		if (!x) next()
+		
+		dict={'user':req.session.user,"is_admin":req.session.is_admin}
+		dict.contestid=contestid
+		dict.problems=x.problems
+		dict.start=x.start_time
+		dict.end=x.end_time
+		console.log(x.problems[0])
+		res.render('contest',dict)
+		// contest: contains hrefs leading to problems and status
 	})
 }) 
 
-router.get('/[0-9]+/status',function(req,res,next){
-	var contestID=getID(req.path)
-	//console.log(contestID)
-	var attr = {
-		contestid:parseInt(contestID),
-	};
+router.get('/:id([0-9]+)/status/:page([0-9]+)',function(req,res,next){
+	var contestid=parseInt(req.params.id)
+	var page=parseInt(req.params.page)
+	var attr = {'contest':contestid}
 	Step(function() {
-		user.findOne({ userid: req.session.user }, this);
-	}, function(err, doc) {
-		if (!doc) {
-			return res.redirect('/login'), undefined;
-		}
-		if (!doc.power) {
-			attr.userid = req.session.user;
-		}
-		judge.find(attr, this);
+		attr.user = req.session.uid;
+		judge.find(attr, this).populate('problem').populate('user');
 	}, function(err, judgelist){
 		//console.log(judgelist)
-		res.render('contest_status',{'contestid':contestID,'user':req.session.user,'judgelist':judgelist,'power':req.session.admin})
+		var len=judgelist.length;
+		if (page<1 || (page>(len-1)/10+1 && len)) next();
+		if (!len && page>1) next();
+		dict={'user':req.session.user,'is_admin':req.session.is_admin};
+		dict.contestid=contestid;
+		
+		var jlist=[];
+		for(var i=0;i<len;i++){
+			var judict={};
+			console.log(judgelist[i].user.username)
+			judict.id=i;
+			judict.title=judgelist[i].problem.title;
+			judict.user=judgelist[i].user.username;
+			judict.status=judgelist[i].status;
+			judict.score=judgelist[i].score;
+			var newtime=new Date();
+			newtime.setTime(Date.now()*1000);
+			judict.time=newtime.toLocaleString();
+			jlist.push(judict);
+		}
+			
+		
+		dict.judgelist=jlist;
+		dict.maxpage=(len-1)/10+1;
+		dict.nowpage=page;
+		res.render('contest_status',dict)
 	});
 })
 
-router.get('/[0-9]+/problems/[A-Z]',function(req,res,next){
-    var contestID=getID(req.path)
-    var problemID=req.path.substr(-1)
-	var problemID_int = problemID.charCodeAt() - 'A'.charCodeAt();
-    contest.findOne({'id': parseInt(contestID)}, function (err, x) {
-        var filepath = path.join(x.getProblemRepo(problemID_int), "files", "description.md");
-        var probmd = markdown.toHTML(String(fs.readFileSync(filepath)));
-        res.render('contest_problem', {
-            'user': req.session.user,
-            'probmd': probmd,
-            'contestid': contestID,
-            'problemid': problemID,
-            'gitt': x.gitlist[problemID_int]
-        });
-    });
+router.post('/:id([0-9]+)/skip',function(req,res,next){
+	var contestid=req.params.id
+	var page=req.body.page
+	res.redirect('/contests/'+contestid+'/status/'+page);
+})
+
+router.get('/:cid([0-9]+)/problems/:pid([0-9]+)',function(req,res,next){
+    var contestid=parseInt(req.params.cid)
+	var problemid=parseInt(req.params.pid)
+    
+	problem.findOne({_id: problemid}, function (err, x) {
+		if (err) next(err)
+		if (!x) next()
+			
+		try {
+            var description = x.getDescriptionHTML();
+        } catch(err) {
+            var description = JSON.stringify(err);
+        }
+		
+		dict={'user':req.session.user,"is_admin":req.session.is_admin}
+		dict.problem=x
+		dict.description=description
+		dict.problemid=problemid
+		dict.contestid=contestid
+		
+		res.render('contest_problem',dict)
+    })
 
 })
+
+router.post('/:cid([0-9]+)/problems/:pid([0-9]+)/upload',upload.single('inputfile'),function(req,res,next){
+	if (typeof(req.file) == 'undefined') {
+        console.log("xx");
+        return next(new Error("Undefined file."));
+    }
+    var suffix = {"g++": ".cpp", "gcc": ".c"};
+	source_file = randomstring.generate(15) + suffix[req.body.language];
+
+	var contestid=parseInt(req.params.cid);
+	var problemid=parseInt(req.params.pid);
+
+    contest.findOne({_id: contestid}).populate('problems').exec(function (err, x) {
+        if (err) return next(err);
+        if (problemid >= x.problems.length) return next();
+        p = x.problems[problemid];
+
+        Step(function() {
+            fse.move(req.file.path, path.join(SOURCE_DIR, source_file), this);
+        }, function(err) {
+            if (err) return next(err);
+
+            var newjudge = new judge({
+                user:req.session.uid,
+                contest: x._id,
+                problem: p._id,
+
+                problem_id: problemid,
+                subtask_id:0,
+
+                submitted_time:Date.now(),
+
+                // solution information
+                lang: req.body.language,
+                source_file: source_file,
+
+                // judge result
+                score: 0,
+                status: 'Waiting',
+                case_count: p.subtasks[0].testcase_count,
+                results: []
+            });
+            for (var i = 0;  i < newjudge.case_count + 1; i++) {
+                newjudge.results.push({
+                    score: 0,
+                    memory: 0,
+                    time: 0,
+                    status: "Waiting"
+                });
+            }
+            console.log(newjudge);
+
+            newjudge.save(this);
+        }, function (err, newjudge) {
+            if (err) return next(err);
+            res.redirect('/contests/'+contestid+'/status');
+        });
+    });
+});
 
 module.exports = router;

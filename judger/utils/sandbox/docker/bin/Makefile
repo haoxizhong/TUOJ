@@ -1,8 +1,12 @@
 EXE = helloworld \
 	  safe_exec \
-	  sandbox_exec 
+	  sandbox_exec \
+	  pause
 
 target:$(EXE)
+
+pause : pause.cc
+	g++ pause.cc -o pause
 
 helloworld:helloworld.cpp
 	g++ helloworld.cpp -o helloworld -g -Wall

@@ -54,6 +54,10 @@ module.exports = function(cmd, data) {
             timeLimit: self.cmd.timeLimit ? self.cmd.timeLimit : defaults.timeLimit,
             memLimit: self.cmd.memLimit ? self.cmd.memLimit : defaults.memLimit,
         };
+		if (data.lang == 'java') {
+			options.filename = '/usr/bin/java';
+			options.args.push('Main');
+		}
         var runRes = exec.exec(options);
         if (!runRes || runRes.error) {
             var errMsg = 'run error ' + runRes.error;

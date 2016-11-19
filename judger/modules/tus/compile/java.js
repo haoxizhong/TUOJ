@@ -5,7 +5,7 @@ module.exports = function(source, workPath, target, oargs) {
     if (typeof(args) == 'string') {
         args = args.split(' ');
     }
-    fs.copySync(source, path.resolve(workPath, 'source.cpp'));
+    fs.copySync(source, path.resolve(workPath, 'Main.java'));
     var args = [];
     if (typeof(oargs) == 'string') {
         args = oargs.split(' ');
@@ -16,11 +16,9 @@ module.exports = function(source, workPath, target, oargs) {
             }
         }
     }
-    args.push('source.cpp');
-    args.push('-o');
-    args.push('exe');
+    args.push('Main.java');
     var ret = {
-        fileName: '/usr/bin/g++',
+        fileName: '/usr/bin/javac',
         args: args
     };
     return ret;
