@@ -39,7 +39,8 @@ router.post('/update_results', function (req, res, next) {
     if (req.body.token != TOKEN) {
         return next();
     }
-    Judge.findOne({_id: req.body.run_id}).populate('problem').exec(function (err, x) {
+    var run_id  = parseInt(req.body.run_id);
+    Judge.findOne({_id: run_id}).populate('problem').exec(function (err, x) {
         if (err) return next(err);
         if (!x) return next();
 

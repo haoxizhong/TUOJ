@@ -45,11 +45,13 @@ Judge.methods.updateStatus = function (results, callback) {
 
         var result = results[test_id_str];
         console.log(results[test_id_str]);
-        self.results[test_id].status = result.status;
+        self.results[test_id].status = result["status"];
         self.results[test_id].time = result["time"];
         self.results[test_id].memory = result["memory"];
         if (self.results[test_id].status == "Accepted") {
             self.results[test_id].score = self.problem.getPerCaseScore(self.subtask_id);
+        } else {
+            self.results[test_id].score = 0;
         }
     });
 
