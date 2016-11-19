@@ -29,6 +29,7 @@ module.exports = function(cfg) {
                 memory: data.memory,
             }
         }
+        // console.log(JSON.stringify(res));
 		var postData = {
 			url: self.url,
             method: 'POST',
@@ -39,7 +40,7 @@ module.exports = function(cfg) {
                 if (err) {
                     console.log('Upload error ' + err);
                 }
-                console.log(bodyStr);
+                // console.log(bodyStr);
             });
 		} catch (error) {
 			console.log('Post error ' + error);

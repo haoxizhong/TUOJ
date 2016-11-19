@@ -51,14 +51,15 @@ var Executer = function() {
                 cwd: self.path
             });
             fs.copySync(self.path, options.cwd);
-            fs.emptyDirSync(self.path);
+            //fs.emptyDirSync(self.path);
          } catch (err) {
              console.log('run error = ' + err);
              //console.log(err);
              return { error: err };
         }
         try {
-            var resStr = String(fs.readFileSync(path.resolve(options.cwd, '.result'))).split('\n');
+            //var resStr = String(fs.readFileSync(path.resolve(options.cwd, '.result'))).split('\n');
+            var resStr = String(fs.readFileSync(path.resolve(self.cfg.path, 'res.log'))).split('\n');
             var tmStr = resStr[0].split(' ');
             var res = {
                 time: Number(tmStr[0]),
@@ -70,9 +71,7 @@ var Executer = function() {
             }
             return res;
         } catch(error) {
-            return {
-                time: -1, memory: -1
-            };
+            console.log(error);
             return { error: error };
         }
     };
