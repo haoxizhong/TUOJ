@@ -173,11 +173,18 @@ void Sandbox_t::print_args()
 }
 void Sandbox_t::Init()
 {
+		if (!file_exists(tmp_path.c_str()))
+				mkdir(tmp_path.c_str(),0755);
+		if (!file_exists(run_path.c_str()))
+				mkdir(run_path.c_str(),0755);
+		if (!file_exists(run_path.c_str()))
+				mkdir(run_path.c_str(),0755);
 		init_flag = true;
 		resfile.open((tmp_path+"/.result").c_str());
 		fileft.assign((bin_path+"/whitelist/file-default.whitelist").c_str());
 		sysft.assign((bin_path+"/whitelist/syscall-default.whitelist").c_str());
-		system(("rm -r "+run_path).c_str());
+		//if (file_exists(run_path.c_str()))
+				system(("rm -r "+run_path).c_str());
 		system(("mkdir "+run_path).c_str());
 		system(("cp -R "+shared_path+"/* "+run_path).c_str());
 		chdir(run_path.c_str());

@@ -3,6 +3,7 @@
 #include <sys/wait.h>//support wait4
 #include <sys/resource.h>//support ulimit
 #include <sys/user.h>//support user_regs_struct
+#include <sys/stat.h>//suppor mkdir
 #include <set>
 #include <map>
 #include <cstdio>

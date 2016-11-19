@@ -1,4 +1,0 @@
-Traceback (most recent call last):
-  File "pyre1.py", line 1, in <module>
-    aaa
-NameError: name 'aaa' is not defined

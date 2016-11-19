@@ -1,4 +1,5 @@
 #include "sandbox.h"
+#include "sandbox_exec.h"
 using namespace std;
 
 Sandbox_t J;
@@ -7,7 +8,6 @@ void Init(int argc,char* argv[])
 		char result;
 		while (~(result =(char) getopt(argc,argv,"wha:t:m:drf:s:cp:")))
 		{
-				FILE *fhelp ;
 				switch(result)
 				{
 						case 'p':
@@ -31,11 +31,7 @@ void Init(int argc,char* argv[])
 								}
 								break;
 						case 'h':
-								fhelp = fopen(DEFAULT_HOME_PATH "/bin/sandbox_exec.help","r");
-								char ch;
-								while (~(ch=fgetc(fhelp)))
-										putchar(ch);
-								fclose(fhelp);
+								print_help_file();
 								exit(0);
 						case 'c':
 								J.set_action("command");
