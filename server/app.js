@@ -61,6 +61,7 @@ var admin_required = function(req,res,next) {
 app.use("/contests", login_required);
 app.use("/addcontests", admin_required);
 app.use("/problem_pool", admin_required);
+app.use("/status", admin_required);
 
 // add router
 app.use("/", require("./routes/homepage"));
@@ -68,7 +69,7 @@ app.use("/problem_pool", require("./routes/problem_pool"));
 app.use('/addcontests',require("./routes/addcontests"));
 app.use('/contests',require("./routes/contests"));
 app.use('/api', require('./routes/api'));
-//app.use('/status',require('./routes/status'));
+app.use('/status',require('./routes/status'));
 
 
 // catch 404 and forward to error handler

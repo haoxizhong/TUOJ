@@ -58,13 +58,13 @@ router.get('/:id([0-9]+)/status/:page([0-9]+)',function(req,res,next){
 		for(var i=0;i<len;i++){
 			var judict={};
 			console.log(judgelist[i].user.username)
-			judict.id=i;
+			judict.id=judgelist[i]._id;
 			judict.title=judgelist[i].problem.title;
 			judict.user=judgelist[i].user.username;
 			judict.status=judgelist[i].status;
 			judict.score=judgelist[i].score;
 			var newtime=new Date();
-			newtime.setTime(Date.now()*1000);
+			newtime.setTime(judgelist[i].submitted_time);
 			judict.time=newtime.toLocaleString();
 			jlist.push(judict);
 		}
@@ -165,7 +165,7 @@ router.post('/:cid([0-9]+)/problems/:pid([0-9]+)/upload',upload.single('inputfil
             newjudge.save(this);
         }, function (err, newjudge) {
             if (err) return next(err);
-            res.redirect('/contests/'+contestid+'/status');
+            res.redirect('/contests/'+contestid+'/status/1');
         });
     });
 });
