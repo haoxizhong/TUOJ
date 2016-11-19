@@ -52,8 +52,11 @@ router.post('/update_results', function (req, res, next) {
                 });
             });
         } catch (err) {
-            console.error(err);
-            return next(err);
+            res.send({
+				"status": "failure",
+				"message": err.message,
+				"stack": err.stack
+			});
         }
     });
 });
