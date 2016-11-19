@@ -1,5 +1,6 @@
 var Step = require('step');
 var path = require('path');
+var request = require('request');
 var fs = require('fs-extra');
 var Compile = require('./compile');
 var Exec = require('./exec');
@@ -27,6 +28,7 @@ module.exports = function(dataPath, cfg) {
             return self.callback(err);
         }
         var curCmd = self.tus[self.tusStep];
+        console.log('Step ' + self.tusStep + ' done');
         var curMod = cmdMap[curCmd.cmd];
         if (!curMod) {
             var errInfo = 'Unknow tus command ' + curCmd.cmd + ' at step ' + self.tusStep;
@@ -66,21 +68,27 @@ module.exports = function(dataPath, cfg) {
 		self.res = {};
         self.scores = [];
 		self.sources = [];
+        self.updateSource = function(id, callback) {
+            if (!self.sources[id]) {
+                if (typeof(req.source_url) == 'object' && req.source_url[id]) {
+                    request.get({
+                        url: req.source_url[id]
+                    }, function(err, httpRespond, bodyStr) {
+                        if (err) {
+                            callback(err);
+                        } else {
+                            self.sources[id] = bodyStr;
+                            callback(false);
+                        }
+                    });
+                } else {
+                    callback('No Source');
+                }
+            }
+        };
         try {
             self.tus = JSON.parse(fs.readFileSync(path.resolve(self.dataPath, 'tus.json')));
             fs.mkdirSync(self.path);
-            if (typeof(req.answer) == 'string') {
-                req.answer = [ req.answer ];
-            }
-            if (typeof(req.answer) == 'array' || typeof(req.answer) == 'object') {
-                req.answer.forEach(function(code, id) {
-                    var sourcePath = path.resolve(self.path, 'answer' + id);
-                    fs.writeFileSync(sourcePath, code);
-                    self.sources.push(sourcePath);
-                });
-            } else {
-                throw "no answer file";
-            }
             self.lang = req.lang;
             if (typeof(self.tus) != 'object' || self.tus.length > self.cfg.maxLines) {
                 throw 'illegal judge script';

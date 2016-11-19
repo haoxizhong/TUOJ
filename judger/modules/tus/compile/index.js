@@ -28,7 +28,7 @@ module.exports = function(cmd, data) {
                 });
             } else {
                 sysRespond({
-                    message: 'Compilation Succeeded'
+                    message: 'Compilation Succeess'
                 });
             }
         };
@@ -47,25 +47,30 @@ module.exports = function(cmd, data) {
         }
         var targetPath = path.resolve(self.path, 'exe');
         var langFunc = langMods[self.lang];
-        var options = langFunc(data.sources[cmd.sourceId], self.path, targetPath, cmd.langs[self.lang]);
-        options.cwd = self.path;
-        options.stdin = 'c' + self.id + '.stdin';
-        options.stdout = 'c' + self.id + '.stdout';
-        options.stderr = 'c' + self.id + '.stderr';
-        var runRes = exec.exec(options);
-        if (!runRes || runRes.error) {
-            var errMsg = 'Compilation Error';
-            respond(runRes.error);
+        data.updateSource(cmd.sourceId, function(err) {
+            if (err) {
+                return callback(err);
+            }
+            var options = langFunc(data.sources[cmd.sourceId], self.path, targetPath, cmd.langs[self.lang]);
+            options.cwd = self.path;
+            options.stdin = 'c' + self.id + '.stdin';
+            options.stdout = 'c' + self.id + '.stdout';
+            options.stderr = 'c' + self.id + '.stderr';
+            var runRes = exec.exec(options);
+            if (!runRes || runRes.error) {
+                var errMsg = 'Compilation Error';
+                respond(runRes.error);
+                data.res[self.id] = {
+                    error: errMsg
+                };
+                return callback(errMsg);
+            }
             data.res[self.id] = {
-                error: errMsg
+                target: targetPath
             };
-            return callback(errMsg);
-        }
-        data.res[self.id] = {
-            target: targetPath
-        };
-        respond(null);
-        callback(0);
+            respond(null);
+            callback(0);
+        });
     };
 };
 
