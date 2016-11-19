@@ -52,7 +52,7 @@ module.exports = function(cmd, data) {
             fs.copySync(self.checker, path.resolve(self.path, 'checker'));
             fs.writeFileSync(path.resolve(self.path, 'fullScore'), '100');
         } catch (error) {
-            respond({ status: 'Wrong Answer', extError: error, isEnd: self.cmd.haltOnFail, tusStep: self.tusStep });
+            respond({ message: 'Wrong Answer', extError: error, isEnd: self.cmd.haltOnFail, tusStep: self.tusStep });
             data.scores.push({
                 error: self.source.error,
 				score: 0
@@ -71,7 +71,7 @@ module.exports = function(cmd, data) {
         var runRes = exec.exec(options);
         if (!runRes || runRes.error) {
             var errMsg = 'checker error ' + runRes;
-            respond({ status: 'Wrong Answer', extError: errMsg, isEnd: self.cmd.haltOnFail, tusStep: self.tusStep });
+            respond({ message: 'Wrong Answer', extError: errMsg, isEnd: self.cmd.haltOnFail, tusStep: self.tusStep });
             data.scores.push({
                 score: 0,
                 error: runRes
