@@ -86,25 +86,28 @@ router.post('/:id([0-9]+)/skip',function(req,res,next){
 router.get('/:cid([0-9]+)/problems/:pid([0-9]+)',function(req,res,next){
     var contestid=parseInt(req.params.cid)
 	var problemid=parseInt(req.params.pid)
-    
-	problem.findOne({_id: problemid}, function (err, x) {
+    contest.findOne({_id: contestid}).populate("problems").exec(function (err, c) {
 		if (err) next(err)
-		if (!x) next()
-			
+		if (!c || problemid < 0 || problemid > c.problems.length) next()
+
+		p = c.problems[problemid];
+		// console.log(p);
+
 		try {
-            var description = x.getDescriptionHTML();
-        } catch(err) {
-            var description = JSON.stringify(err);
-        }
-		
-		dict={'user':req.session.user,"is_admin":req.session.is_admin}
-		dict.problem=x
-		dict.description=description
-		dict.problemid=problemid
-		dict.contestid=contestid
-		
-		res.render('contest_problem',dict)
-    })
+			var description = p.getDescriptionHTML();
+		} catch (err) {
+			var description = JSON.stringify(err);
+		}
+
+		dict = {'user': req.session.user, "is_admin": req.session.is_admin}
+		dict.title = p.title;
+		dict.problem = p;
+		dict.description = description;
+		dict.problemid = problemid;
+		dict.contestid = contestid;
+		// console.log(dict);
+		res.render('contest_problem', dict);
+	});
 
 })
 
