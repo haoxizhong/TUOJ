@@ -68,7 +68,7 @@ app.use("/problem_pool", require("./routes/problem_pool"));
 app.use('/addcontests',require("./routes/addcontests"));
 app.use('/contests',require("./routes/contests"));
 app.use('/api', require('./routes/api'));
-// app.use('/problems',upload);
+//app.use('/status',require('./routes/status'));
 
 
 // catch 404 and forward to error handler

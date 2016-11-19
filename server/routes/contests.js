@@ -9,10 +9,10 @@ var contest = require('../models/contest.js')
 var problem = require('../models/problem.js')
 var judge = require('../models/judge.js')
 var user = require('../models/user.js')
-var path = require("path");
-var upload = require("../config.js").MULTER_UPLOAD;
-var randomstring = require('randomstring');
-var SOURCE_DIR = require('../config').SOURCE_DIR;
+var path = require('path')
+var upload = require('../config.js').MULTER_UPLOAD
+var randomstring = require('randomstring')
+var SOURCE_DIR = require('../config').SOURCE_DIR
 
 router.get('/', function(req, res, next) {
 	contest.find({},function(err,contestlist){
@@ -39,21 +39,48 @@ router.get('/:id([0-9]+)',function(req,res,next){
 	})
 }) 
 
-router.get('/:id([0-9]+)/status',function(req,res,next){
+router.get('/:id([0-9]+)/status/:page([0-9]+)',function(req,res,next){
 	var contestid=parseInt(req.params.id)
-	//console.log(contestID)
+	var page=parseInt(req.params.page)
 	var attr = {'contest':contestid}
 	Step(function() {
 		attr.user = req.session.uid;
-		judge.find(attr, this);
+		judge.find(attr, this).populate('problem').populate('user');
 	}, function(err, judgelist){
 		//console.log(judgelist)
-		dict={'user':req.session.user,'is_admin':req.session.is_admin}
-		dict.contestid=contestid
-		dict.judgelist=judgelist
+		var len=judgelist.length;
+		if (page<1 || (page>(len-1)/10+1 && len)) next();
+		if (!len && page>1) next();
+		dict={'user':req.session.user,'is_admin':req.session.is_admin};
+		dict.contestid=contestid;
 		
+		var jlist=[];
+		for(var i=0;i<len;i++){
+			var judict={};
+			console.log(judgelist[i].user.username)
+			judict.id=i;
+			judict.title=judgelist[i].problem.title;
+			judict.user=judgelist[i].user.username;
+			judict.status=judgelist[i].status;
+			judict.score=judgelist[i].score;
+			var newtime=new Date();
+			newtime.setTime(Date.now()*1000);
+			judict.time=newtime.toLocaleString();
+			jlist.push(judict);
+		}
+			
+		
+		dict.judgelist=jlist;
+		dict.maxpage=(len-1)/10+1;
+		dict.nowpage=page;
 		res.render('contest_status',dict)
 	});
+})
+
+router.post('/:id([0-9]+)/skip',function(req,res,next){
+	var contestid=req.params.id
+	var page=req.body.page
+	res.redirect('/contests/'+contestid+'/status/'+page);
 })
 
 router.get('/:cid([0-9]+)/problems/:pid([0-9]+)',function(req,res,next){

@@ -8,7 +8,7 @@ var SOURCE_DIR = require('../config').SOURCE_DIR;
 var SITE_URL = require('../config').SITE_URL;
 
 var Judge = new Schema({
-    user: {type: Number, ref: "User"},
+    user: {type: Number, ref: "user"},
     contest: {type: Number, ref: "contest"},
     problem: {type: Number, ref: "problem"},
 

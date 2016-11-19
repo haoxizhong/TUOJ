@@ -1,0 +1,6 @@
+将markdown换成了marked库
+
+在routes中添加了一个status：路由地址为 :3333/status/1 
+all_status.jade
+
+时间戳有一点点bug

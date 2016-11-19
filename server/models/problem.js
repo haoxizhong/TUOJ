@@ -9,6 +9,7 @@ var markdown = require("markdown").markdown;
 var zipFolder = require('zip-folder');
 var md5File = require('md5-file');
 var urljoin = require('url-join');
+var marked = require('marked');
 
 var PROB_DIR = require("../config.js").PROB_DIR;
 var TMP_DIR  = require("../config.js").TMP_DIR;
@@ -42,7 +43,7 @@ Problem.statics.new = function(git_url, callback) {
 
 Problem.methods.getDescriptionHTML = function() {
     var description_path = path.join(this.getRepoPath(), "files", "description.md");
-    var description = markdown.toHTML(String(fse.readFileSync(description_path)));
+    var description = marked(String(fse.readFileSync(description_path)));
     return description;
 };
 

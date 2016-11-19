@@ -2,12 +2,12 @@ extends contest_layout
 
 block content_contest
 	div.container-fluid
-		h3 比赛#{contestid}的评测状态，当前页数:#{nowpage}，最大页数:#{maxpage}
+		h3 OJ评测状态，当前页数:#{nowpage}，最大页数:#{maxpage}
 		- if (nowpage>1)
-			a(href='/contests/#{contestid}/status/#{nowpage-1}') 上一页
+			a(href='/status/#{nowpage-1}') 上一页
 		- if (nowpage<maxpage)
-			a(href='/contests/#{contestid}/status/#{nowpage+1}') 下一页
-		form(method='POST' action='/contests/#{contestid}/skip')
+			a(href='/status/#{nowpage+1}') 下一页
+		form(method='POST' action='/status/skip')
 			input(type='text' ,name='page',value='#{nowpage}')
 			input(type='submit', name='跳转')
 		br

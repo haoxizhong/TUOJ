@@ -15,6 +15,7 @@
     "fs-extra": "^1.0.0",
     "jade": "~1.11.0",
     "markdown": "^0.5.0",
+    "marked": "^0.3.6",
     "md5-file": "^3.1.1",
     "mongoose": "~4.6.3",
     "mongoose-auto-increment": "^5.0.1",
