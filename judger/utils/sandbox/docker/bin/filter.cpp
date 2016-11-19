@@ -34,7 +34,7 @@ bool filter::check(string fn)
 {
 		if (cnt.find(fn)==cnt.end())
 		{
-				for (int i=0;i<dir.size();i++)
+				for (int i=0;i<(int)dir.size();i++)
 						if (fn.size()>=dir[i].size() && fn.substr(0,dir[i].size()) == dir[i])
 								return true;
 				return false;

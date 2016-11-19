@@ -62,10 +62,11 @@ var Executer = function() {
             cp.execFileSync('docker', dockerArgs, {
                 stdio: self.dockerIO
             });
-			console.log(cmdl);
+			//console.log(cmdl);
             fs.copySync(self.path, options.cwd);
             fs.emptyDirSync(self.path);
          } catch (err) {
+             //console.log(err);
              return { error: err };
         }
         try {
@@ -76,7 +77,7 @@ var Executer = function() {
                 memory: Number(tmStr[1]),
                 error: resStr[1]
             };
-            if (res.error == 'Accept') {
+            if (res.error == 'Accepted') {
                 res.error = 0;
             }
             return res;

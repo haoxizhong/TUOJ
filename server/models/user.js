@@ -1,52 +1,12 @@
 var mongoose = require("mongoose");
+var autoIncrement = require("mongoose-auto-increment");
 var Schema = mongoose.Schema;
-var path = require("path");
-
-var PROB_DIR = require("../config.js").PROB_DIR;
 
 var User = new Schema({
-	userid: String,
-	userpassword: String,
-	power: Number
+    username: {type: String, unique: true},
+    password: String,
+    is_admin: {type: Boolean, default: false}
 });
+User.plugin(autoIncrement.plugin, "User");
 
-var Contest = new Schema({
-	id: Number,
-	starttime: {
-		date: String,
-		time: String
-	},
-	endtime: {
-		date: String,
-		time: String
-	},
-	name: String,
-	gitlist: [String]
-});
-
-// TODO: Split users.js into independent files.
-
-Contest.methods.getProblemRepo = function (id) {
-	if (id < this.gitlist.length) {
-		return path.join(PROB_DIR, "contest_" + String(this.id), "problem_" + String(id));
-	} else {
-		throw "id is greater than the number of problems."
-	}
-};
-
-var Judge = new Schema({
-	runId: Number,
-	userid: String,
-	contestid: Number,
-	probGit: String,
-	probid: String,
-	lang: String,
-	answer: [String],
-	pd: Number,
-	score : Number,
-	tusStep: Number,
-});
-
-exports.user=mongoose.model('user', User);
-exports.contest=mongoose.model('contest', Contest);
-exports.judge=mongoose.model('judge', Judge);
+module.exports = mongoose.model("user", User);

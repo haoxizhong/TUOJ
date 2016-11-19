@@ -18,6 +18,9 @@ var ret = function(cfg) {
     self.updateProb = function(url, callback) {
         self.id = hash(url);
         self.path = path.resolve(self.cfg.path, self.id);
+		if (self.cfg.noFetch) {
+			return callback(0, self.path);
+		}
         try {
             fs.readdirSync(self.path);
         } catch (err) {

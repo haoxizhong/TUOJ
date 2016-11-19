@@ -11,9 +11,9 @@ block content_contest
 				div.panel-heading
 					p Problem #{problemid} in Contest #{contestid}
 				div.panel-body
-					!{probmd}
+					!{description}
 		div.col-xs-3
-			form(method='POST',action='/problems/#{contestid}/#{problemid}/upload',enctype='multipart/form-data')
+			form(method='POST',action='/contests/#{contestid}/problems/#{problemid}/upload',enctype='multipart/form-data')
 				div.panel.panel-default
 					div.panel-heading
 						p 提交
@@ -22,7 +22,7 @@ block content_contest
 							label 请选择语言
 							select.form-control(name='language')
 								option(value='g++') g++
-								option(value='gcc') gcc
+								option(value='java') java
 						div.form-group
 							label 请选择答案文件
 							input.form-control(name='inputfile',type='file',multiple='multiple')

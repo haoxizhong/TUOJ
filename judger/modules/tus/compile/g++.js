@@ -20,7 +20,7 @@ module.exports = function(source, workPath, target, oargs) {
     args.push('-o');
     args.push('exe');
     var ret = {
-        fileName: 'g++',
+        fileName: '/usr/bin/g++',
         args: args
     };
     return ret;

@@ -9,10 +9,9 @@ block content_contest
 					th #
 					th Problem
 			tbody
-				- for(var i = 0 ; i < gitlist.length;i++){
-					- var ch = String.fromCharCode(i + 65)
+				- for(var i = 0 ; i < problems.length;i++){
 						tr
-							td #{i + 1}
+							td #{i}
 							td
-								a(href='/contests/#{contestid}/problems/#{ch}') #{ch}
+								a(href='/contests/#{contestid}/problems/#{i}') #{problems[i].title}
 				- }

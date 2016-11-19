@@ -1,0 +1,33 @@
+sandbox [options] [command]
+
+Run a command in a sandbox
+
+OPTIONS
+	-h Print the help file
+
+	-t tl Set TimitLimit as tl (sec)
+	-m ml Set MemoryLimit as ml (MB)
+
+	-d Print Debug Info
+	-r Disable ptrace
+
+	-a Set Particular action
+		excute : excute a command
+			<command> is the command you wanna excute
+				use quotation mark if necessary
+
+		python : excute python code 
+			<command> is the name of your code
+
+		javac : compile java source code
+			<command> is the project name (such as 'Main')
+
+		java : excute java code 
+			<command> is the project name (such as 'Main')
+			make sure .class is exist
+
+
+EXAMPLES
+	sandbox_exec -h
+	sandbox_exec -t 1000 -m 256 -a java Main
+	sandbox_exec -a python pyprog.py

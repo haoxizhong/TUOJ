@@ -27,16 +27,22 @@ app.use('/', routes);
 app.use('/users', users);
 
 var runId = 0;
-app.post('/api/judger/adopt', function(req, res) {
-	var data = {
-		runId:  ++ runId,
-		probGit: 'https://git.net9.org/laekov/TUOJ-problem-sample.git',
+app.post('/api/judge/get_task/acm', function(req, res) {
+	var dataG = {
+		run_id:  ++ runId,
 		lang: 'g++',
+		probGit: 'https://github.com/reyux/tuoj-problem-sample',
 		answer: [ String(fs.readFileSync('./public/apb.cc')) ]
 	};
-	res.send(data);
+	var dataJ = {
+		run_id:  ++ runId,
+		lang: 'java',
+		probGit: 'https://github.com/reyux/tuoj-problem-sample',
+		answer: [ String(fs.readFileSync('./public/apb.java')) ]
+	};
+	res.send(dataJ);
 });
-app.post('/api/judger/upload', function(req, res) {
+app.post('/api/judge/update_results', function(req, res) {
 	console.log((new Date()).toLocaleTimeString() + ': ' + JSON.stringify(req.body));
 	if (req.body.isEnd) {
 		console.log('===============Judge request finished=======================');

@@ -8,10 +8,11 @@ module.exports = {
 	wwwServer: {
 		verify: {
 			username: 'sampleUsername',
-			password: 'samplePassword'
+			password: 'samplePassword',
+            token: 'sampleToken'
 		},
-		fetchUrl: 'http://localhost:3333/api/judger/adopt',
-		uploadUrl: 'http://localhost:3333/api/judger/upload',
+		fetchUrl: 'http://localhost:3333/api/judge/get_task/acm',
+		uploadUrl: 'http://localhost:3333/api/judge/update_results',
 		reqInterval: 1000
 	},
 	local: {
@@ -25,7 +26,7 @@ module.exports = {
         },
 		sandbox: {
             path: path.resolve(__dirname, '../../samples/test-data/sandbox/'),
-            image: 'tuoj-sandbox-image:3.3',
+            image: 'tuoj-sandbox-image:3.4',
             refreshInterval: 999999999 * 86400000
 		}
 	}

@@ -1,23 +1,24 @@
 var mongoose = require('mongoose')
-mongoose.connect('mongodb://127.0.0.1/tuojdata')
-var user=require('../models/user').user
+var autoIncrement = require("mongoose-auto-increment")
+mongoose.connect('mongodb://127.0.0.1/tuoj')
+autoIncrement.initialize(mongoose.connection);
+var User=require('../models/user')
 
 var userList = [{
-	userid: 'root',
-	userpassword: 'root',
-	power: 1
+	username: 'root',
+	password: 'root',
+	is_admin: 1
 }, {
-	userid: 'player0',
-	userpassword: 'player',
+	username: 'player0',
+	password: 'player',
 }];
 
 userList.forEach(function(userInfo) {
-    user.update({ userid: userInfo.userid }, { $set: userInfo }, { upsert: true }, function(err) {
-        if (err) {
-            return console.warn(err);
-        }
-        console.log(userInfo.userid + ' inserted');
+    var user = new User(userInfo);
+    user.save(function (err, u) {
+        if (err) return console.error(err);
+        else console.log(u);
     });
 });
 
-mongoose.disconnect();
+// mongoose.disconnect();

@@ -7,10 +7,31 @@ module.exports = function(cfg) {
 		self.runId = runId;
 	}
 	self.uploadStatus = function(data) {
-        data.runId = self.runId;
+        const needRespondCmds = [ 'compile', 'judge' ];
+        if (needRespondCmds.indexOf(data.cmd) == -1) {
+            return;
+        }
+		var res = {
+            token: 'sometoken',
+            run_id: self.runId,
+            results: {},
+        };
+        if (data.cmd == 'compile') {
+            res.results[0] = {
+                status: data.message,
+                extInfo: data.extError
+            };
+        } else {
+            res.results[data.judgeStep] = {
+                status: data.message,
+                extInfo: data.extError,
+                time: data.time,
+                memory: data.memory,
+            }
+        }
 		var postData = {
 			url: self.url,
-			form: data
+			form: res
 		};
 		try {
 			request.post(postData, function(err, httpResponse, bodyStr) {

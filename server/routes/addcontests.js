@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var contest = require('../models/user').contest
+var contest = require('../models/contest.js')
 var path = require("path");
 var randomstring = require("randomstring");
 var fse = require("fs-extra");
@@ -11,9 +11,8 @@ var CONFIG = require("../config");
 var PROB_DIR = CONFIG.PROB_DIR;
 var TMP_DIR = CONFIG.TMP_DIR;
 
-
-var updateProblems = function(contest) {
-    for (var i = 0 ; i < contest.gitlist.length; i++) {
+/*var updateProblems = function(contest) {
+    for (var i = 0 ; i < contest.problems; i++) {
         url = contest.gitlist[i];
         tmp_repo = randomstring.generate(8);
 
@@ -40,125 +39,33 @@ var updateProblems = function(contest) {
 
     }
 };
-
-var getID=function(getpath) {
-	var tmp=0
-	for (tmp=1;tmp<getpath.length;tmp++)
-			if (getpath[tmp]>'9' || getpath[tmp]<'0')
-				break
-	return getpath.slice(1,tmp)
-}
-
+*/
 
 router.get('/',function(req,res,next){
-	res.render('addcontests',{user:req.session.user})
-})
-
-router.get('/[0-9]+',function(req,res,next){
-	var contestID=getID(req.path)
-	console.log('sds')
-	contest.findOne({id:parseInt(contestID)},function(err,x){
-		
-		var dic={}
-		dic.user=req.session.user
-		dic.starttime=x.starttime.time
-		dic.endtime=x.endtime.time
-		dic.startdate=x.starttime.date
-		dic.enddate=x.endtime.date
-		dic.gitlist=x.gitlist
-		dic.contestname=x.name
-		dic.contestid=contestID;
-		
-		var str=''
-		for(var i=0;i<dic.gitlist.length;i++)
-			str=str+dic.gitlist[i]+'\n'
-		dic.tex=str;
-		
-		
-		res.render('editcontests',dic)
-	})
-})
-
-router.post('/[0-9]+/edited',function(req,res,next){
-	
-	var contestID=getID(req.path)
-	var starttime=req.body.starttime
-	var endtime=req.body.endtime
-	var startdate=req.body.startdate
-	var enddate=req.body.enddate
-	var gitlist=req.body.gitlist
-	var contestname=req.body.contestname
-	var txt=req.body.gitlist.trim().split('\r\n')
-	var len=txt.length
-	
-	var flag=0;
-	
-	if (!len) flag=6
-	if (!contestname) flag=5
-	if (!endtime) flag=4
-	if (!enddate) flag=3
-	if (!starttime) flag=2
-	if (!startdate) flag=1 
-	
-	if (startdate>enddate || (startdate==enddate && starttime>=enddate))
-		flag=7
-	
-	if (!flag)
-	{
-		contest.findOne({id:parseInt(contestID)},function(err,newcontest){
-			newcontest.name=contestname
-			newcontest.starttime={date:startdate,time:starttime}
-			newcontest.endtime={date:enddate,time:endtime}
-			newcontest.gitlist=[]
-			for (var i=0;i<len;i++)
-				newcontest.gitlist.push(txt[i])
-			newcontest.save()
-            updateProblems(newcontest);
-		})
-	}
-	
-	res.redirect('/')
+	res.render('addcontests',{'user':req.session.user,'is_admin':req.session.is_admin})
 })
 
 router.post('/added',function(req,res,next){
+	var starttime=req.body.startdate+' '+req.body.starttime
+	var endtime=req.body.enddate+' '+req.body.endtime
+	var name=req.body.contestname
+	var problemlist=req.body.gitlist.split('\r\n')
+	var len=problemlist.length
 	
-	var starttime=req.body.starttime
-	var endtime=req.body.endtime
-	var startdate=req.body.startdate
-	var enddate=req.body.enddate
-	var gitlist=req.body.gitlist
-	var contestname=req.body.contestname
-	var txt=req.body.gitlist.split('\r\n')
-	var len=txt.length
+	var int_start=new Date(starttime).getTime()
+	var int_end=new Date(endtime).getTime()
 	
-	var flag=0;
-	
-	if (!len) flag=6
-	if (!contestname) flag=5
-	if (!endtime) flag=4
-	if (!enddate) flag=3
-	if (!starttime) flag=2
-	if (!startdate) flag=1 
-	
-	if (startdate>enddate || (startdate==enddate && starttime>=enddate))
-		flag=7
-	
-	if (!flag)
-	{
-		var newcontest=new contest
-		contest.count(function(err,x){
-			newcontest.name=contestname
-			newcontest.id=x+1;
-			newcontest.starttime={date:startdate,time:starttime}
-			newcontest.endtime={date:enddate,time:endtime}
-			for (var i=0;i<len;i++)
-				newcontest.gitlist.push(txt[i])
-			newcontest.save()
-			updateProblems(newcontest);
-			console.log(newcontest)
-		})
-	}
-	
-	res.redirect('/')
+	var newcontest = new contest
+	newcontest.name=name
+	newcontest.start_time=int_start
+	newcontest.end_time=int_end
+	for (var i=0;i<len;i++)
+		newcontest.problems.push(parseInt(problemlist[i]))
+	newcontest.save(function(err, x) {
+		console.log(err)
+		console.log(newcontest)
+		res.redirect('/')
+	});
 })
+
 module.exports = router

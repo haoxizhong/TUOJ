@@ -5,10 +5,33 @@ Sandbox_t J;
 void Init(int argc,char* argv[])
 {
 		char result;
-		while (~(result =(char) getopt(argc,argv,"t:m:drf:s:c")))
+		while (~(result =(char) getopt(argc,argv,"wha:t:m:drf:s:c")))
 		{
+				FILE *fhelp ;
 				switch(result)
 				{
+						case 'a':
+								if (strcmp(optarg,"python") == 0)
+										J.set_action("python");
+								else if (strcmp(optarg,"java") == 0)
+								{
+										J.set_action("java");
+										J.set_limit(false);
+								}
+								else if (strcmp(optarg,"javac") == 0)
+								{
+										J.set_action("javac");
+										J.set_limit(false);
+										J.set_ptrace(false);
+								}
+								break;
+						case 'h':
+								fhelp = fopen("/home/judger/bin/sandbox_exec.help","r");
+								char ch;
+								while (~(ch=fgetc(fhelp)))
+										putchar(ch);
+								fclose(fhelp);
+								exit(0);
 						case 'c':
 								J.set_action("command");
 								break;
@@ -34,6 +57,8 @@ void Init(int argc,char* argv[])
 						case 'r':
 								J.set_ptrace(false);
 								break;
+						case 'w':
+								J.set_pwhitelist(true);
 				}
 		}
 		if (!argv[optind])
