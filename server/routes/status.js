@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+var fse = require('fs-extra');
 
 var contest = require('../models/contest.js');
 var problem = require('../models/problem.js');
@@ -40,6 +41,22 @@ router.get('/:page([0-9]+)',function(req,res,next){
 router.post('/skip',function(req,res,next){
 	var page=req.body.page;
 	res.redirect('/status/'+page);
+});
+
+router.get('/detail/:id([0-9]+)', function (req, res, next) {
+	var judge_id = parseInt(req.params.id);
+	judge.findOne({_id: judge_id}).populate('user').populate('problem').populate('contest').exec(function (err, j) {
+		if (err) next(err);
+		if (!j) next();
+		var code = j.getSource();
+		var d = {
+			user: req.session.user,
+			is_admin: req.session.is_admin,
+			j: j,
+			code: code
+		};
+		res.render('judge_detail', d)
+	});
 });
 
 module.exports = router;

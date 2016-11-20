@@ -33,7 +33,8 @@ block content_contest
 						td #{now.title}
 						td #{now.user}
 						td #{now.status}
-						td #{now.score}
+						td
+							a(href='/status/detail/#{ now.id }') #{ now.score }
 						td #{now.time}
 				- }
 			

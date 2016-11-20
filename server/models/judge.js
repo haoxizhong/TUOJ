@@ -1,6 +1,7 @@
 var mongoose = require("mongoose");
 var path = require('path');
 var urljoin = require('url-join');
+var fse = require('fs-extra');
 var autoIncrement = require("mongoose-auto-increment");
 var Schema = mongoose.Schema;
 
@@ -33,6 +34,16 @@ Judge.plugin(autoIncrement.plugin, "Judge");
 
 Judge.methods.getSourceURL = function () {
     return urljoin(SITE_URL, 'source', this.source_file);
+};
+
+Judge.methods.getSource = function () {
+    try {
+        var s_path = path.join(SOURCE_DIR, this.source_file);
+        var source = fse.readFileSync(s_path);
+        return source;
+    } catch (err) {
+        return err.message;
+    }
 };
 
 Judge.methods.updateStatus = function (results, callback) {

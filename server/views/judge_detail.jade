@@ -15,11 +15,11 @@ block content
 					th 题目编号
 			tbody
 				tr
-					td #{ res.id }
-					td #{ res.userid }
+					td #{ j._id }
+					td #{ j.user.username }
 					td 
-						a(href='TODO') #{ res.probid }
+						a(href='TODO') #{ j.problem.title }
 	div.row
 		pre
-			code(class="#{ res.lang }") res.code
+			code(class="#{ j.lang }")= code
 

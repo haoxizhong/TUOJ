@@ -1,40 +1,39 @@
 extends contest_layout
 
 block content_contest
-	div.container-fluid
-		h3 OJ评测状态，当前页数:#{nowpage}，最大页数:#{maxpage}
-		- if (nowpage>1)
-			a(href='/status/#{nowpage-1}') 上一页
-		- if (nowpage<maxpage)
-			a(href='/status/#{nowpage+1}') 下一页
-		form(method='POST' action='/status/skip')
-			input(type='text' ,name='page',value='#{nowpage}')
-			input(type='submit', name='跳转')
-		br
-		
-		table.table
-			thead
-				tr
-					th #
-					th 题目
-					th 用户
-					th 状态
-					th 得分
-					th 提交时间
-			tbody
-				- var start=(nowpage-1)*10
-				- var end=(nowpage*10-1)
-				- if (end>=judgelist.length)
-					- end=judgelist.length-1
-				- for (var i=start;i<=end;i++) {
-					- var now=judgelist[i]
-					tr
-						td #{i}
-						td #{now.title}
-						td #{now.user}
-						td #{now.status}
-						td #{now.score}
-						td #{now.time}
-				- }
-			
-			
+    div.container-fluid
+        h3 OJ评测状态，当前页数:#{nowpage}，最大页数:#{maxpage}
+        - if (nowpage>1)
+        a(href='/status/#{nowpage-1}') 上一页
+        - if (nowpage<maxpage)
+        a(href='/status/#{nowpage+1}') 下一页
+        form(method='POST' action='/status/skip')
+            input(type='text' ,name='page',value='#{nowpage}')
+            input(type='submit', name='跳转')
+        br
+
+        table.table
+            thead
+                tr
+                    th #
+                    th 题目
+                    th 用户
+                    th 状态
+                    th 得分
+                    th 提交时间
+            tbody
+                - var start=(nowpage-1)*10
+                - var end=(nowpage*10-1)
+                - if (end>=judgelist.length)
+                - end=judgelist.length-1
+                - for (var i=start;i<=end;i++) {
+                - var now=judgelist[i]
+                    tr
+                        td #{now.id}
+                        td #{now.title}
+                        td #{now.user}
+                        td #{now.status}
+                        td
+                            a(href='/status/detail/#{ now.id }') #{ now.score }
+                        td #{now.time}
+                - }
