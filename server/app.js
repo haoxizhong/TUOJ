@@ -91,8 +91,8 @@ if (app.get('env') === 'development') {
             message: err.message,
             status: err.status,
             error: err,
-            user: req.session.user,
-            is_admin: req.session.is_admin
+            //user: req.session.user,
+            //is_admin: req.session.is_admin
         });
     });
 }  else {
@@ -105,8 +105,8 @@ if (app.get('env') === 'development') {
             message: err.message,
             status: err.status,
             error: {},
-            user: req.session.user,
-            is_admin: req.session.is_admin
+            //user: req.session.user,
+            //is_admin: req.session.is_admin
         });
     });
 }

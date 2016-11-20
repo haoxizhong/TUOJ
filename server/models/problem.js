@@ -51,7 +51,7 @@ Problem.methods.updateInfo = function(json_file, callback) {
     try {
         var info = fse.readFileSync(json_file);
         info = JSON.parse(info);
-        console.log(info);
+        //console.log(info);
 
         this.title = info.title;
         this.meta = info.meta;

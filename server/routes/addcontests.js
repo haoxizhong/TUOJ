@@ -62,8 +62,10 @@ router.post('/added',function(req,res,next){
 	for (var i=0;i<len;i++)
 		newcontest.problems.push(parseInt(problemlist[i]))
 	newcontest.save(function(err, x) {
-		console.log(err)
-		console.log(newcontest)
+		if (err) {
+			console.log(err)
+		}
+		//console.log(newcontest)
 		res.redirect('/')
 	});
 })

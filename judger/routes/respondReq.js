@@ -1,4 +1,5 @@
 var request = require('request');
+var qs = require('querystring');
 
 module.exports = function(cfg) {
 	var self = this;
@@ -6,10 +7,13 @@ module.exports = function(cfg) {
 	self.setId = function(runId) {
 		self.runId = runId;
 	}
-	self.uploadStatus = function(data) {
+	self.uploadStatus = function(data, next) {
         const needRespondCmds = [ 'compile', 'judge' ];
         if (needRespondCmds.indexOf(data.cmd) == -1) {
-            return;
+			if (typeof(next) == 'function') {
+				next();
+			}
+			return;
         }
 		var res = {
             token: cfg.wwwServer.verify.token,
@@ -29,21 +33,27 @@ module.exports = function(cfg) {
                 memory: data.memory,
             }
         }
-        // console.log(JSON.stringify(res));
 		var postData = {
 			url: self.url,
             method: 'POST',
-            json: res
+            json: JSON.stringify(res), 
+			/*headers: {
+				"content-type": "application/json",
+			},*/
 		};
 		try {
-			request(postData, function(err, httpResponse, bodyStr) {
+			request.post({ url: self.url, json: true, body: res }, function(err, httpResponse, bodyStr) {
                 if (err) {
                     console.log('Upload error ' + err);
                 }
-                // console.log(bodyStr);
+				console.log(bodyStr);
+				if (typeof(next) == 'function') {
+					next();
+				}
             });
 		} catch (error) {
 			console.log('Post error ' + error);
+			next();
 		};
 	}
 }

@@ -23,6 +23,7 @@ module.exports = function(mycfg) {
             }, this);
         }, function(err, httpResponse, bodyStr) {
 			var body = (typeof(bodyStr) == 'string') ? JSON.parse(bodyStr) : bodyStr;
+			console.log(bodyStr);
             if (!body || !body.run_id || body.run_id == -1) {
 				return this(err ? err : 'no need', mycfg.wwwServer.reqInterval);
             }

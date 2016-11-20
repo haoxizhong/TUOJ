@@ -35,7 +35,7 @@ router.get('/:id([0-9]+)',function(req,res,next){
 		dict.problems=x.problems
 		dict.start=x.start_time
 		dict.end=x.end_time
-		console.log(x.problems[0])
+		//console.log(x.problems[0])
 		res.render('contest',dict)
 		// contest: contains hrefs leading to problems and status
 	})
@@ -59,7 +59,7 @@ router.get('/:id([0-9]+)/status/:page([0-9]+)',function(req,res,next){
 		var jlist=[];
 		for(var i=0;i<len;i++){
 			var judict={};
-			console.log(judgelist[i].user.username)
+			//console.log(judgelist[i].user.username)
 			judict.id=judgelist[i]._id;
 			judict.title=judgelist[i].problem.title;
 			judict.user=judgelist[i].user.username;
@@ -73,7 +73,7 @@ router.get('/:id([0-9]+)/status/:page([0-9]+)',function(req,res,next){
 			
 		
 		dict.judgelist=jlist;
-		dict.maxpage=(len-1)/10+1;
+		dict.maxpage=Math.ceil(len/10);
 		dict.nowpage=page;
 		res.render('contest_status',dict)
 	});
@@ -128,6 +128,7 @@ router.post('/:cid([0-9]+)/problems/:pid([0-9]+)/upload',upload.single('inputfil
         if (err) return next(err);
         if (problemid >= x.problems.length) return next();
         p = x.problems[problemid];
+
         Step(function() {
 			SubmitRecord.getSubmitRecord(req.session.uid, x._id, problemid, this);
 		}, function (err, x) {
@@ -179,17 +180,36 @@ router.post('/:cid([0-9]+)/problems/:pid([0-9]+)/upload',upload.single('inputfil
     });
 });
 
-router.get('/:cid([0-9]+)/rank_list', function (req, res, next) {
-	var contest_id = parseInt(req.params.cid);
-	contest.findOne({_id: contest_id}, function (err, c) {
-		if (err) return next(err);
-		if (!c) return next();
-
-		helper.generateRankList(c, function (err, rank_list) {
-			if (err) return next(err);
-			console.log(rank_list);
-		});
-	});
+router.get('/detail/:contestId/:judgeId', function(req, res, next) {
+    var contestId = req.params.contestId;
+    var judgeId = req.params.judgeId;
+    judge.findOne({ _id: judgeId }).populate('user').exec(function(err, doc) {
+        if (err || !doc) {
+            return res.status(400).render('error', {
+                status: 400,
+                message: 'No such submission'
+            });
+        }
+        if (!req.session.is_admin && req.session.user != doc.user.username) {
+            return res.status(400).render('error', {
+                status: 400,
+                message: 'Access denied'
+            });
+        }
+        var renderArgs = {
+            id: doc._id,
+            user: doc.user.username,
+            problem_id: doc.problem_id,
+            source: fs.readFileSync(path.resolve(__dirname, '../public/source', doc.source_file)),
+            score: doc.score
+        };
+        res.status(200).render('judge_detail', {
+            title: 'TUOJ Judge details',
+            contestid: contestId,
+            user: req.session.user,
+            res: renderArgs
+        });
+    });
 });
 
 module.exports = router;

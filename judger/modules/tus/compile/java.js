@@ -5,7 +5,7 @@ module.exports = function(source, workPath, target, oargs) {
     if (typeof(args) == 'string') {
         args = args.split(' ');
     }
-    fs.copySync(source, path.resolve(workPath, 'Main.java'));
+    fs.writeFileSync(path.resolve(workPath, 'Main.java'), source);
     var args = [];
     if (typeof(oargs) == 'string') {
         args = oargs.split(' ');
@@ -16,10 +16,11 @@ module.exports = function(source, workPath, target, oargs) {
             }
         }
     }
-    args.push('Main.java');
+    //args.push('Main');
     var ret = {
-        fileName: '/usr/bin/javac',
-        args: args
+        fileName: 'Main',
+        args: args,
+        aType: 'javac'
     };
     return ret;
 }

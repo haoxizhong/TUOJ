@@ -45,7 +45,7 @@ router.post("/new_problem", function(req, res, next) {
     Problem.new(git_url, function (err, p) {
         if (err) return next(err);
         p.update(function (err, p) {
-            console.log(p);
+            //console.log(p);
         });
         return res.redirect("/problem_pool/" + p._id);
     });

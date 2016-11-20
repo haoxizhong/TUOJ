@@ -16,16 +16,20 @@ module.exports = function(cfg) {
 		self.path = path.resolve(self.cfg.path, self.id);
 		try {
 			fs.readdirSync(self.path);
-		} catch (err) {
+			fs.readFileSync(path.resolve(self.path, 'tus.json'));
+            callback(false, self.path);
+        } catch (err) {
+            fs.emptyDirSync(self.path);
             request(url).pipe(unzip.Extract({ 
                 path: self.path 
-            })).on('finish', function() {
+            })).on('close', function() {
                 callback(false, self.path);
             }).on('error', function(err) {
-                console.log('error = ' + err);
-                callback(err);
+                if (err) {
+                    console.log('fetch error = ' + err);
+                    callback(err);
+                }
             });
 		}
-        callback(false, self.path);
 	};
 }

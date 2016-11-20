@@ -6,20 +6,22 @@ append head
 	script hljs.initHighlightingOnLoad();
 
 block content
-	div.row
-		table.table
-			thead
-				tr
-					th #
-					th 提交者
-					th 题目编号
-			tbody
-				tr
-					td #{ j._id }
-					td #{ j.user.username }
-					td 
-						a(href='TODO') #{ j.problem.title }
-	div.row
-		pre
-			code(class="#{ j.lang }")= code
+    div.row
+        table.table
+            thead
+                tr
+                    th #
+                    th 提交者
+                    th 题目编号
+                    th 得分
+            tbody
+                tr
+                    td #{ res.id }
+                    td #{ res.user }
+                    td
+                        a(href='/contests/#{contestid}/problems/#{res.problem_id}') #{ res.problem_id }
+                    td #{ res.score }
+    div.row
+        pre
+            code(class="#{ res.lang }")= res.source
 
