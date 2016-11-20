@@ -9,6 +9,8 @@ var contest = require('../models/contest.js')
 var problem = require('../models/problem.js')
 var judge = require('../models/judge.js')
 var user = require('../models/user.js')
+var SubmitRecord = require('../models/submit_record');
+var helper = require('../helper');
 var path = require('path')
 var upload = require('../config.js').MULTER_UPLOAD
 var randomstring = require('randomstring')
@@ -126,11 +128,18 @@ router.post('/:cid([0-9]+)/problems/:pid([0-9]+)/upload',upload.single('inputfil
         if (err) return next(err);
         if (problemid >= x.problems.length) return next();
         p = x.problems[problemid];
-
         Step(function() {
-            fse.move(req.file.path, path.join(SOURCE_DIR, source_file), this);
-        }, function(err) {
-            if (err) return next(err);
+			SubmitRecord.getSubmitRecord(req.session.uid, x._id, problemid, this);
+		}, function (err, x) {
+			if (err) throw err;
+			submit_record = x;
+			submit_record.submitted_times += 1;
+			submit_record.save(this);
+		}, function(err) {
+			if (err) throw err;
+			fse.move(req.file.path, path.join(SOURCE_DIR, source_file), this);
+		}, function(err) {
+            if (err) throw err;
 
             var newjudge = new judge({
                 user:req.session.uid,
@@ -163,11 +172,24 @@ router.post('/:cid([0-9]+)/problems/:pid([0-9]+)/upload',upload.single('inputfil
             console.log(newjudge);
 
             newjudge.save(this);
-        }, function (err, newjudge) {
-            if (err) return next(err);
-            res.redirect('/contests/'+contestid+'/status/1');
-        });
+        }, function (err) {
+			if (err) return next(err);
+			res.redirect('/contests/'+contestid+'/status/1');
+		});
     });
+});
+
+router.get('/:cid([0-9]+)/rank_list', function (req, res, next) {
+	var contest_id = parseInt(req.params.cid);
+	contest.findOne({_id: contest_id}, function (err, c) {
+		if (err) return next(err);
+		if (!c) return next();
+
+		helper.generateRankList(c, function (err, rank_list) {
+			if (err) return next(err);
+			console.log(rank_list);
+		});
+	});
 });
 
 module.exports = router;
