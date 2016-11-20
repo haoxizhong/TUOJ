@@ -39,7 +39,7 @@ module.exports = function(dataPath, cfg) {
             return self.callback(false);
         }
         var runner = new curMod(curCmd, self);
-        return runner.run(function(data) {
+        return runner.run(function(data, next) {
             if (!data.tusStep) {
                 data.tusStep = self.tusStep;
             }
@@ -50,7 +50,7 @@ module.exports = function(dataPath, cfg) {
                     data.cmd = 'unknown';
                 }
             }
-            self.respond(data);
+            self.respond(data, next);
         }, function(error) {
             ++ self.tusStep;
             self.interpret(error);

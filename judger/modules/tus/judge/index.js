@@ -23,14 +23,14 @@ module.exports = function(cmd, data) {
     }
     self.run = function(sysRespond, callback) {
         self.respond = sysRespond;
-        var respond = function(res) {
+        var respond = function(res, callback) {
 			res.judgeStep = self.judgeStep;
             res.time = self.source.time;
             res.memory = self.source.memory;
             if (self.source.error) {
                 res.message = self.source.error;
             }
-            self.respond(res);
+            self.respond(res, callback);
         }
         var targetPath = path.resolve(self.path, 'res');
         try {
@@ -55,12 +55,14 @@ module.exports = function(cmd, data) {
             fs.copySync(self.checker, path.resolve(self.path, 'checker'));
             fs.writeFileSync(path.resolve(self.path, 'fullScore'), '100');
         } catch (error) {
-            respond({ message: 'Wrong Answer', extError: error, isEnd: self.cmd.haltOnFail, tusStep: self.tusStep });
-            data.scores.push({
-                error: self.source.error,
-				score: 0
+            respond({ message: 'Wrong Answer', extError: error, isEnd: self.cmd.haltOnFail, tusStep: self.tusStep }, function() {
+                data.scores.push({
+                    error: self.source.error,
+                    score: 0
+                });
+                return callback(cmd.haltOnFail);
             });
-            return callback(cmd.haltOnFail);
+            return;
         };
         var args = ['0.in', 'out', '0.ans', 'fullScore', 'score', 'extInfo'];
         var options = {
@@ -74,12 +76,14 @@ module.exports = function(cmd, data) {
         var runRes = exec.exec(options);
         if (!runRes || runRes.error) {
             var errMsg = 'checker error ' + runRes;
-            respond({ message: 'Wrong Answer', extError: errMsg, isEnd: self.cmd.haltOnFail, tusStep: self.tusStep });
-            data.scores.push({
-                score: 0,
-                error: runRes
+            respond({ message: 'Wrong Answer', extError: errMsg, isEnd: self.cmd.haltOnFail, tusStep: self.tusStep }, function() {
+                data.scores.push({
+                    score: 0,
+                    error: runRes
+                });
+                return callback(errMsg);
             });
-            return callback(errMsg);
+            return;
         }
         try {
             fs.ensureFileSync(path.resolve(self.path, 'extInfo'));
@@ -92,15 +96,19 @@ module.exports = function(cmd, data) {
                 message: res.score == 1 ? 'Accepted' : 'Wrong Answer', 
                 // score: res.score, 
                 extError: res.extInfo, 
+            }, function() {
+                callback(0);
             });
-            return callback(0);
+            return ;
         } catch (error) {
-            respond({ message: self.source.error, tusStep: self.tusStep, isEnd: cmd.haltOnFail });
-            data.scores.push({
-                error: self.source.error,
-				score: 0
+            respond({ message: self.source.error, tusStep: self.tusStep, isEnd: cmd.haltOnFail }, function() {
+                data.scores.push({
+                    error: self.source.error,
+                    score: 0
+                });
+                return callback(cmd.haltOnFail);
             });
-            return callback(cmd.haltOnFail);
+            return;
         };
     };
 }

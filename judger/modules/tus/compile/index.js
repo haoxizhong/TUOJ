@@ -19,17 +19,17 @@ module.exports = function(cmd, data) {
         self.cmd.haltOnFail = true;
     }
     self.run = function(sysRespond, callback) {
-        var respond = function(error) {
+        var respond = function(error, next) {
             if (error) {
                 sysRespond({
                     message: 'Compilation Error',
                     extInfo: error,
                     isEnd: true
-                });
+                }, next);
             } else {
                 sysRespond({
                     message: 'Compilation Succeess'
-                });
+                }, next);
             }
         };
         try {
@@ -39,11 +39,12 @@ module.exports = function(cmd, data) {
                 throw errMsg;
             }
         } catch (error) {
-            respond(error);
-            data.res[self.id] = {
-                error: error
-            };
-            return callback(error);
+            respond(error, function() {
+                data.res[self.id] = {
+                    error: error
+                };
+                return callback(error);
+            });
         }
         var targetPath = path.resolve(self.path, 'exe');
         if (self.lang == 'java') {
@@ -62,17 +63,19 @@ module.exports = function(cmd, data) {
             var runRes = exec.exec(options);
             if (!runRes || runRes.error) {
                 var errMsg = 'Compilation Error';
-                respond(runRes.error);
-                data.res[self.id] = {
-                    error: errMsg
-                };
-                return callback(errMsg);
+                respond(runRes.error, function() {
+                    data.res[self.id] = {
+                        error: errMsg
+                    };
+                    return callback(errMsg);
+                });
             }
             data.res[self.id] = {
                 target: targetPath
             };
-            respond(null);
-            callback(0);
+            respond(null, function() {
+                callback(0);
+            });
         });
     };
 };
