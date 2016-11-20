@@ -2,5 +2,5 @@ head
 body
     h1= message
     h2= status
-    - if (error.stack)
+    - if (error && error.stack)
         pre #{error.stack}

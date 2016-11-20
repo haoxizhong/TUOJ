@@ -71,7 +71,7 @@ router.get('/:id([0-9]+)/status/:page([0-9]+)',function(req,res,next){
 			
 		
 		dict.judgelist=jlist;
-		dict.maxpage=(len-1)/10+1;
+		dict.maxpage=Math.ceil(len/10);
 		dict.nowpage=page;
 		res.render('contest_status',dict)
 	});
@@ -166,6 +166,38 @@ router.post('/:cid([0-9]+)/problems/:pid([0-9]+)/upload',upload.single('inputfil
         }, function (err, newjudge) {
             if (err) return next(err);
             res.redirect('/contests/'+contestid+'/status/1');
+        });
+    });
+});
+
+router.get('/detail/:contestId/:judgeId', function(req, res, next) {
+    var contestId = req.params.contestId;
+    var judgeId = req.params.judgeId;
+    judge.findOne({ _id: judgeId }).populate('user').exec(function(err, doc) {
+        if (err || !doc) {
+            return res.status(400).render('error', {
+                status: 400,
+                message: 'No such submission'
+            });
+        }
+        if (!req.session.is_admin && req.session.user != doc.user.username) {
+            return res.status(400).render('error', {
+                status: 400,
+                message: 'Access denied'
+            });
+        }
+        var renderArgs = {
+            id: doc._id,
+            user: doc.user.username,
+            problem_id: doc.problem_id,
+            source: fs.readFileSync(path.resolve(__dirname, '../public/source', doc.source_file)),
+            score: doc.score
+        };
+        res.status(200).render('judge_detail', {
+            title: 'TUOJ Judge details', 
+            contestid: contestId,
+            user: req.session.user,
+            res: renderArgs
         });
     });
 });
