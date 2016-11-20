@@ -27,6 +27,9 @@ module.exports = function(cmd, data) {
 			res.judgeStep = self.judgeStep;
             res.time = self.source.time;
             res.memory = self.source.memory;
+            if (self.source.error) {
+                res.message = self.source.error;
+            }
             self.respond(res);
         }
         var targetPath = path.resolve(self.path, 'res');

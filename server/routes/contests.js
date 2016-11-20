@@ -33,7 +33,7 @@ router.get('/:id([0-9]+)',function(req,res,next){
 		dict.problems=x.problems
 		dict.start=x.start_time
 		dict.end=x.end_time
-		console.log(x.problems[0])
+		//console.log(x.problems[0])
 		res.render('contest',dict)
 		// contest: contains hrefs leading to problems and status
 	})
@@ -57,7 +57,7 @@ router.get('/:id([0-9]+)/status/:page([0-9]+)',function(req,res,next){
 		var jlist=[];
 		for(var i=0;i<len;i++){
 			var judict={};
-			console.log(judgelist[i].user.username)
+			//console.log(judgelist[i].user.username)
 			judict.id=judgelist[i]._id;
 			judict.title=judgelist[i].problem.title;
 			judict.user=judgelist[i].user.username;
@@ -160,7 +160,7 @@ router.post('/:cid([0-9]+)/problems/:pid([0-9]+)/upload',upload.single('inputfil
                     status: "Waiting"
                 });
             }
-            console.log(newjudge);
+            //console.log(newjudge);
 
             newjudge.save(this);
         }, function (err, newjudge) {

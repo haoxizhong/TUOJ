@@ -17,7 +17,7 @@ router.get('/:page([0-9]+)',function(req,res,next){
 		var jlist=[];
 		for(var i=0;i<len;i++){
 			var judict={};
-			console.log(judgelist[i].user.username)
+			//console.log(judgelist[i].user.username)
 			judict.id=judgelist[i]._id;
 			judict.title=judgelist[i].problem.title;
 			judict.user=judgelist[i].user.username;
@@ -29,7 +29,7 @@ router.get('/:page([0-9]+)',function(req,res,next){
 			jlist.push(judict);
 		}
 			
-		console.log(judict);
+		//console.log(judict);
 		dict.judgelist=jlist;
 		dict.maxpage=(len-1)/10+1;
 		dict.nowpage=page;

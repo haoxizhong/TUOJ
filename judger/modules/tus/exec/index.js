@@ -21,7 +21,11 @@ module.exports = function(cmd, data) {
 				throw 'compile error';
 			}
 			fs.mkdirSync(self.path);
-			fs.copySync(self.source.target, path.resolve(self.path, 'exe'));
+            if (data.lang == 'java') {
+                fs.copySync(self.source.target, path.resolve(self.path, 'Main.class'));
+            } else {
+                fs.copySync(self.source.target, path.resolve(self.path, 'exe'));
+            }
 			if (typeof(self.cmd.inputFile) == 'string') {
 				self.cmd.inputFile = [ self.cmd.inputFile ];
 			}
@@ -55,8 +59,10 @@ module.exports = function(cmd, data) {
             memLimit: self.cmd.memLimit ? self.cmd.memLimit : defaults.memLimit,
         };
 		if (data.lang == 'java') {
-			options.filename = '/usr/bin/java';
-			options.args.push('Main');
+			options.fileName = 'Main';
+            options.aType = 'java';
+            options.memLimit = '999999999999999';
+			//options.args.push('Main');
 		}
         var runRes = exec.exec(options);
         if (!runRes || runRes.error) {

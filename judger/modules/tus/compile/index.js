@@ -46,6 +46,9 @@ module.exports = function(cmd, data) {
             return callback(error);
         }
         var targetPath = path.resolve(self.path, 'exe');
+        if (self.lang == 'java') {
+            targetPath = path.resolve(self.path, 'Main.class');
+        }
         var langFunc = langMods[self.lang];
         data.updateSource(cmd.sourceId, function(err) {
             if (err) {

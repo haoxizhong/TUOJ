@@ -44,7 +44,7 @@ Judge.methods.updateStatus = function (results, callback) {
         }
 
         var result = results[test_id_str];
-        console.log(results[test_id_str]);
+        //console.log(results[test_id_str]);
         self.results[test_id].status = result["status"];
         self.results[test_id].time = result["time"];
         self.results[test_id].memory = result["memory"];
