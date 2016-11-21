@@ -72,7 +72,8 @@ router.get('/:id([0-9]+)/status',function(req,res,next){
 			jlist.push(judict);
 		}
 		dict.judgelist=jlist.reverse();
-        dict.contestname = judgelist[0].contest.name;
+        // TODO: When the judgelist is empty, it will raise error. So we should consider show contestname at each line of judge detail.
+        // dict.contestname = judgelist[0].contest.name;
 		res.render('contest_status',dict)
 	});
 })
@@ -224,6 +225,7 @@ router.get('/:cid([0-9]+)/rank_list', function (req, res, next) {
                 if (err) return next(err);
                 var renderArgs = {
                     user: req.session.user,
+                    is_admin: req.session.is_admin,
                     contestid: c._id,
                     problems: [],
                     players: rank_list
