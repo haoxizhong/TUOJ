@@ -34,7 +34,7 @@ SubmitRecord.methods.update = function (judge, callback) {
         this.score = judge.score;
         this.judge = judge._id;
     }
-    s.save(callback);
+    this.save(callback);
 };
 
 module.exports = mongoose.model("submit_record", SubmitRecord);

@@ -59,7 +59,7 @@ var Executer = function() {
             fs.copySync(self.path, options.cwd);
             fs.emptyDirSync(self.path);
          } catch (err) {
-             console.log('run error = ' + err);
+             //console.log('run error = ' + err);
              //console.log(err);
              return { error: err };
         }
@@ -77,7 +77,7 @@ var Executer = function() {
             }
             return res;
         } catch(error) {
-            console.log(error);
+            //console.log(error);
             return { error: error };
         }
     };

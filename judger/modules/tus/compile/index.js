@@ -64,7 +64,7 @@ module.exports = function(cmd, data) {
             var runRes = exec.exec(options);
             if (!runRes || runRes.error) {
                 var errMsg = 'Compilation Error';
-                respond(runRes.error, function() {
+                return respond(runRes.error, function() {
                     data.res[self.id] = {
                         error: errMsg
                     };

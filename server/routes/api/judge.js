@@ -41,6 +41,7 @@ router.post('/update_results', function (req, res, next) {
 	if (req.body.token != TOKEN) {
 		return next();
 	}
+    console.log(req.body);
 	var run_id  = parseInt(req.body.run_id);
 	Judge.findOne({_id: run_id}).populate('problem').exec(function (err, x) {
 		//if (err) return next(err);
@@ -50,6 +51,7 @@ router.post('/update_results', function (req, res, next) {
 		}, function(err, j) {
 			if (err) throw err;
 			x = j;
+            this();
 		}, function (err) {
 			if (err) throw err;
 			if (!(x.status == 'Running' || x.status == 'Waiting')) {
@@ -59,8 +61,8 @@ router.post('/update_results', function (req, res, next) {
 			}
 		}, function (err, s) {
 			if (err) throw err;
-			if (!s) this(null);
-			s.update(x);
+			if (!s) return this(null);
+			s.update(x, this);
 		}, function (err) {
 			if (err) {
 				res.send({
