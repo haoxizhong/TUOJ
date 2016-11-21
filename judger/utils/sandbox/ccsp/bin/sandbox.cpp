@@ -195,14 +195,19 @@ void Sandbox_t::Init()
 	chdir(run_path.c_str());
 	//cout<<"CHANGE DIRECTORY INTO "<<run_path<<endl;
 }
+
+int action(int signo,siginfo_t *siginfo,void* pvoid)
+{
+		cout<<"haha"<<endl;
+}
 int Sandbox_t::Run()
 {  
 	if (do_debug)print_args();
+	if (do_debug)cout<<"EXCUTE "<<update_command(command.c_str())<<endl;
 	pid_t child;
 	child = fork();
 	if(child == 0) {
 		rlimit rm_cpu_old,rm_cpu_new;
-
 		rlimit rm_as_old,rm_as_new;
 		if (do_limit)
 		{
@@ -237,6 +242,8 @@ int Sandbox_t::Run()
 			status = execl("/usr/bin/python","/usr/bin/python",command.c_str(),NULL);
 		}else if (action == "execute")
 		{
+			//status = execl("/bin/bash",run_path.c_str(),"-c",update_command(command.c_str()).c_str(),NULL);
+			//if (do_debug)cout<<"EXCUTE "<<update_command(command.c_str())<<endl;
 			status = execl("/bin/bash","/bin/bash","-c",update_command(command.c_str()).c_str(),NULL);
 		}else if (action == "command")
 		{
@@ -246,6 +253,7 @@ int Sandbox_t::Run()
 			status = execl("/bin/bash","/bin/bash","-c",command.c_str(),NULL);
 			//chdir(tbuf);
 		}
+		/*
 		if (!do_debug)fclose(stdout);
 		if (!do_debug)fclose(stderr);
 		if (do_limit)
@@ -264,7 +272,7 @@ int Sandbox_t::Run()
 			exit(RS_RE);//Runtime Error or Interrupted
 		}
 		cerr<<"Child process abnormal exit"<<endl;
-		exit(RS_RE);
+		exit(RS_RE);*/
 	}
 	else {
 		int timer;
@@ -273,10 +281,12 @@ int Sandbox_t::Run()
 			usleep(timelimit*1200);
 			cerr<<"Timer killed"<<endl;
 			kill(child,9);
+			kill(getppid(),SIGUSR2);
 			exit(0);
 		}
 		rusage rusa;
 		int status;
+		sigaction(SIGUSR2,&action,NULL);
 		while(1) //cycle for ptracing system calls
 		{
 			wait4(child,&status,__WALL,&rusa);

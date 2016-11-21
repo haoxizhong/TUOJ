@@ -1,3 +1,1 @@
-g++: error: cpptle1.cpp: No such file or directory
-g++: fatal error: no input files
-compilation terminated.
+/bin/bash: cpptle1: command not found

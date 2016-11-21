@@ -1,7 +1,7 @@
 #include<iostream>
 using namespace std;
-
-int main()
+int main(int,const char* args[])
 {
-		while (1);
+		cout<<args[0]<<endl;
+//		while (1){};
 }

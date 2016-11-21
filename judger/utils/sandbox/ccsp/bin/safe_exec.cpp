@@ -11,7 +11,6 @@ using namespace std;
 
 int main(int argc,char* args[])
 {
-		char buf[MAXBUF];
 		if (argc!=2)
 		{
 				cerr<<"Wrong Argument"<<endl;
