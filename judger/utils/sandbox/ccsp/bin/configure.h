@@ -2,7 +2,8 @@
 #define __TUOJ_CONFIGURE_H__
 
 //#define DEFAULT_HOME_PATH "/home/judger"
-#define DEFAULT_HOME_PATH "/home/toby/Workspace/tuoj/judger/utils/sandbox/ccsp"
+//#define DEFAULT_HOME_PATH "/home/toby/Workspace/tuoj/judger/utils/sandbox/ccsp"
+#define DEFAULT_HOME_PATH "/home/mhy12345/tuoj/judger/utils/sandbox/ccsp"
 #define HOME_PATH "/home/judger"
 #define RUN_PATH HOME_PATH "/run"
 #define SHARED_PATH HOME_PATH "/shared"
