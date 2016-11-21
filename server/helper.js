@@ -49,9 +49,8 @@ var generateRankList = function(c, user, callback) {
             contest: c._id
         };
     }
-
     SubmitRecord.find(find_cond).populate('user').exec(function (err, records) {
-        if (err) callback(err);
+        if (err) return callback(err);
         updateRankList(c, rank_list, records, callback);
     });
 };
