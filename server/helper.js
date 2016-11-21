@@ -22,12 +22,14 @@ var generateRankList = function(c, callback) {
         }
 
         for (var i = 0; i < rank_list.length; i++) {
-            rank_list[i].total_score = rank_list[i].details.reduce(function (x, y) { return x.score + y.score; });
+            rank_list[i].total_score = 0;
+            for (var j = 0; j < rank_list[i].details.length; j++) {
+                rank_list[i].total_score += rank_list[i].details[j].score;
+            }
         }
-
         // sort by score in descending order.
         rank_list = rank_list.sort(function (r1, r2) {
-            return r2.score - r1.score;
+            return r2.total_score - r1.total_score;
         });
 
         callback(null, rank_list);
