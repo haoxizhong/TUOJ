@@ -181,7 +181,7 @@ router.post('/:cid([0-9]+)/problems/:pid([0-9]+)/upload',upload.single('inputfil
 router.get('/detail/:contestId/:judgeId', function(req, res, next) {
     var contestId = req.params.contestId;
     var judgeId = req.params.judgeId;
-    judge.findOne({ _id: judgeId }).populate('user').exec(function(err, doc) {
+    judge.findOne({ _id: judgeId }).populate('user').populate('problem').exec(function(err, doc) {
         if (err || !doc) {
             return res.status(400).render('error', {
                 status: 400,
@@ -198,8 +198,11 @@ router.get('/detail/:contestId/:judgeId', function(req, res, next) {
             id: doc._id,
             user: doc.user.username,
             problem_id: doc.problem_id,
+            problem_name: doc.problem.title,
             source: fs.readFileSync(path.resolve(__dirname, '../public/source', doc.source_file)),
-            score: doc.score
+            status: doc.status,
+            score: doc.score,
+            results: doc.results
         };
         res.status(200).render('judge_detail', {
             title: 'TUOJ Judge details',
@@ -218,7 +221,6 @@ router.get('/:cid([0-9]+)/rank_list', function (req, res, next) {
 
 		helper.generateRankList(c, function (err, rank_list) {
 			if (err) return next(err);
-			console.log(rank_list);
             res.send(rank_list);
 		});
 	});
