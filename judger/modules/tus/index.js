@@ -70,6 +70,9 @@ module.exports = function(dataPath, cfg) {
 		self.sources = [];
         self.updateSource = function(id, callback) {
             if (!self.sources[id]) {
+                if (typeof(req.source_url) == 'string') {
+                    req.source_url = [ req.source_url ];
+                }
                 if (typeof(req.source_url) == 'object' && req.source_url[id]) {
                     request.get({
                         url: req.source_url[id]
