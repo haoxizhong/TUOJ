@@ -28,11 +28,13 @@ var Executer = function() {
             }
         }
         fs.ensureFileSync(path.resolve(options.cwd, options.stdin));
-        with (options) {
-            cmdl += ' <' + stdin;
-            cmdl += ' 1>' + stdout;
-            cmdl += ' 2>' + stderr;
-        }
+		/*if (!options.aType) {
+			with (options) {
+				cmdl += ' <' + stdin;
+				cmdl += ' 1>' + stdout;
+				cmdl += ' 2>' + stderr;
+			}
+        }*/
         var args = [cmdl];
         if (options.timeLimit) {
             args.push('-t');
@@ -49,6 +51,7 @@ var Executer = function() {
             args.push('-a');
             args.push(options.aType);
         }
+		console.log(args);
         try {
             fs.emptyDirSync(self.path);
             fs.copySync(options.cwd, self.path);

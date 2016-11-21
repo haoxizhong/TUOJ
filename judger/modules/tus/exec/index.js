@@ -56,8 +56,8 @@ module.exports = function(cmd, data) {
 			args: self.cmd.args,
             cwd: self.path,
             stdin: '0.in',
-            stdout: 'r.stdout',
-            stderr: 'r.stderr',
+            stdout: '.stdout',
+            stderr: '.stderr',
             //sysLimit: true,
             timeLimit: self.cmd.timeLimit ? self.cmd.timeLimit : defaults.timeLimit,
             memLimit: self.cmd.memLimit ? self.cmd.memLimit : defaults.memLimit,
@@ -65,7 +65,7 @@ module.exports = function(cmd, data) {
 		if (data.lang == 'java') {
 			options.fileName = 'Main';
             options.aType = 'java';
-            options.memLimit = '999999999999999';
+            // options.memLimit = '999999999999999';
 			//options.args.push('Main');
 		}
         var runRes = exec.exec(options);
