@@ -215,13 +215,27 @@ router.get('/detail/:contestId/:judgeId', function(req, res, next) {
 
 router.get('/:cid([0-9]+)/rank_list', function (req, res, next) {
 	var contest_id = parseInt(req.params.cid);
-	contest.findOne({_id: contest_id}, function (err, c) {
+	contest.findOne({_id: contest_id}).populate('problems').exec(function (err, c) {
 		if (err) return next(err);
 		if (!c) return next();
 
 		helper.generateRankList(c, function (err, rank_list) {
 			if (err) return next(err);
-            res.send(rank_list);
+            var renderArgs = {
+                user: req.session.user,
+                contestid: c._id,
+                problems: [],
+                players: rank_list
+            };
+            for (var i in c.problems) {
+                if (c.problems[i].title) {
+                    renderArgs.problems.push({
+                        id: i,
+                        title: c.problems[i].title
+                    });
+                }
+            }
+            res.status(200).render('contest_ranklist', renderArgs);
 		});
 	});
 });
