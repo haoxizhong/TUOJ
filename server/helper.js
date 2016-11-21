@@ -52,7 +52,7 @@ var generateRankList = function(c, user, callback) {
 
     SubmitRecord.find(find_cond).populate('user').exec(function (err, records) {
         if (err) callback(err);
-        updateRankList(contest, rank_list, records, callback);
+        updateRankList(c, rank_list, records, callback);
     });
 };
 
