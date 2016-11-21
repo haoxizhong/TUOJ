@@ -41,13 +41,13 @@ router.get('/:id([0-9]+)',function(req,res,next){
 	})
 }) 
 
-router.get('/:id([0-9]+)/status/:page([0-9]+)',function(req,res,next){
+router.get('/:id([0-9]+)/status',function(req,res,next){
 	var contestid=parseInt(req.params.id)
 	var page=parseInt(req.params.page)
 	var attr = {'contest':contestid}
 	Step(function() {
 		attr.user = req.session.uid;
-		judge.find(attr, this).populate('problem').populate('user');
+		judge.find(attr).populate('problem').populate('user').populate('contest').exec(this);
 	}, function(err, judgelist){
 		//console.log(judgelist)
 		var len=judgelist.length;
@@ -62,6 +62,7 @@ router.get('/:id([0-9]+)/status/:page([0-9]+)',function(req,res,next){
 			//console.log(judgelist[i].user.username)
 			judict.id=judgelist[i]._id;
 			judict.title=judgelist[i].problem.title;
+			judict.problemid=judgelist[i].problem_id;
 			judict.user=judgelist[i].user.username;
 			judict.status=judgelist[i].status;
 			judict.score=judgelist[i].score;
@@ -71,8 +72,7 @@ router.get('/:id([0-9]+)/status/:page([0-9]+)',function(req,res,next){
 			jlist.push(judict);
 		}
 		dict.judgelist=jlist.reverse();
-		dict.maxpage=Math.ceil(len/10);
-		dict.nowpage=page;
+        dict.contestname = judgelist[0].contest.name;
 		res.render('contest_status',dict)
 	});
 })
@@ -80,7 +80,7 @@ router.get('/:id([0-9]+)/status/:page([0-9]+)',function(req,res,next){
 router.post('/:id([0-9]+)/skip',function(req,res,next){
 	var contestid=req.params.id
 	var page=req.body.page
-	res.redirect('/contests/'+contestid+'/status/'+page);
+	res.redirect('/contests/'+contestid+'/status/');
 })
 
 router.get('/:cid([0-9]+)/problems/:pid([0-9]+)',function(req,res,next){
@@ -113,7 +113,7 @@ router.get('/:cid([0-9]+)/problems/:pid([0-9]+)',function(req,res,next){
 
 router.post('/:cid([0-9]+)/problems/:pid([0-9]+)/upload',upload.single('inputfile'),function(req,res,next){
 	if (typeof(req.file) == 'undefined') {
-        console.log("xx");
+        // console.log("xx");
         return next(new Error("Undefined file."));
     }
     var suffix = {"g++": ".cpp", "gcc": ".c"};
@@ -168,12 +168,12 @@ router.post('/:cid([0-9]+)/problems/:pid([0-9]+)/upload',upload.single('inputfil
                     status: "Waiting"
                 });
             }
-            console.log(newjudge);
+            // console.log(newjudge);
 
             newjudge.save(this);
         }, function (err) {
 			if (err) return next(err);
-			res.redirect('/contests/'+contestid+'/status/1');
+			res.redirect('/contests/'+contestid+'/status/');
 		});
     });
 });

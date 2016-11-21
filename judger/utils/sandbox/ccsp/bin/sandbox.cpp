@@ -67,10 +67,10 @@ Sandbox_t::Sandbox_t()
 	home_path = string(cwd);
 	if (home_path.substr(home_path.length()-4,4) == "/bin")
 			home_path = home_path.substr(0,home_path.length()-4);
-	shared_path = home_path + "/shared";
-	tmp_path = home_path + "/tmp";
-	run_path = home_path + "/run";
-	this->bin_path = home_path + "/bin";
+	shared_path = home_path;
+	tmp_path = home_path;
+	run_path = home_path;
+	this->bin_path = home_path;
 
 	do_debug = false;
 	do_ptrace = true;
@@ -120,10 +120,10 @@ void Sandbox_t::set_action(string action)
 }
 void Sandbox_t::set_path(string path) {
 	this->home_path = path;
-	this->shared_path = path + "/shared";
-	this->tmp_path = path + "/tmp";
-	this->run_path = path + "/run";
-	this->bin_path = path + "/bin";
+	this->shared_path = path;
+	this->tmp_path = path;
+	this->run_path = path;
+	this->bin_path = path;
 }
 void Sandbox_t::set_command(string command)
 {
