@@ -53,6 +53,7 @@ module.exports = function(cmd, data) {
             });
             fs.copySync(self.source.target, path.resolve(self.path, 'out'));
             fs.copySync(self.checker, path.resolve(self.path, 'checker'));
+            fs.chmodSync(path.resolve(self.path, 'checker'), 0755);
             fs.writeFileSync(path.resolve(self.path, 'fullScore'), '100');
 			if (typeof(self.cmd.inputFile) == 'string') {
 				self.cmd.inputFile = [ self.cmd.inputFile ];
