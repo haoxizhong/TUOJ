@@ -41,13 +41,13 @@ router.get('/:id([0-9]+)',function(req,res,next){
 	})
 }) 
 
-router.get('/:id([0-9]+)/status/:page([0-9]+)',function(req,res,next){
+router.get('/:id([0-9]+)/status',function(req,res,next){
 	var contestid=parseInt(req.params.id)
 	var page=parseInt(req.params.page)
 	var attr = {'contest':contestid}
 	Step(function() {
 		attr.user = req.session.uid;
-		judge.find(attr, this).populate('problem').populate('user');
+		judge.find(attr, this).populate('problem').populate('user').populate('contest');
 	}, function(err, judgelist){
 		//console.log(judgelist)
 		var len=judgelist.length;
@@ -62,6 +62,7 @@ router.get('/:id([0-9]+)/status/:page([0-9]+)',function(req,res,next){
 			//console.log(judgelist[i].user.username)
 			judict.id=judgelist[i]._id;
 			judict.title=judgelist[i].problem.title;
+			judict.problemid=judgelist[i].problem_id;
 			judict.user=judgelist[i].user.username;
 			judict.status=judgelist[i].status;
 			judict.score=judgelist[i].score;
@@ -71,8 +72,7 @@ router.get('/:id([0-9]+)/status/:page([0-9]+)',function(req,res,next){
 			jlist.push(judict);
 		}
 		dict.judgelist=jlist.reverse();
-		dict.maxpage=Math.ceil(len/10);
-		dict.nowpage=page;
+        dict.contestname = judgelist.contest.name;
 		res.render('contest_status',dict)
 	});
 })
