@@ -1,7 +1,7 @@
 var Contest = require('./models/contest');
 var SubmitRecord = require('./models/submit_record');
 
-var updateRankList = function (rank_list, records, callback) {
+var updateRankList = function (c, rank_list, records, callback) {
     if (typeof(rank_list) == 'undefined') rank_list = [];
     var user2it = {};
     for (var i = 0; i < rank_list.length; i) {
@@ -52,7 +52,7 @@ var generateRankList = function(c, user, callback) {
 
     SubmitRecord.find(find_cond).populate('user').exec(function (err, records) {
         if (err) callback(err);
-        updateRankList(rank_list, records, callback);
+        updateRankList(contest, rank_list, records, callback);
     });
 };
 
