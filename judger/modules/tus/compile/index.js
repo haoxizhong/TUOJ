@@ -6,6 +6,7 @@ var langMods = {
     'g++': require('./g++'),
     //'gcc': require('./gcc'),
     'java': require('./java'),
+    'answer': require('./answer')
 };
 
 module.exports = function(cmd, data) {
@@ -28,7 +29,7 @@ module.exports = function(cmd, data) {
                 }, next);
             } else {
                 sysRespond({
-                    message: 'Compilation Succeess'
+                    message: 'Compilation Success'
                 }, next);
             }
         };
