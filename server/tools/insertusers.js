@@ -11,6 +11,12 @@ var userList = [{
 }, {
 	username: 'player0',
 	password: 'player',
+}, {
+	username: 'player1',
+	password: 'player',
+}, {
+	username: 'player2',
+	password: 'player',
 }];
 
 userList.forEach(function(userInfo) {

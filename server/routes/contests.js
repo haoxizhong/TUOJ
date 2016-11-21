@@ -31,12 +31,13 @@ router.get('/:id([0-9]+)',function(req,res,next){
 		if (!x) next()
 		
 		dict={'user':req.session.user,"is_admin":req.session.is_admin}
-		dict.contestid=contestid
-		dict.problems=x.problems
-		dict.start=x.start_time
-		dict.end=x.end_time
+		dict.contestid=contestid;
+		dict.contesttitle = x.name;
+		dict.problems=x.problems;
+		dict.start=x.start_time;
+		dict.end=x.end_time;
 		//console.log(x.problems[0])
-		res.render('contest',dict)
+		res.render('contest',dict);
 		// contest: contains hrefs leading to problems and status
 	})
 }) 
