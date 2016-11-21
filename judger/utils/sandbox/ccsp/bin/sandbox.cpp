@@ -64,11 +64,13 @@ Sandbox_t::Sandbox_t()
 {
 	char cwd[1111];
 	getcwd(cwd, sizeof(cwd));
-	this->home_path = string(cwd);
-	this->shared_path = home_path;
-	this->tmp_path = home_path;
-	this->run_path = home_path;
-	this->bin_path = home_path;
+	home_path = string(cwd);
+	if (home_path.substr(home_path.length()-4,4) == "/bin")
+			home_path = home_path.substr(0,home_path.length()-4);
+	shared_path = home_path + "/shared";
+	tmp_path = home_path + "/tmp";
+	run_path = home_path + "/run";
+	this->bin_path = home_path + "/bin";
 
 	do_debug = false;
 	do_ptrace = true;
@@ -190,6 +192,7 @@ void Sandbox_t::Init()
 	//system(("mkdir "+run_path).c_str());
 	//system(("cp -R "+shared_path+"/* "+run_path).c_str());
 	chdir(run_path.c_str());
+	//cout<<"CHANGE DIRECTORY INTO "<<run_path<<endl;
 }
 int Sandbox_t::Run()
 {  

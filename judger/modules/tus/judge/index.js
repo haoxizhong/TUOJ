@@ -19,7 +19,7 @@ module.exports = function(cmd, data) {
     if (cmd.checker == 'default') {
         self.checker = path.resolve(__dirname, '../../../bin/fdiff');
     } else {
-        self.checker = 'false';
+        self.checker = path.resolve(self.dataPath, cmd.checker);
     }
     self.run = function(sysRespond, callback) {
         self.respond = sysRespond;
@@ -54,6 +54,13 @@ module.exports = function(cmd, data) {
             fs.copySync(self.source.target, path.resolve(self.path, 'out'));
             fs.copySync(self.checker, path.resolve(self.path, 'checker'));
             fs.writeFileSync(path.resolve(self.path, 'fullScore'), '100');
+			if (typeof(self.cmd.inputFile) == 'string') {
+				self.cmd.inputFile = [ self.cmd.inputFile ];
+			}
+            for (var i in self.cmd.inputFile) {
+				var file = self.cmd.inputFile[i];
+                fs.copySync(path.resolve(self.dataPath, file), path.resolve(self.path, i + '.in'));
+            }
         } catch (error) {
             respond({ message: 'Wrong Answer', extError: error, isEnd: self.cmd.haltOnFail, tusStep: self.tusStep }, function() {
                 data.scores.push({
@@ -93,7 +100,7 @@ module.exports = function(cmd, data) {
             };
             data.scores.push(res);
             respond({ 
-                message: res.score == 1 ? 'Accepted' : 'Wrong Answer', 
+                message: res.score > 0.99 ? 'Accepted' : 'Wrong Answer', 
                 // score: res.score, 
                 extError: res.extInfo, 
             }, function() {

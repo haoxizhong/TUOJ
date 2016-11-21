@@ -32,10 +32,14 @@ module.exports = function(cmd, data) {
 			if (typeof(self.cmd.inputFile) != 'object') {
 				throw 'illegal script';
 			}
-            self.cmd.inputFile.forEach(function(file, i) {
+			if (typeof(self.cmd.inputFile) == 'string') {
+				self.cmd.inputFile = [ self.cmd.inputFile ];
+			}
+            for (var i in self.cmd.inputFile) {
+				var file = self.cmd.inputFile[i];
                 fs.copySync(path.resolve(self.dataPath, file), path.resolve(self.path, i + '.in'));
 				fs.chmodSync(path.resolve(self.path, i + '.in'), 0444);
-            });
+            }
 		} catch (error) {
 			respond({ message: error, tusStep: self.tusStep, isEnd: cmd.haltOnFail });
             data.res[self.id] = {
