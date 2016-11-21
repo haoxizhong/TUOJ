@@ -1,4 +1,21 @@
-/usr/lib/x86_64-linux-gnu/gconv/gconv-modules.cache -1
+/usr/lib/locale/zh_CN.UTF-8/LC_IDENTIFICATION -1
+/usr/lib/locale/zh_CN.utf8/LC_IDENTIFICATION -1
+/usr/lib/locale/zh_CN/LC_IDENTIFICATION -1
+/usr/lib/locale/zh.UTF-8/LC_IDENTIFICATION -1
+/usr/lib/locale/zh.utf8/LC_IDENTIFICATION -1
+/usr/lib/locale/zh/LC_IDENTIFICATION -1
+/usr/lib/locale/zh_CN.UTF-8/LC_NUMERIC -1
+/usr/lib/locale/zh_CN.utf8/LC_NUMERIC -1
+/usr/lib/locale/zh_CN/LC_NUMERIC -1
+/usr/lib/locale/zh.UTF-8/LC_NUMERIC -1
+/usr/lib/locale/zh.utf8/LC_NUMERIC -1
+/usr/lib/locale/zh/LC_NUMERIC -1
+/usr/lib/locale/zh_CN.UTF-8/LC_TIME -1
+/usr/lib/locale/zh_CN.utf8/LC_TIME -1
+/usr/lib/locale/zh_CN/LC_TIME -1
+/usr/lib/locale/zh.UTF-8/LC_TIME -1
+/usr/lib/locale/zh.utf8/LC_TIME -1
+/usr/lib/locale/zh/LC_TIME -1
 /usr/lib/x86_64-linux-gnu/gconv/gconv-modules.cache -1
 /usr/lib/locale/locale-archive -1
 /etc/ld.so.cache 2
@@ -13,6 +30,7 @@
 /dev/tty -1
 /etc/nsswitch.conf -1
 /etc/passwd -1
+/usr/share/locale/locale.alias -1
 ^/lib/x86_64-linux-gnu
 ^/usr/lib/python2.7
 ^/usr/local/lib/python2.7/dist-packages

@@ -185,6 +185,7 @@ void Sandbox_t::Init()
 		mkdir(run_path.c_str(),0755);
 	init_flag = true;
 	resfile.open((tmp_path+"/.result").c_str());
+	if (do_debug)cout<<"Result file at"<<tmp_path+"/.result"<<endl;
 	fileft.assign((bin_path+"/whitelist/file-default.whitelist").c_str());
 	sysft.assign((bin_path+"/whitelist/syscall-default.whitelist").c_str());
 	//if (file_exists(run_path.c_str()))
