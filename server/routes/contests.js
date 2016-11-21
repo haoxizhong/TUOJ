@@ -210,4 +210,18 @@ router.get('/detail/:contestId/:judgeId', function(req, res, next) {
     });
 });
 
+router.get('/:cid([0-9]+)/rank_list', function (req, res, next) {
+	var contest_id = parseInt(req.params.cid);
+	contest.findOne({_id: contest_id}, function (err, c) {
+		if (err) return next(err);
+		if (!c) return next();
+
+		helper.generateRankList(c, function (err, rank_list) {
+			if (err) return next(err);
+			console.log(rank_list);
+            res.send(rank_list);
+		});
+	});
+});
+
 module.exports = router;
