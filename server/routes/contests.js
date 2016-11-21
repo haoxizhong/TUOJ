@@ -70,9 +70,7 @@ router.get('/:id([0-9]+)/status/:page([0-9]+)',function(req,res,next){
 			judict.time=newtime.toLocaleString();
 			jlist.push(judict);
 		}
-			
-		
-		dict.judgelist=jlist;
+		dict.judgelist=jlist.reverse();
 		dict.maxpage=Math.ceil(len/10);
 		dict.nowpage=page;
 		res.render('contest_status',dict)

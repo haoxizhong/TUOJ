@@ -8,8 +8,8 @@ block content_contest
         - if (nowpage<maxpage)
             a(href='/contests/#{contestid}/status/#{nowpage+1}') 下一页
         form(method='POST' action='/contests/#{contestid}/skip')
-            input(type='text' ,name='page',value='#{nowpage}')
-            input(type='submit', name='跳转')
+            input.form-control(type='text' ,name='page',value='#{nowpage}')
+            input.btn.btn-general(type='submit', name='跳转')
         br
 
         table.table
