@@ -81,6 +81,7 @@ Sandbox_t::Sandbox_t()
 	action = "execute";
 
 	init_flag = false;
+	status_flag = false;
 }
 Sandbox_t::~Sandbox_t()
 {
@@ -195,186 +196,194 @@ void Sandbox_t::Init()
 	chdir(run_path.c_str());
 	//cout<<"CHANGE DIRECTORY INTO "<<run_path<<endl;
 }
-
-int action(int signo,siginfo_t *siginfo,void* pvoid)
+/*
+int g_flag;
+void handler_sig(int signo,siginfo_t *siginfo,void* pvoid)
 {
-		cout<<"haha"<<endl;
-}
+		cerr<<"SIGUSR2 Captured"<<endl;
+		g_flag=true;
+}*/
 int Sandbox_t::Run()
 {  
-	if (do_debug)print_args();
-	if (do_debug)cout<<"EXCUTE "<<update_command(command.c_str())<<endl;
-	pid_t child;
-	child = fork();
-	if(child == 0) {
-		rlimit rm_cpu_old,rm_cpu_new;
-		rlimit rm_as_old,rm_as_new;
-		if (do_limit)
-		{
-			getrlimit(RLIMIT_CPU,&rm_cpu_old);
-			rm_cpu_new.rlim_cur=timelimit/1000+1;
-			rm_cpu_new.rlim_max=timelimit/1000+1;
-			setrlimit(RLIMIT_CPU,&rm_cpu_new);
-			getrlimit(RLIMIT_AS,&rm_as_old);
-			if (action == "java")
-			{
-				rm_as_new.rlim_cur=(memorylimit+2000)*1024*1024;
-				rm_as_old.rlim_max=(memorylimit+2000)*1024*1024;
-			}else
-			{
-				rm_as_new.rlim_cur=(memorylimit+1)*1024*1024;
-				rm_as_old.rlim_max=(memorylimit+1)*1024*1024;
-			}
-			setrlimit(RLIMIT_AS,&rm_as_new);
-		}
-		if (do_ptrace)ptrace(PTRACE_TRACEME, 0, NULL, NULL);
-		if (!do_debug)freopen((tmp_path+"/.stdout").c_str(),"w",stdout);
-		if (!do_debug)freopen((tmp_path+"/.stderr").c_str(),"w",stderr);
-		int status;
-		if (action == "javac")
-		{
-			status = execl("/usr/bin/javac","/usr/bin/javac",(command+".java").c_str(),NULL);
-		}else if (action == "java")
-		{
-			status = execl("/usr/bin/java","/usr/bin/java",(command).c_str(),NULL);
-		}else if (action == "python")
-		{
-			status = execl("/usr/bin/python","/usr/bin/python",command.c_str(),NULL);
-		}else if (action == "execute")
-		{
-			//status = execl("/bin/bash",run_path.c_str(),"-c",update_command(command.c_str()).c_str(),NULL);
-			//if (do_debug)cout<<"EXCUTE "<<update_command(command.c_str())<<endl;
-			status = execl("/bin/bash","/bin/bash","-c",update_command(command.c_str()).c_str(),NULL);
-		}else if (action == "command")
-		{
-			//char tbuf[MAXBUF];
-			//getcwd(tbuf,sizeof(tbuf));
-			//chdir(run_path.c_str());
-			status = execl("/bin/bash","/bin/bash","-c",command.c_str(),NULL);
-			//chdir(tbuf);
-		}
-		/*
-		if (!do_debug)fclose(stdout);
-		if (!do_debug)fclose(stderr);
-		if (do_limit)
-		{
-			setrlimit(RLIMIT_AS,&rm_as_old);
-			setrlimit(RLIMIT_CPU,&rm_cpu_old);
-		}
-		if (WIFEXITED(status))
-		{
-			if (!WEXITSTATUS(status))
-			{
-				cerr<<"Child process exit normally"<<endl;
-				exit(0);
-			}
-			cerr<<"Child process abnormal exit"<<endl;
-			exit(RS_RE);//Runtime Error or Interrupted
-		}
-		cerr<<"Child process abnormal exit"<<endl;
-		exit(RS_RE);*/
-	}
-	else {
-		int timer;
-		if (!(timer = fork()))//add timer and kill the process after 50ms over deadline
-		{
-			usleep(timelimit*1200);
-			cerr<<"Timer killed"<<endl;
-			kill(child,9);
-			kill(getppid(),SIGUSR2);
-			exit(0);
-		}
-		rusage rusa;
-		int status;
-		sigaction(SIGUSR2,&action,NULL);
-		while(1) //cycle for ptracing system calls
-		{
-			wait4(child,&status,__WALL,&rusa);
-			//	cerr<<"Break..."<<endl;
-			//	cerr<<(int)rusa.ru_utime.tv_sec*1000000+(int)rusa.ru_utime.tv_usec<<endl;
-			if(WIFEXITED(status))
-				break;
-			if (!WIFEXITED(status) && !WEXITSTATUS(status))
-				break;
-			//cout<<WIFEXITED(status)<<" "<<WEXITSTATUS(status)<<endl;
-			struct user_regs_struct regs;
-			if (do_ptrace)ptrace(PTRACE_GETREGS, child,NULL,&regs);  
-			if (do_debug)cerr<<sysid[regs.REG_SYSCALL]<<" "<<status<<endl;
-			if (regs.REG_SYSCALL >1000)//MLE?
-				break;
-			if (regs.REG_SYSCALL == 2)
-			{
-				string fn=read_string_from_regs(regs.REG_ARG0,child);
-				fn=get_full_name_from_abs(fn);
-				if (!fileft.check(fn))
+		if (do_debug)print_args();
+		if (do_debug)cout<<"EXCUTE "<<update_command(command.c_str())<<endl;
+		pid_t child;
+		child = fork();
+		if(child == 0) {
+				rlimit rm_cpu_old,rm_cpu_new;
+				rlimit rm_as_old,rm_as_new;
+				if (do_limit)
 				{
-					if (!do_pwhitelist)
-					{
-						cerr<<"File <"<<fn<<"> is forbidden!"<<endl;
-						return RS_DGP;
-					}else
-					{
-						cout<<"FILE"<<fn<<endl;
-					}
+						getrlimit(RLIMIT_CPU,&rm_cpu_old);
+						rm_cpu_new.rlim_cur=timelimit/1000+1;
+						rm_cpu_new.rlim_max=timelimit/1000+1;
+						setrlimit(RLIMIT_CPU,&rm_cpu_new);
+						getrlimit(RLIMIT_AS,&rm_as_old);
+						if (action == "java")
+						{
+								rm_as_new.rlim_cur=(memorylimit+2000)*1024*1024;
+								rm_as_old.rlim_max=(memorylimit+2000)*1024*1024;
+						}else
+						{
+								rm_as_new.rlim_cur=(memorylimit+10)*1024*1024;
+								rm_as_old.rlim_max=(memorylimit+10)*1024*1024;
+						}
+						setrlimit(RLIMIT_AS,&rm_as_new);
 				}
-			}
-			if (!sysft.check(regs.REG_SYSCALL))
-			{
-				if (!do_pwhitelist)
+				if (do_ptrace)ptrace(PTRACE_TRACEME, 0, NULL, NULL);
+				if (!do_debug)freopen((tmp_path+"/.stdout").c_str(),"w",stdout);
+				if (!do_debug)freopen((tmp_path+"/.stderr").c_str(),"w",stderr);
+				int status;
+				if (action == "javac")
 				{
-					cerr<<(int)regs.REG_SYSCALL<<endl;
-					cerr<<"Unsafe System Call<"<<regs.REG_SYSCALL<<">"<<sysid[regs.REG_SYSCALL]<<endl;
-					resfile<<-1<<" "<<-1<<endl;
-					kill(timer,9);
-					if (do_debug)cerr<<"Kill timer"<<endl;
-					return RS_DGP;
+						status = execl("/usr/bin/javac","/usr/bin/javac",(command+".java").c_str(),NULL);
+				}else if (action == "java")
+				{
+						status = execl("/usr/bin/java","/usr/bin/java",(command).c_str(),NULL);
+				}else if (action == "python")
+				{
+						status = execl("/usr/bin/python","/usr/bin/python",command.c_str(),NULL);
+				}else if (action == "execute")
+				{
+						status = execl("/bin/bash","/bin/bash","-c",update_command(command.c_str()).c_str(),NULL);
+				}else if (action == "command")
+				{
+						status = execl("/bin/bash","/bin/bash","-c",command.c_str(),NULL);
+				}
+				if (status)
+						cerr<<"SYSTEM ERROR: EXECL FAILED"<<endl;
+				return RS_SYE;
+				/*
+				   if (!do_debug)fclose(stdout);
+				   if (!do_debug)fclose(stderr);
+				   if (do_limit)
+				   {
+				   setrlimit(RLIMIT_AS,&rm_as_old);
+				   setrlimit(RLIMIT_CPU,&rm_cpu_old);
+				   }
+				   if (WIFEXITED(status))
+				   {
+				   if (!WEXITSTATUS(status))
+				   {
+				   cerr<<"Child process exit normally"<<endl;
+				   exit(0);
+				   }
+				   cerr<<"Child process abnormal exit"<<endl;
+				   exit(RS_RE);//Runtime Error or Interrupted
+				   }
+				   cerr<<"Child process abnormal exit"<<endl;
+				   exit(RS_RE);*/
+		}
+		else {
+				int timer;
+				if (!(timer = fork()))//add timer and kill the process after 50ms over deadline
+				{
+						usleep(timelimit*1200);
+						cerr<<"Timer killed"<<endl;
+						kill(child,9);
+				//		kill(getppid(),SIGUSR2);
+						exit(0);
+				}
+				rusage rusa;
+				int status;
+			//	struct sigaction act;  
+			//	act.sa_sigaction=handler_sig;  
+			//	act.sa_flags=SA_SIGINFO;  
+			//	sigaction(SIGUSR2,&act,NULL);
+				while(1) //cycle for ptracing system calls
+				{
+						wait4(child,&status,__WALL,&rusa);
+						//	cerr<<"Break..."<<endl;
+						//	cerr<<(int)rusa.ru_utime.tv_sec*1000000+(int)rusa.ru_utime.tv_usec<<endl;
+						if(WIFEXITED(status))
+								break;
+						if (!WIFEXITED(status) && !WEXITSTATUS(status))
+								break;
+						//cout<<WIFEXITED(status)<<" "<<WEXITSTATUS(status)<<endl;
+						struct user_regs_struct regs;
+						if (do_ptrace)ptrace(PTRACE_GETREGS, child,NULL,&regs);  
+						if (do_debug)cerr<<sysid[regs.REG_SYSCALL]<<" "<<status<<endl;
+						if (regs.REG_SYSCALL > 1000)//MLE?
+								break;
+						if (regs.REG_SYSCALL == 2)
+						{
+								string fn=read_string_from_regs(regs.REG_ARG0,child);
+								fn=get_full_name_from_abs(fn);
+								if (!fileft.check(fn))
+								{
+										if (!do_pwhitelist)
+										{
+												cerr<<"File <"<<fn<<"> is forbidden!"<<endl;
+												return RS_DGP;
+										}else
+										{
+												cout<<"FILE"<<fn<<endl;
+										}
+								}
+						}
+						if (!sysft.check(regs.REG_SYSCALL))
+						{
+								if (!do_pwhitelist)
+								{
+										cerr<<(int)regs.REG_SYSCALL<<endl;
+										cerr<<"Unsafe System Call<"<<regs.REG_SYSCALL<<">"<<sysid[regs.REG_SYSCALL]<<endl;
+										resfile<<-1<<" "<<-1<<endl;
+										kill(timer,9);
+										if (do_debug)cerr<<"Kill timer"<<endl;
+										return RS_DGP;
+								}else
+								{
+										cout<<"SYSCALL"<<regs.REG_SYSCALL<<endl;
+								}
+						}
+						if (do_ptrace)ptrace(PTRACE_SYSCALL,child, NULL, NULL);
+				}
+				kill(timer,9);
+				if (do_debug)cerr<<"Kill timer"<<endl;
+				int cur_Time=(int)rusa.ru_utime.tv_sec*1000+(int)rusa.ru_utime.tv_usec/1000;
+				int cur_Memory=(int)rusa.ru_maxrss;
+				if (!WIFEXITED(status) && WIFSIGNALED(status) && WTERMSIG(status) == SIGKILL)
+						cur_Time = timelimit*1.200;
+				printf("%d %d\n",cur_Time,cur_Memory);
+				resfile<<cur_Time<<" "<<cur_Memory<<endl;
+				if (do_debug)cerr<<"Time & Memory:"<<cur_Time<<" "<<cur_Memory<<endl;
+				if (WIFEXITED(status))
+				{
+						if (!WEXITSTATUS(status))
+						{
+								if (cur_Time>timelimit)
+										return RS_TLE;
+								else if (cur_Memory>memorylimit*1024)
+										return RS_MLE;
+								else
+										return RS_AC;
+						}else
+						{
+								if (cur_Time>timelimit)
+								{
+										return RS_TLE;
+								}else
+								{
+										return RS_RE;
+								}
+						}
 				}else
 				{
-					cout<<"SYSCALL"<<regs.REG_SYSCALL<<endl;
+						if (WIFSIGNALED(status) && WTERMSIG(status) == SIGKILL)
+								return RS_TLE;
+						if (WIFSIGNALED(status) && WTERMSIG(status) == SIGSEGV)
+								return RS_MLE;
+						if (cur_Time>timelimit)
+								return RS_TLE;
+						else if (cur_Memory>memorylimit*1024)
+								return RS_MLE;
+						else
+								return RS_RE;
 				}
-			}
-			if (do_ptrace)ptrace(PTRACE_SYSCALL,child, NULL, NULL);
 		}
-		kill(timer,9);
-		if (do_debug)cerr<<"Kill timer"<<endl;
-		int cur_Time=(int)rusa.ru_utime.tv_sec*1000+(int)rusa.ru_utime.tv_usec/1000;
-		int cur_Memory=(int)rusa.ru_maxrss;
-		printf("%d %d\n",cur_Time,cur_Memory);
-		resfile<<cur_Time<<" "<<cur_Memory<<endl;
-		if (do_debug)cerr<<"Time & Memory:"<<cur_Time<<" "<<cur_Memory<<endl;
-		if (WIFEXITED(status))
-		{
-			if (!WEXITSTATUS(status))
-			{
-				if (cur_Time>timelimit)
-					return RS_TLE;
-				else if (cur_Memory>memorylimit*1024)
-					return RS_MLE;
-				else
-					return RS_AC;
-			}else
-			{
-				if (cur_Time>timelimit)
-				{
-					return RS_TLE;
-				}else
-				{
-					return RS_RE;
-				}
-			}
-		}else
-		{
-			if (cur_Time>timelimit)
-				return RS_TLE;
-			else if (cur_Memory>memorylimit*1024)
-				return RS_MLE;
-			else
-				return RS_MLE;
-		}
-	}
 }
 void Sandbox_t::Final()
 {
-	//system(("rm -rf "+shared_path+"/* ").c_str());
-	//system(("cp -R "+run_path+"/* "+shared_path+"/").c_str());
+		//system(("rm -rf "+shared_path+"/* ").c_str());
+		//system(("cp -R "+run_path+"/* "+shared_path+"/").c_str());
 }

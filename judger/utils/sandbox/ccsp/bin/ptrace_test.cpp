@@ -15,6 +15,10 @@
 #include "configure.h"
 using namespace std;
 
+void handler_sig(int signo,siginfo_t *siginfo,void* pvoid)
+{
+		cerr<<"SIGUSR2 Captured"<<endl;
+}
 
 int main()
 {  
@@ -26,6 +30,18 @@ int main()
 				cerr<<"Child end..."<<endl;
 		}
 		else {
+				pid_t timer;
+				timer = fork();
+				if (!timer)
+				{
+						sleep(1);
+						kill(getppid(),SIGUSR2);
+						exit(0);
+				}
+				struct sigaction act;  
+				act.sa_sigaction=handler_sig;  
+				act.sa_flags=SA_SIGINFO;  
+				sigaction(SIGUSR2,&act,NULL);
 				struct rusage rusa;
 				int status;
 				wait4(-1,&status,__WALL,&rusa);

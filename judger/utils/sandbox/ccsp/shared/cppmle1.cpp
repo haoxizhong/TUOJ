@@ -1,6 +1,6 @@
 #include<iostream>
 using namespace std;
-int a[250*1024*1024/4];
+int a[257*1024*1024/4];
 
 int main()
 {

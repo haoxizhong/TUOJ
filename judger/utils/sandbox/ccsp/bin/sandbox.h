@@ -39,6 +39,7 @@ class Sandbox_t
 		filter fileft;
 		sysfilter sysft;
 		bool init_flag;
+		bool status_flag;
 	public:
 		Sandbox_t();
 		~Sandbox_t();
