@@ -48,44 +48,48 @@ Judge.methods.getSource = function () {
 
 Judge.methods.updateStatus = function (results, callback) {
     self = this;
-    Object.keys(results).forEach(function (test_id_str) {
-        var test_id = parseInt(test_id_str);
-        if (test_id < 0 || test_id > self.case_count) {
-            return;
-        }
-
-        var result = results[test_id_str];
-        //console.log(results[test_id_str]);
-        self.results[test_id].status = result["status"];
-        self.results[test_id].time = result["time"];
-        self.results[test_id].memory = result["memory"];
-        if (self.results[test_id].status == "Accepted") {
-            self.results[test_id].score = self.problem.getPerCaseScore(self.subtask_id);
-        } else {
-            self.results[test_id].score = 0;
-        }
-    });
-
-    var status = "Running";
-    var finished = true;
-    self.score = 0;
-    self.results.forEach(function (s) {
-        self.score += s.score;
-        if (s.status == "Waiting") {
-            finished = false;
-        } else {
-            if (s.status != "Accepted" && s.status != "Compilation Success" && status == "Running") {
-                status = s.status;
+    try {
+        Object.keys(results).forEach(function (test_id_str) {
+            var test_id = parseInt(test_id_str);
+            if (test_id < 0 || test_id > self.case_count) {
+                return;
             }
-        }
-    });
-    if (finished && status == "Running") {
-        status = "Accepted"
-    }
-    self.status = status;
 
-    self.markModified('results');
-    self.save(callback);
+            var result = results[test_id_str];
+            //console.log(results[test_id_str]);
+            self.results[test_id].status = result["status"];
+            self.results[test_id].time = result["time"];
+            self.results[test_id].memory = result["memory"];
+            if (self.results[test_id].status == "Accepted") {
+                self.results[test_id].score = self.problem.getPerCaseScore(self.subtask_id);
+            } else {
+                self.results[test_id].score = 0;
+            }
+        });
+
+        var status = "Running";
+        var finished = true;
+        self.score = 0;
+        self.results.forEach(function (s) {
+            self.score += s.score;
+            if (s.status == "Waiting") {
+                finished = false;
+            } else {
+                if (s.status != "Accepted" && s.status != "Compilation Success" && status == "Running") {
+                    status = s.status;
+                }
+            }
+        });
+        if (finished && status == "Running") {
+            status = "Accepted"
+        }
+        self.status = status;
+
+        self.markModified('results');
+        self.save(callback);
+    } catch (err) {
+        callback(err);
+    }
 };
 
 module.exports = mongoose.model("judge", Judge);

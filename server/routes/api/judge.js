@@ -1,5 +1,7 @@
 var router = require('express').Router(); 
 var Judge = require('../../models/judge');
+var SubmitRecord = require('../../models/submit_record');
+var Step = require('step');
 var TOKEN = require('../../config').TOKEN;
 
 router.post('/get_task/acm', function (req, res, next) {
@@ -36,30 +38,43 @@ router.post('/get_task/acm', function (req, res, next) {
 });
 
 router.post('/update_results', function (req, res, next) {
-    if (req.body.token != TOKEN) {
-        return next();
-    }
-    var run_id  = parseInt(req.body.run_id);
-    Judge.findOne({_id: run_id}).populate('problem').exec(function (err, x) {
-        //if (err) return next(err);
-        if (!x) return next();
-
-        try {
-            x.updateStatus(req.body.results, function (err, x) {
-                console.error(err);
-                if (err) return next(err);
-                res.send({
-                    "status": "success"
-                });
-            });
-        } catch (err) {
-            res.send({
-				"status": "failure",
-				"message": err.message,
-				"stack": err.stack
-			});
-        }
-    });
+	if (req.body.token != TOKEN) {
+		return next();
+	}
+	var run_id  = parseInt(req.body.run_id);
+	Judge.findOne({_id: run_id}).populate('problem').exec(function (err, x) {
+		//if (err) return next(err);
+		if (!x) return next();
+		Step(function() {
+			x.updateStatus(req.body.results, this);
+		}, function(err, j) {
+			if (err) throw err;
+			x = j;
+		}, function (err) {
+			if (err) throw err;
+			if (!(x.status == 'Running' || x.status == 'Waiting')) {
+				SubmitRecord.getSubmitRecord(x.user, x.contest, x.problem_id, this);
+			} else {
+				this(null, null);
+			}
+		}, function (err, s) {
+			if (err) throw err;
+			if (!s) this(null);
+			s.update(x);
+		}, function (err) {
+			if (err) {
+				res.send({
+					"status": "failure",
+					"message": err.message,
+					"stack": err.stack
+				});
+			} else {
+				res.send({
+					"status": "success"
+				});
+			}
+		});
+	});
 });
 
 module.exports = router;
