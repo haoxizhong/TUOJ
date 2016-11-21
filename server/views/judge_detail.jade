@@ -1,27 +1,55 @@
-extends layout
+extends contest_layout
 
 append head
     link(rel='stylesheet' href='/bower_components/highlightjs/styles/default.css')
     script(src='/bower_components/highlightjs/highlight.pack.min.js')
     script hljs.initHighlightingOnLoad();
 
-block content
+block content_contest
     div.row
         table.table
             thead
                 tr
                     th #
                     th 提交者
-                    th 题目编号
+                    th 题目
+                    th 状态
                     th 得分
             tbody
                 tr
                     td #{ res.id }
                     td #{ res.user }
                     td
-                        a(href='/contests/#{contestid}/problems/#{res.problem_id}') #{ res.problem_id }
+                        a(href='/contests/#{contestid}/problems/#{res.problem_id}') #{ res.problem_name }
+                    td #{ res.status }
                     td #{ res.score }
     div.row
         pre
             code(class="#{ res.lang }")= res.source
+    div.row
+        p.具体信息
+        table.table
+            thead
+                tr
+                    th #
+                    th 状态
+                    th 时间(ms)
+                    th 空间(MB)
+                    th 得分
+            tbody
+                - for (var i in res.results) {
+                    - var cs = res.results[i];
+                    tr
+                        td= i
+                        td= cs.status
+                        - if (cs.status == 'Waiting' || cs.status == 'Running') {
+                            td -
+                            td -
+                            td -
+                        - } else {
+                            td= cs.time
+                            td= cs.memory
+                            td= cs.score
+                        - }
+                - }
 
