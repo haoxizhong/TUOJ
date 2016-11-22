@@ -1,6 +1,7 @@
 extends contest_layout
 
 block content_contest
+	- var statusMap = { "Accepted": "success", "Wrong Answer": "danger", "Time Limit Exceeded": "warning", "Memory Limit Exceeded": "warning", "Runtime Error": "warning", "Compilation Error": "primary", "No Source": "warning", "Dangerous Program": "primary", "Waiting": "info", "Running": "info", "Compilation Success": "info" }
 	div.container-fluid
 		- if (contestname !== undefined) {
 			h3 #{user}在#{contestname}的提交
@@ -10,6 +11,7 @@ block content_contest
 						th #
 						th 题目
 						th 用户
+						th 语言
 						th 状态
 						th 得分
 						th 提交时间
@@ -18,16 +20,17 @@ block content_contest
 						- var now=judgelist[i]
 						tr
 							td 
-								a(href='/contests/detail/#{contestid}/#{now.id}') #{now.id}
+								a(href='/contests/#{contestid}/detail/#{now.id}') #{now.id}
 							td 
 								a(href='/contests/#{contestid}/problems/#{now.problemid}') #{now.title}
 							td #{now.user}
-							td #{now.status}
+							td #{now.lang}
+							td 
+								a(href='/contests/#{contestid}/detail/#{now.id}')
+									span.label(class='label-#{statusMap[now.status]}') #{now.status} 
 							td #{now.score}
 							td #{now.time}
 					- }
 		- } else {
 			h3 #{user}当前没有提交记录
 		- }
-	
-	

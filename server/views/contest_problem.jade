@@ -1,30 +1,31 @@
 extends contest_layout
 
 append head
-	script(type="text/x-mathjax-config") MathJax.Hub.Config({ tex2jax: { inlineMath: [ ['$','$'], ["\\(","\\)"] ], processEscapes: true } });
-	script(type='text/javascript' src='/bower_components/MathJax/MathJax.js?config=TeX-AMS_HTML')
+    script(type="text/x-mathjax-config") MathJax.Hub.Config({ tex2jax: { inlineMath: [ ['$','$'], ["\\(","\\)"] ], processEscapes: true } });
+    script(type='text/javascript' src='/bower_components/MathJax/MathJax.js?config=TeX-AMS_HTML')
 
 block content_contest
-	div.row
-		div.col-xs-9
-			div.panel.panel-default
-				div.panel-body
-					h2.text-center #{title}
-					p !{description}
-		div.col-xs-3
-			form(method='POST',action='/contests/#{contestid}/problems/#{problemid}/upload',enctype='multipart/form-data')
-				div.panel.panel-default
-					div.panel-heading
-						p 提交
-					div.panel-body
-						div.form-group
-							label 请选择语言
-							select.form-control(name='language')
-								option(value='g++') g++
-								option(value='java') java
-						div.form-group
-							label 请选择答案文件
-							input.form-control(name='inputfile',type='file',multiple='multiple')
-					div.panel-footer
-						div.form-group
-							input.btn.btn-success(type='submit' value='递交评测')
+    div.row
+        div.col-xs-9
+            div.panel.panel-default
+                div.panel-body
+                    h2.text-center #{title}
+                    p !{description}
+        div.col-xs-3
+            form(method='POST',action='/contests/#{contestid}/problems/#{problemid}/upload',enctype='multipart/form-data')
+                div.panel.panel-default
+                    div.panel-heading
+                        p 提交
+                    div.panel-body
+                        div.form-group
+                            label 请选择语言
+                            select.form-control(name='language')
+                                - for (var i in langs) {
+                                    option(value='#{langs[i]}')= langs[i]
+                                - }
+                        div.form-group
+                            label 请选择答案文件
+                            input.form-control(name='inputfile',type='file',multiple='multiple')
+                    div.panel-footer
+                        div.form-group
+                            input.btn.btn-success(type='submit' value='递交评测')
