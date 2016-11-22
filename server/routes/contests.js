@@ -79,6 +79,7 @@ router.get('/:id([0-9]+)/status',function(req,res,next){
 			judict.user=judgelist[i].user.username;
 			judict.status=judgelist[i].status;
 			judict.score=judgelist[i].score;
+			judict.lang = judgelist[i].lang;
 			var newtime=new Date();
 			newtime.setTime(judgelist[i].submitted_time);
 			judict.time=newtime.toLocaleString();
@@ -197,7 +198,7 @@ router.post('/:cid([0-9]+)/problems/:pid([0-9]+)/upload',upload.single('inputfil
     });
 });
 
-router.get('/detail/:contestId/:judgeId', function(req, res, next) {
+router.get('/:contestId/detail/:judgeId', function(req, res, next) {
     var contestId = req.params.contestId;
     var judgeId = req.params.judgeId;
     judge.findOne({ _id: judgeId }).populate('user').populate('problem').exec(function(err, doc) {
@@ -218,6 +219,7 @@ router.get('/detail/:contestId/:judgeId', function(req, res, next) {
             user: doc.user.username,
             problem_id: doc.problem_id,
             problem_name: doc.problem.title,
+			lang: doc.lang,
             source: fs.readFileSync(path.resolve(__dirname, '../public/source', doc.source_file)),
             status: doc.status,
             score: doc.score,

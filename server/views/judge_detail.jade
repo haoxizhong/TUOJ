@@ -13,6 +13,7 @@ block content_contest
                     th #
                     th 提交者
                     th 题目
+                    th 语言
                     th 状态
                     th 得分
             tbody
@@ -21,6 +22,7 @@ block content_contest
                     td #{ res.user }
                     td
                         a(href='/contests/#{contestid}/problems/#{res.problem_id}') #{ res.problem_name }
+                    td #{ res.lang }
                     td #{ res.status }
                     td #{ res.score }
     div.row
