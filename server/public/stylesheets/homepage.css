@@ -1,6 +1,10 @@
 div.fullheight {
 	text-align: center;
-	height: 64%;
-	min-height: 64%;
+	height: 100%;
+	min-height: 100%;
 	padding: 16%;
+}
+
+.slogan {
+	font: arial 48px;
 }

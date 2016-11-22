@@ -53,6 +53,7 @@ router.get('/:id([0-9]+)',function(req,res,next){
 	})
 }) 
 
+
 router.get('/:id([0-9]+)/status',function(req,res,next){
 	var contestid=parseInt(req.params.id)
 	var page=parseInt(req.params.page)
@@ -221,6 +222,16 @@ router.post('/:cid([0-9]+)/problems/:pid([0-9]+)/upload',upload.single('inputfil
     });
 });
 
+router.post('/rejudge/:id([0-9]+)/:judgeid([0-9]+)',function(req,res,next){
+	var contestId = parseInt(req.params.id);
+    var judgeId = parseInt(req.params.judgeid);
+	judge.findOne({_id:judgeId}).populate('contest').exec(function(err,x){
+		x.status='Waiting';
+		x.save();
+		res.redirect('/contests/' + x.contest._id + '/detail/' + x._id);
+	})
+})
+
 router.get('/:contestId/detail/:judgeId', function(req, res, next) {
     var contestId = req.params.contestId;
     var judgeId = req.params.judgeId;
@@ -257,6 +268,7 @@ router.get('/:contestId/detail/:judgeId', function(req, res, next) {
             title: 'TUOJ Judge details',
             contestid: contestId,
             user: req.session.user,
+			is_admin: req.session.is_admin,
             res: renderArgs
         });
     });

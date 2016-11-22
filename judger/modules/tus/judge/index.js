@@ -102,7 +102,7 @@ module.exports = function(cmd, data) {
             data.scores.push(res);
             respond({ 
                 message: res.score > 0.99 ? 'Accepted' : 'Wrong Answer', 
-                // score: res.score, 
+                score: res.score, 
                 extError: res.extInfo, 
             }, function() {
                 callback(0);

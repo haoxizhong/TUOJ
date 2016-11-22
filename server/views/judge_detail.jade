@@ -55,4 +55,9 @@ block content_contest
 							td= cs.score
 						- }
 				- }
+	- if (is_admin) {
+		div.row
+			form(method='POST' action='/contests/rejudge/#{contestid}/#{res.id}')
+				input.btn.btn-primary(type='submit' value='Rejudge')
+	- }
 
