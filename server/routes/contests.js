@@ -18,10 +18,20 @@ var SOURCE_DIR = require('../config').SOURCE_DIR
 
 router.get('/', function(req, res, next) {
 	contest.find({},function(err,contestlist){
-		dict={'user':req.session.user,'is_admin':req.session.is_admin}
-		dict.contestlist=contestlist
+		dict={'user':req.session.user,'is_admin':req.session.is_admin};
+		dict.contestlist=[];
+        contestlist.forEach(function (item) {
+            var d = new Date();
+            dict.contestlist.push({
+                id: item._id,
+                name: item.name,
+                status: item.get_status(),
+                start_time: helper.timestampToString(item.start_time),
+                end_time: helper.timestampToString(item.end_time)
+            });
+        });
 		res.render('contest_home',dict)
-	})
+	});
 });
 
 router.get('/:id([0-9]+)',function(req,res,next){
@@ -34,8 +44,9 @@ router.get('/:id([0-9]+)',function(req,res,next){
 		dict.contestid=contestid;
 		dict.contesttitle = x.name;
 		dict.problems=x.problems;
-		dict.start=x.start_time;
-		dict.end=x.end_time;
+		dict.start = new Date().setTime(x.star).toLocaleString();
+		dict.end = new Date().setTime(x.end).toLocaleString();
+        dict.status = x.get_status();
 		dict.active = 'problems';
 		//console.log(x.problems[0])
 		res.render('contest',dict);

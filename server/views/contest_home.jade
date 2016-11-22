@@ -6,8 +6,15 @@ block content
 			- for (var i = 0; i < contestlist.length; ++i) {
 				div.row
 					p
-						a(href='contests/#{contestlist[i].id}') #{contestlist[i].id}: #{contestlist[i].name} 
-					p 开始时间: #{contestlist[i].start_time} 
+						a(href='contests/#{contestlist[i].id}') #{contestlist[i].id}: #{contestlist[i].name}
+						- if (contestlist[i].status == 'in_progress') {
+							span.label.label-success 进行中
+						- } else if (contest[i].status == 'ended') {
+							span.label.label-danger 已结束
+						- } else {
+							span.label.label-danger 未开始
+						- }
+					p 开始时间: #{contestlist[i].start_time}
 					p 结束时间: #{contestlist[i].end_time} 
 				hr
 			- }

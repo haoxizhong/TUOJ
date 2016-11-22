@@ -80,6 +80,13 @@ var generateRankList = function(c, user, callback) {
     });
 };
 
+var timestampToString = function (t) {
+    var d = new Date();
+    d.setTime(t);
+    return d.toLocaleString();
+};
+
 module.exports = {
-    generateRankList: generateRankList
+    generateRankList: generateRankList,
+    timestampToString:timestampToString
 };
