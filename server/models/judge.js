@@ -92,6 +92,25 @@ Judge.methods.updateStatus = function (results, callback) {
     }
 };
 
+Judge.methods.rejudge = function (callback) {
+    this.judge_start_time = undefined;
+    this.judge_end_time = undefined;
+    this.status = 'Waiting';
+    this.score = 0;
+    this.case_count = this.problem.subtasks[0].testcase_count;
+
+    for (var i = 0;  i < this.case_count + 1; i++) {
+        this.results.push({
+            score: 0,
+            memory: 0,
+            time: 0,
+            status: "Waiting"
+        });
+    }
+    this.markModified('results');
+    this.save(callback);
+};
+
 Judge.methods.systemProblemUpdate = function (results, callback) {
     try {
         if (results.status.code == 0) {
