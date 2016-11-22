@@ -225,12 +225,14 @@ router.post('/:cid([0-9]+)/problems/:pid([0-9]+)/upload',upload.single('inputfil
 router.post('/rejudge/:id([0-9]+)/:judgeid([0-9]+)',function(req,res,next){
 	var contestId = parseInt(req.params.id);
     var judgeId = parseInt(req.params.judgeid);
-	judge.findOne({_id:judgeId}).populate('contest').exec(function(err,x){
-		x.status='Waiting';
-		x.save();
-		res.redirect('/contests/' + x.contest._id + '/detail/' + x._id);
+	judge.findOne({_id:judgeId}).populate('contest').populate('problem').exec(function(err,x){
+        if (err) return next(err);
+        x.rejudge(function (err, x) {
+            if (err) return next(err);
+            res.redirect('/contests/' + x.contest._id + '/detail/' + x._id);
+        });
 	})
-})
+});
 
 router.get('/:contestId/detail/:judgeId', function(req, res, next) {
     var contestId = req.params.contestId;
