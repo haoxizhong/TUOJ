@@ -16,7 +16,7 @@ var app = express();
 // set up mongo connection and session
 mongoose.connect('mongodb://127.0.0.1/tuoj');
 autoIncrement.initialize(mongoose.connection);
-var EXPRESS_SESSION = require("./config.js").EXPRESS_SESSION;
+var EXPRESS_SESSION = require("./config_local.js").EXPRESS_SESSION;
 EXPRESS_SESSION.store = new MongoStore({ mongooseConnection: mongoose.connection });
 
 // view engine setup

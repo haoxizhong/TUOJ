@@ -37,3 +37,6 @@ judger/utils/sandbox/ccsp/bin/pause
 judger/utils/sandbox/ccsp/bin/safe_exec
 judger/utils/sandbox/ccsp/bin/sandbox_exec
 server/data/problems/
+
+# Config
+server/config_local.js
