@@ -50,7 +50,6 @@ router.get('/:id([0-9]+)',function(req,res,next){
 		dict.active = 'problems';
 		//console.log(x.problems[0])
 		res.render('contest',dict);
-		// contest: contains hrefs leading to problems and status
 	})
 }) 
 
