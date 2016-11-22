@@ -42,7 +42,7 @@ var generateRankList = function(c, user, callback) {
     var find_cond = {};
     var rank_list = [];
     Step(function () {
-        if (c.is_frozen && user.is_admin == false) {
+        if (c.is_frozen() && user.is_admin == false) {
             find_cond = {
                 contest: c._id,
                 user: user._id
@@ -68,7 +68,7 @@ var generateRankList = function(c, user, callback) {
         updateRankList(c, rank_list, records, this);
     }, function (err, rank_list) {
         if (err) return callback(err);
-        if (!c.is_frozen) {
+        if (!c.is_frozen()) {
             var r = new RankList({
                 contest: c._id,
                 generated_time: Date.now(),

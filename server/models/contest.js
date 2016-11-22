@@ -11,4 +11,20 @@ var Contest = new Schema({
 });
 Contest.plugin(autoIncrement.plugin, "Contest");
 
+Contest.methods.is_frozen = function () {
+    var remain = this.end_time - Date.now();
+    return remain < 60*60 && remain > 0;
+};
+
+Contest.methods.get_status = function () {
+    var now = Date.now();
+    if (now < this.start_time) {
+        return 'unstated';
+    } else if (now > this.end_time) {
+        return 'ended';
+    } else {
+        return 'in_progress';
+    }
+};
+
 module.exports = mongoose.model("contest", Contest);

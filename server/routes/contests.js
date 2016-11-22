@@ -127,6 +127,8 @@ router.post('/:cid([0-9]+)/problems/:pid([0-9]+)/upload',upload.single('inputfil
     contest.findOne({_id: contestid}).populate('problems').exec(function (err, x) {
         if (err) return next(err);
         if (problemid >= x.problems.length) return next();
+        if (x.get_status != 'in_progress') return next(new Error('Contest is not in progress!'));
+
         p = x.problems[problemid];
 
         Step(function() {
