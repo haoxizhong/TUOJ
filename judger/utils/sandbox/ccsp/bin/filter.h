@@ -12,6 +12,8 @@ class sysfilter
 		public:
 		void assign(string str);
 		bool check(int x);
+		void add(int x);
+		void fexport(string fn);
 };
 class filter
 {
@@ -20,5 +22,7 @@ class filter
 		public:
 		void assign(string str);
 		bool check(string fn);
+		void add(string str);
+		void fexport(string fn);
 };
 #endif

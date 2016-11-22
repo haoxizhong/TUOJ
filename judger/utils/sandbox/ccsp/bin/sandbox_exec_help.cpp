@@ -12,6 +12,7 @@ OPTIONS \n \
 	-t tl Set TimitLimit as tl (sec) \n \
 	-m ml Set MemoryLimit as ml (MB) \n \
 	-p path Set the path of judging directory (must contain subdirectory shared with your code) \n \
+	-o wlist Set which whitelist to use (cpp,java,python) \n \
  \n \
 	-d Print Debug Info \n \
 	-r Disable ptrace \n \
@@ -38,5 +39,6 @@ EXAMPLES \n \
 	sandbox_exec -t 1000 -m 256 -a java Main \n \
 	sandbox_exec -a python pyprog.py \n \
 	sandbox_exec -p \"/home/toby/Workspace/tmp\" -a python aaa.py \n \
+	sandbox_exec -o cpp \"cppac1\" \n \
 	");
 }

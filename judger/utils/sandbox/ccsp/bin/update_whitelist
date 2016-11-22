@@ -1,0 +1,23 @@
+#!/usr/bin/python
+import os
+
+sampledir = os.getcwd() + "/samples"
+filelist = os.listdir(sampledir)
+print filelist
+for item in filelist:
+    if (item[-3:] == "cpp"):
+        pname = item
+        ename = item[0:-4]
+        os.system("g++ %s -o %s"%(sampledir+"/"+pname,sampledir+"/"+ename))
+        print "g++ %s -o %s"%(sampledir+"/"+pname,sampledir+"/"+ename)
+        os.system("./sandbox_exec -p \"%s\" -w -o cpp \"%s\""%(sampledir,ename))
+        print "./sandbox_exec -p \"%s\" -w -o cpp \"%s\""%(sampledir,ename)
+    if (item[-4:] == "java"):
+        pname = item
+        ename = item[0:-5]
+        os.system("javac %s"%(sampledir+"/"+pname))
+        print "javac %s"%(sampledir+"/"+pname)
+        #os.chdir("samples")
+        os.system("./sandbox_exec -p \"%s\" -w -o java -a java \"%s\""%(sampledir,ename))
+        #os.chdir("..")
+        print "./sandbox_exec -p \"%s\" -w -o java -a java \"%s\""%(sampledir,ename)
