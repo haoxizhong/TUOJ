@@ -131,14 +131,16 @@ router.get('/:cid([0-9]+)/problems/:pid([0-9]+)',function(req,res,next){
             judge.find({user: req.session.uid, contest: c._id, problem_id: problemid}, function (err, judge_staus) {
                 if (err) return next(err);
                 dict.judge_status = [];
+				var tmpStatus = [];
                 judge_staus.forEach(function (item) {
-                    dict.judge_status.push({
+                    tmpStatus.push({
                         _id: item._id,
                         status: item.status,
-                        submitted_time: helper.timestampToString(item.submitted_time),
+                        submitted_time: helper.timestampToTimeString(item.submitted_time),
                         score: item.score
                     });
                 });
+				dict.judge_status = tmpStatus.reverse();
                 res.render('contest_problem', dict);
             });
         });
