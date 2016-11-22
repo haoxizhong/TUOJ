@@ -9,22 +9,22 @@ block content
 				label 起始时间
 				div.row
 					div.col-xs-6
-						input.form-control(type='date', name='startdate', value='#{starttime[0]}')
+						input.form-control(type='date', name='startdate', value='#{startdate}')
 					div.col-xs-6
-						input.form-control(type='time', name='starttime', value='#{starttime[1]}')
+						input.form-control(type='time', name='starttime', value='#{starttime}')
 			div.form-group
 				label 终止时间
 				div.row
 					div.col-xs-6
-						input.form-control(type='date', name='enddate', value='#{endtime[0]}')
+						input.form-control(type='date', name='enddate', value='#{enddate}')
 					div.col-xs-6
-						input.form-control(type='time', name='endtime', value='#{endtime[1]}')
+						input.form-control(type='time', name='endtime', value='#{endtime}')
 			div.form-group
 				label 比赛名称
 				input.form-control(type='text', name='contestname',value='#{name}')
 			div.form-group
 				label 题目列表
-				textarea.form-control(name='gitlist', cols='70', rows=6) #{tex}
+				textarea.form-control(name='gitlist', cols='70', rows=6) #{gitlist}
 			div.form-group
 				input.btn.btn-primary(type='submit' value='修改')
 	
