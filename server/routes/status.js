@@ -24,6 +24,7 @@ router.get('/:page([0-9]+)',function(req,res,next){
 			judict.user=judgelist[i].user.username;
 			judict.status=judgelist[i].status;
 			judict.score=judgelist[i].score;
+			judict.contest=judgelist[i].contest;
 			var newtime=new Date();
 			newtime.setTime(judgelist[i].submitted_time);
 			judict.time=newtime.toLocaleString();
