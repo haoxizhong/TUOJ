@@ -49,7 +49,7 @@ router.post('/added',function(req,res,next){
 	var starttime=req.body.startdate+' '+req.body.starttime
 	var endtime=req.body.enddate+' '+req.body.endtime
 	var name=req.body.contestname
-	var problemlist=req.body.gitlist.split('\r\n')
+	var problemlist=req.body.gitlist.trim().split('\r\n')
 	var len=problemlist.length
 	
 	var int_start=new Date(starttime).getTime()
