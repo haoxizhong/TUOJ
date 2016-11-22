@@ -19,3 +19,5 @@ sandbox_exec:sandbox_exec.cpp sandbox.cpp filter.cpp sandbox.h filter.h configur
 
 clean:
 	rm $(EXE)
+	rm whitelist/*
+	echo "$$" > whitelist/file-default.whitelist

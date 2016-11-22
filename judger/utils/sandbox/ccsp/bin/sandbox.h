@@ -31,7 +31,8 @@ class Sandbox_t
 		string tmp_path;
 		string shared_path;
 		string run_path;
-		string bin_path;
+		string whitelist_path;
+		string whitelist_method;
 
 		string action;
 		string command;
@@ -49,6 +50,7 @@ class Sandbox_t
 		void set_ptrace(bool pt);
 		void set_limit(bool fl);
 		void set_pwhitelist(bool pw);
+		void set_whitelist_method(string str);
 		void set_timelimit(int timelimit);
 		void set_memorylimit(int memorylimit);
 		void set_action(string action);
@@ -58,6 +60,7 @@ class Sandbox_t
 		void PrintRes(int x);
 		void Init();
 		int Run();
+		void GenerateWhitelist(string str);
 		void Final();
 };
 #endif

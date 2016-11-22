@@ -5,22 +5,29 @@ using namespace std;
 //extern const char* sysid[];
 void sysfilter::assign(string str)
 {
-	//	cerr<<"Sysfilter init by file"<<str<<"..."<<endl;
 		ifstream fin(str.c_str());
 		int x,y;
 		while (fin>>x>>y)
-		{
 				cnt[x]=y;
-	//			cerr<<"Read "<<x<<" "<<y<<endl;
-		}
 		fin.close();
-	//	cerr<<"Sysfilter done."<<endl;
 }
 bool sysfilter::check(int x)
 {
 		if (!cnt[x])return false;
 		if (cnt[x]>0)cnt[x]--;
 		return true;
+}
+void sysfilter::add(int x)
+{
+		cnt[x]=-1;
+}
+void sysfilter::fexport(string fn)
+{
+		ofstream fout(fn.c_str());
+		for (int i=0;i<(int)(sizeof(cnt)/sizeof(int));i++)
+				if (cnt[i])
+						fout<<i<<" "<<-1<<endl;
+		fout.close();
 }
 void filter::assign(string str)
 {
@@ -31,8 +38,8 @@ void filter::assign(string str)
 						dir.push_back(str.substr(1,str.length()-1));
 				else if (str[0]=='$')
 						dir.push_back(HOME_PATH+string("/run")+str.substr(1,str.length()-1));
-				else
-						fin>>cnt[str];
+				else if (str[0]=='>')
+						fin>>cnt[str.substr(1,str.length()-1)];
 		}
 		fin.close();
 }
@@ -57,4 +64,19 @@ bool filter::check(string fn)
 						return true;
 				}
 		}
+}
+
+void filter::add(string str)
+{
+		cnt[str]=-1;
+}
+
+void filter::fexport(string fn)
+{
+		ofstream fout(fn.c_str());
+		for (int i=0;i<(int)dir.size();i++)
+				fout<<"^"<<dir[i]<<endl;
+		for (map<string,int> :: iterator it1=cnt.begin();it1!=cnt.end();it1++)
+				fout<<">"<<it1->first<<" "<<it1->second<<endl;
+		fout.close();
 }

@@ -28,6 +28,7 @@ module.exports = function(cfg) {
         } else {
             res.results[data.judgeStep] = {
                 status: data.message,
+				score: (data.score === undefined) ? 0 : Math.round(data.score * 100),
                 extInfo: data.extError,
                 time: data.time,
                 memory: data.memory,

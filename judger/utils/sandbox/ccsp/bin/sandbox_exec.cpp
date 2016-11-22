@@ -6,22 +6,24 @@ Sandbox_t J;
 void Init(int argc,char* argv[])
 {
 	char result;
-	while (~(result =(char) getopt(argc,argv,"wha:t:m:drf:s:cp:")))
+	while (~(result =(char) getopt(argc,argv,"wha:t:m:drf:s:cp:o:")))
 	{
 		switch(result)
 		{
 			case 'p':
 				J.set_path(optarg);
+				break;
 			case 'a':
 				if (strcmp(optarg,"python") == 0)
 				{
 					J.set_action("python");
 					J.set_ptrace(false);
+					J.set_whitelist_method("python");
 				}
 				else if (strcmp(optarg,"java") == 0)
 				{
 					J.set_action("java");
-					J.set_ptrace(false);
+					J.set_whitelist_method("java");
 				}
 				else if (strcmp(optarg,"javac") == 0)
 				{
@@ -29,6 +31,9 @@ void Init(int argc,char* argv[])
 					J.set_limit(false);
 					J.set_ptrace(false);
 				}
+				break;
+			case 'o'://whitelist method
+				J.set_whitelist_method(optarg);
 				break;
 			case 'h':
 				print_help_file();
