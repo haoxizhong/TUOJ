@@ -8,7 +8,7 @@ router.post('/get_task/acm', function (req, res, next) {
 	if (req.body.token != TOKEN) {
 		return next();
 	}
-	Judge.findOne({'status': 'Waiting'}).populate('problem').exec(function (err, x) {
+	Judge.findOne({'status': 'Waiting', 'lang': {'$ne': 'system'}}).populate('problem').exec(function (err, x) {
 		if (err) return next(err);
 		if (!x) {
 			return res.send({
@@ -37,7 +37,7 @@ router.post('/get_task/acm', function (req, res, next) {
 	});
 });
 
-router.post('/update_results', function (req, res, next) {
+router.post('/update_results/acm', function (req, res, next) {
 	if (req.body.token != TOKEN) {
 		return next();
 	}
@@ -76,6 +76,60 @@ router.post('/update_results', function (req, res, next) {
 				});
 			}
 		});
+	});
+});
+
+router.post('/get_task/system', function (req, res, next) {
+	if (req.body.token != TOKEN) {
+		return next();
+	}
+	Judge.findOne({'status': 'Waiting', 'lang': 'system'}).populate('problem').exec(function (err, x) {
+		if (err) return next(err);
+		if (!x) {
+			return res.send({
+				'run_id': -1
+			})
+		}
+		x.status = 'Running';
+		x.judge_start_time = Date.now();
+		x.save(function (err, x) {
+			if (err) return next(err);
+			info = {
+				'run_id': x._id,
+				'lang': x.lang,
+				'source_url': x.getSourceURL()
+			};
+			res.send(info);
+		});
+	});
+});
+
+router.post('/update_results/system', function (req, res, next) {
+	if (req.body.token != TOKEN) {
+		return next();
+	}
+	var run_id = parseInt(req.body.run_id);
+	Step(function () {
+		Judge.findOne({_id: run_id}, this);
+	}, function (err, j) {
+		if (err) throw err;
+		var results = req.body.results;
+		j.systemProblemUpdate(this);
+	}, function (err, j) {
+		if (err) throw err;
+		helper.systemProblemUpdateScore(j, this);
+	}, function (err, j) {
+		if (err) {
+			res.send({
+				"status": "failure",
+				"message": err.message,
+				"stack": err.stack
+			});
+		} else {
+			res.send({
+				"status": "success"
+			});
+		}
 	});
 });
 

@@ -92,4 +92,34 @@ Judge.methods.updateStatus = function (results, callback) {
     }
 };
 
+Judge.methods.systemProblemUpdate = function (results, callback) {
+    try {
+        if (results.status.code == 0) {
+            this.results[0] = {
+                status: 'Compilation Error'
+            };
+        } else {
+            this.results[0] = {
+                status: 'Compilation Success'
+            };
+        }
+        this.status = results.status.content;
+
+        Object.keys(results).forEach(function (test_id_str) {
+            test_id = parseInt(test_id_str) + 1;
+            this.results[test_id] = {
+                status: results[test_id_str].status,
+                time: results[test_id_str].time,
+                total: results[test_id_str].total,
+                correct: results[test_id_str].correct
+            };
+        });
+
+        this.markModified('results');
+        this.save(callback);
+    } catch (err) {
+        callback(err);
+    }
+};
+
 module.exports = mongoose.model("judge", Judge);
