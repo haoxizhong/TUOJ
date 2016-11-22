@@ -34,6 +34,6 @@ block content
 						td #{now.user}
 						td #{now.status}
 						td
-							a(href='/status/detail/#{ now.id }') #{ now.score }
+							a(href='/contests/#{now.contest}/detail/#{ now.id }') #{ now.score }
 						td #{now.time}
 				- }
