@@ -1,6 +1,7 @@
 var Contest = require('./models/contest');
 var SubmitRecord = require('./models/submit_record');
-var RankList = require('./models/rank_list')
+var RankList = require('./models/rank_list');
+var Judge = require('./models/judge');
 var Step = require('step');
 
 var updateRankList = function (c, rank_list, records, callback) {
@@ -80,17 +81,65 @@ var generateRankList = function(c, user, callback) {
     });
 };
 
+var systemProblemUpdateScore = function (j, callback) {
+    var c;
+    var updated = false;
+    Step(function () {
+        Contest.findOne({_id: j.id},this);
+    }, function (err, x) {
+        if (err) throw err;
+        c = x;
+        if (typeof(c.meta.best_time) == 'undefined') {
+            c.meta.best_time = new Array(j.results.length - 1).fill(1000000);
+        }
+
+        for (var i = 1; i < j.results.length; j++) {
+            if (j.results[i].correct == j.results[i].total && j.results[i].total != 0) {
+                var t = j.results[i].time;
+                if (t < c.meta.best_time[i - 1]) {
+                    updated = true;
+                    c.meta.best_time[i - 1] = t;
+                }
+            }
+        }
+
+        if (updated) {
+            c.markModified('meta');
+            c.save(this);
+        } else {
+            callback(null, c);
+        }
+    }, function (err, x) {
+        if (err) throw err;
+        c = x;
+        if (updated) {
+            Judge.find({contest: c._id}, this);
+        } else {
+            this(null, [j]);
+        }
+    }, function (err, judges) {
+        if (err) throw err;
+        judges.forEach(function (item) {
+            item.score = 0;
+            for (var i = 1; i < item.results.length; i++) {
+                item.results[i].score = Math.floor(meta.best_time[i - 1] / item.results[i].time);
+                item.score += item.results[i].score;
+            }
+        });
+        callback(null, j);
+    });
+};
+
 var timestampToString = function (t) {
     var d = new Date();
     d.setTime(t);
     return d.toLocaleString();
-}
+};
 var timestampToTimeString = function (t) {
     var d = new Date();
     d.setTime(t);
     return d.toLocaleTimeString();
 };
-;
 
 module.exports = {
     generateRankList: generateRankList,
