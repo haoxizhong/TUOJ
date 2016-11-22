@@ -4,7 +4,8 @@ block content_contest
 	- var statusMap = { "Accepted": "success", "Wrong Answer": "danger", "Time Limit Exceeded": "warning", "Memory Limit Exceeded": "warning", "Runtime Error": "warning", "Compilation Error": "primary", "No Source": "warning", "Dangerous Program": "primary", "Waiting": "info", "Running": "info", "Compilation Success": "info" }
 	div.container-fluid
 		- if (contestname !== undefined) {
-			h3 #{user}在#{contestname}的递交
+			div.page-header
+				h3 #{user}在#{contestname}的递交
 			table.table
 				thead
 					tr
