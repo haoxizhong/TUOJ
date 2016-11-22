@@ -70,6 +70,7 @@ app.use('/addcontests',require("./routes/addcontests"));
 app.use('/contests',require("./routes/contests"));
 app.use('/api', require('./routes/api'));
 app.use('/status',require('./routes/status'));
+app.use('/faq', require('./routes/faq'));
 
 
 // catch 404 and forward to error handler

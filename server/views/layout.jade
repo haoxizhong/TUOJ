@@ -4,6 +4,7 @@ block head
 			title= title
 		- else
 			title TUOJ
+		meta(http-equiv='Content-Type', content='text/html; charset=utf-8')
 		meta(name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no')
 		link(rel='stylesheet' href='/bower_components/bootstrap/dist/css/bootstrap.min.css')
 		link(rel='stylesheet' href='/stylesheets/style.css')
@@ -25,6 +26,8 @@ body
 							a(href="/addcontests") 添加比赛
 						li
 							a(href="/status/1") 评测队列
+					li
+						a(href='/faq') FAQ
 
 				div.collapse.navbar-collapse
 					ul.nav.navbar-nav.navbar-right
