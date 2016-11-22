@@ -3,24 +3,25 @@ extends layout
 block content
 	div.container
 		p 编辑比赛: #{contestname}
-		form(class="" method='POST', action='/addcontests/#{contestid}/edited')
+		form(class="" method='POST', action='/editcontests/#{contestid}/edited')
+			
 			div.form-group
 				label 起始时间
 				div.row
 					div.col-xs-6
-						input.form-control(type='date', name='startdate', value='#{startdate}')
+						input.form-control(type='date', name='startdate', value='#{starttime[0]}')
 					div.col-xs-6
-						input.form-control(type='time', name='starttime', value='#{starttime}')
+						input.form-control(type='time', name='starttime', value='#{starttime[1]}')
 			div.form-group
 				label 终止时间
 				div.row
 					div.col-xs-6
-						input.form-control(type='date', name='enddate', value='#{enddate}')
+						input.form-control(type='date', name='enddate', value='#{endtime[0]}')
 					div.col-xs-6
-						input.form-control(type='time', name='endtime', value='#{endtime}')
+						input.form-control(type='time', name='endtime', value='#{endtime[1]}')
 			div.form-group
 				label 比赛名称
-				input.form-control(type='text', name='contestname',value='#{contestname}')
+				input.form-control(type='text', name='contestname',value='#{name}')
 			div.form-group
 				label 题目列表
 				textarea.form-control(name='gitlist', cols='70', rows=6) #{tex}
