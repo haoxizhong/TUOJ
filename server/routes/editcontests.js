@@ -5,7 +5,6 @@ var path = require("path");
 var randomstring = require("randomstring");
 var fse = require("fs-extra");
 var git = require("nodegit");
-var datatrans = require("datatrans");
 
 // Import configurations
 var CONFIG = require("../config");
@@ -42,19 +41,37 @@ var TMP_DIR = CONFIG.TMP_DIR;
 };
 */
 
+function add0(m) {
+	return m<10?'0'+m:m;
+}
+function getdate(inttime){
+	var time=new Date(inttime);
+	var y=time.getFullYear();
+	var m=time.getMonth();
+	var d=time.getDate();
+	return y+'-'+add0(m)+'-'+add0(d);
+}
+function gettime(inttime){
+	var time=new Date(inttime);
+	var h=time.getHours();
+	var m=time.getMinutes();
+	var s=time.getSeconds();
+	return add0(h)+':'+add0(m)+':'add0(s);
+}
+
 router.get('/:id([0-9]+)',function(req,res,next){
 	var contestid=req.params.id;
 	contest.findOne({_id:contestid},function(err,x){
 		dict={'user':req.session.user,'is_admin':req.session.is_admin};
-		
-		var starttime=date('Y-m-d H:i:s',x.int_start).split(' ');
-		var endtime=date('Y-m-d H:i:s',x.int_end).split(' ');
 		var str='';
 		for (var i=0;i<x.problems.length;i++)
 			str=str+x.problems[i].toString()+'\n';
 		
-		dict.starttime=starttime;
-		dict.endtime=endtime;
+		dict.startdate=getdate(x.int_start);
+		dict.starttime=getdate(x.int_start);
+		dict.enddate=getdate(x.int_end);
+		dict.endtime=getdate(x.int_end);
+		
 		dict.gitlist=str;
 		dict.name=x.name;
 		res.render('editcontests',dict);
