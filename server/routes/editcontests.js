@@ -5,7 +5,7 @@ var path = require("path");
 var randomstring = require("randomstring");
 var fse = require("fs-extra");
 var git = require("nodegit");
-var datatrans = require("datatrans");
+var datetrans = require("../routes/datatrans");
 
 // Import configurations
 var CONFIG = require("../config");
@@ -47,8 +47,8 @@ router.get('/:id([0-9]+)',function(req,res,next){
 	contest.findOne({_id:contestid},function(err,x){
 		dict={'user':req.session.user,'is_admin':req.session.is_admin};
 		
-		var starttime=date('Y-m-d H:i:s',x.int_start).split(' ');
-		var endtime=date('Y-m-d H:i:s',x.int_end).split(' ');
+		var starttime=datetrans('Y-m-d H:i:s',x.int_start).split(' ');
+		var endtime=datetrans('Y-m-d H:i:s',x.int_end).split(' ');
 		var str='';
 		for (var i=0;i<x.problems.length;i++)
 			str=str+x.problems[i].toString()+'\n';

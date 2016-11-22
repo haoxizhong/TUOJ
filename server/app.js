@@ -72,7 +72,7 @@ app.use('/contests',require("./routes/contests"));
 app.use('/api', require('./routes/api'));
 app.use('/status',require('./routes/status'));
 app.use('/faq', require('./routes/faq'));
-app.use('/editcontests',require('./routers/editcontests'))
+app.use('/editcontests',require('./routes/editcontests'))
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
