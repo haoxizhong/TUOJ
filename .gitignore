@@ -4,6 +4,8 @@ samples/test-data
 judger/bin/fdiff
 *.swp
 
+datas
+
 # npm
 node_modules
 *.log

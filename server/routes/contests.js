@@ -122,9 +122,9 @@ router.get('/:cid([0-9]+)/problems/:pid([0-9]+)',function(req,res,next){
 		dict.problemid = problemid;
 		dict.contestid = contestid;
 		dict.active = 'problem';
+        dict.langs = p.meta.supported_languages;
         SubmitRecord.getSubmitRecord(req.session.uid, c._id, problemid, function (err, s) {
             if (err) return next(err);
-            console.log(dict)
             dict.best_solution = s.judge;
             dict.submitted_times = s.submitted_times;
             judge.find({user: req.session.uid, contest: c._id, problem_id: problemid}, function (err, judge_staus) {
