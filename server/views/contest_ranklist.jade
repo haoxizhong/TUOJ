@@ -20,7 +20,7 @@ block content_contest
                             td= player.user.username
                             td= player.total_score
                             - for (var j in problems) {
-                                - if (player.details[j] && player.details[j].judge) {
+                                - if (player.details[j] && player.details[j].judge_id) {
                                     td= player.details[j].score
                                 - } else {
                                     td &nbsp;

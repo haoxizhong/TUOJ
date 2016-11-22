@@ -122,7 +122,7 @@ router.post('/:cid([0-9]+)/problems/:pid([0-9]+)/upload',upload.single('inputfil
         // console.log("xx");
         return next(new Error("Undefined file."));
     }
-    var suffix = {"g++": ".cpp", "java": ".java", "system": ".zip"};
+    var suffix = {"g++": ".cpp", "java": ".java", "system": ".zip", "answer": ".ans"};
 	source_file = randomstring.generate(15) + suffix[req.body.language];
 
 	var contestid=parseInt(req.params.cid);

@@ -8,3 +8,5 @@ var RankList = new Schema({
     list: Object
 });
 RankList.plugin(autoIncrement.plugin, "RankList");
+
+module.exports = mongoose.model("rank_list", RankList);
