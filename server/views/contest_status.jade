@@ -4,7 +4,7 @@ block content_contest
 	- var statusMap = { "Accepted": "success", "Wrong Answer": "danger", "Time Limit Exceeded": "warning", "Memory Limit Exceeded": "warning", "Runtime Error": "warning", "Compilation Error": "primary", "No Source": "warning", "Dangerous Program": "primary", "Waiting": "info", "Running": "info", "Compilation Success": "info" }
 	div.container-fluid
 		- if (contestname !== undefined) {
-			h3 #{user}在#{contestname}的提交
+			h3 #{user}在#{contestname}的递交
 			table.table
 				thead
 					tr
@@ -14,7 +14,7 @@ block content_contest
 						th 语言
 						th 状态
 						th 得分
-						th 提交时间
+						th 递交时间
 				tbody
 					- for (var i in judgelist) {
 						- var now=judgelist[i]
@@ -32,5 +32,5 @@ block content_contest
 							td #{now.time}
 					- }
 		- } else {
-			h3 #{user}当前没有提交记录
+			h3 #{user}当前没有递交记录
 		- }

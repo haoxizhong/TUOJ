@@ -1,31 +1,54 @@
 extends contest_layout
 
 append head
-    script(type="text/x-mathjax-config") MathJax.Hub.Config({ tex2jax: { inlineMath: [ ['$','$'], ["\\(","\\)"] ], processEscapes: true } });
-    script(type='text/javascript' src='/bower_components/MathJax/MathJax.js?config=TeX-AMS_HTML')
+	script(type="text/x-mathjax-config") MathJax.Hub.Config({ tex2jax: { inlineMath: [ ['$','$'], ["\\(","\\)"] ], processEscapes: true } });
+	script(type='text/javascript' src='/bower_components/MathJax/MathJax.js?config=TeX-AMS_HTML')
 
 block content_contest
-    div.row
-        div.col-xs-9
-            div.panel.panel-default
-                div.panel-body
-                    h2.text-center #{title}
-                    p !{description}
-        div.col-xs-3
-            form(method='POST',action='/contests/#{contestid}/problems/#{problemid}/upload',enctype='multipart/form-data')
-                div.panel.panel-default
-                    div.panel-heading
-                        p 提交
-                    div.panel-body
-                        div.form-group
-                            label 请选择语言
-                            select.form-control(name='language')
-                                - for (var i in langs) {
-                                    option(value='#{langs[i]}')= langs[i]
-                                - }
-                        div.form-group
-                            label 请选择答案文件
-                            input.form-control(name='inputfile',type='file',multiple='multiple')
-                    div.panel-footer
-                        div.form-group
-                            input.btn.btn-success(type='submit' value='递交评测')
+	- var statusMap = { "Accepted": "success", "Wrong Answer": "danger", "Time Limit Exceeded": "warning", "Memory Limit Exceeded": "warning", "Runtime Error": "warning", "Compilation Error": "primary", "No Source": "warning", "Dangerous Program": "primary", "Waiting": "info", "Running": "info", "Compilation Success": "info" }
+	div.row
+		div.col-xs-9
+			div.panel.panel-default
+				div.panel-body
+					h2.text-center #{title}
+					p !{description}
+		div.col-xs-3
+			div.panel.panel-default
+				div.panel-heading
+					p 递交历史
+				div.panel-body
+					table.table
+						thead
+							tr
+								th 递交时间
+								th 状态
+								th 得分
+						tbody
+							- for (var i in judgelist) {
+								- var now=judgelist[i]
+									td #{now.time}
+									td 
+										a(href='/contests/#{contestid}/detail/#{now.id}')
+											span.label(class='label-#{statusMap[now.status]}') #{now.status} 
+									td #{now.score}
+										- if (now.bestSolution) {
+											span.label.label-success 最好递交
+										- }
+							- }
+			form(method='POST',action='/contests/#{contestid}/problems/#{problemid}/upload',enctype='multipart/form-data')
+				div.panel.panel-default
+					div.panel-heading
+						p 递交
+					div.panel-body
+						div.form-group
+							label 请选择语言
+							select.form-control(name='language')
+								- for (var i in langs) {
+									option(value='#{langs[i]}')= langs[i]
+								- }
+						div.form-group
+							label 请选择答案文件
+							input.form-control(name='inputfile',type='file',multiple='multiple')
+					div.panel-footer
+						div.form-group
+							input.btn.btn-success(type='submit' value='递交评测')

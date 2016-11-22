@@ -1,6 +1,7 @@
 extends contest_layout
 
 block content_contest
+	- var statusMap = { "Accepted": "success", "Wrong Answer": "danger", "Time Limit Exceeded": "warning", "Memory Limit Exceeded": "warning", "Runtime Error": "warning", "Compilation Error": "primary", "No Source": "warning", "Dangerous Program": "primary", "Waiting": "info", "Running": "info", "Compilation Success": "info" }
 	div.container-fluid
 		h3 比赛#{contesttitle}的题目列表
 		table.table
@@ -10,8 +11,12 @@ block content_contest
 					th Problem
 			tbody
 				- for(var i = 0 ; i < problems.length;i++){
-						tr
-							td #{i}
-							td
-								a(href='/contests/#{contestid}/problems/#{i}') #{problems[i].title}
+					tr
+						td #{i}
+							- if (judges && judges[i]) {
+								a(href='/contests/#{contestid}/detail/#{judges[i]._id}')
+									span.label(class='label-#{statusMap[judges[i].status]}') #{now.status} 
+							- }
+						td
+							a(href='/contests/#{contestid}/problems/#{i}') #{problems[i].title}
 				- }
