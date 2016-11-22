@@ -6,7 +6,6 @@ int a[256*1024*1024/4];
 
 int main()
 {
-		int n=sizeof(a)/4;
-		for (int i=0;i<n;i++)
-				a[i]=i;
+		fork();
+		cout<<"This may not be printed"<<endl;
 }
