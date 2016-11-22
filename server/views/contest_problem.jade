@@ -15,7 +15,7 @@ block content_contest
 		div.col-xs-3
 			div.panel.panel-default
 				div.panel-heading
-					p 递交历史
+					p 递交历史 已提交#{submitted_times}次
 				div.panel-body
 					table.table
 						thead
@@ -26,6 +26,7 @@ block content_contest
 						tbody
 							- for (var i in judge_status) {
 								- var now=judge_status[i]
+								tr
 									td #{now.submitted_time}
 									td 
 										a(href='/contests/#{contestid}/detail/#{now.id}')
