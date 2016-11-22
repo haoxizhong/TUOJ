@@ -243,11 +243,15 @@ router.get('/:contestId/detail/:judgeId', function(req, res, next) {
             problem_id: doc.problem_id,
             problem_name: doc.problem.title,
 			lang: doc.lang,
-            source: fs.readFileSync(path.resolve(__dirname, '../public/source', doc.source_file)),
+            source: 'Source not found',
             status: doc.status,
             score: doc.score,
             results: doc.results
         };
+		try {
+			renderArgs.source = fs.readFileSync(path.resolve(__dirname, '../public/source', doc.source_file));
+		} catch (error) {
+		}
         res.status(200).render('judge_detail', {
 			active: 'judge_detail',
             title: 'TUOJ Judge details',
