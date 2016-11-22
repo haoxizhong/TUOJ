@@ -1,0 +1,29 @@
+extends layout
+
+append head
+	link(rel='stylesheet' href='/bower_components/highlightjs/styles/default.css')
+	script(src='/bower_components/highlightjs/highlight.pack.min.js')
+	script hljs.initHighlightingOnLoad();
+
+block content
+	div.container
+		div.wrapper
+			p Q: TUOJ是什么?
+			p A: TUOJ是一个在线评测系统.
+			hr
+		div.wrapper
+			p Q: 在TUOJ上递交java程序的要求是什么?
+			p A: 选手可以任起文件名, 并完成一个名称为 "Main" 的类. 示例如下.
+			pre 
+				- var javaSample = 'class Main { \n\tpublic static void main(String args[]) { \n\t\t/* Some code */ \n\t}\n}';
+
+				code(class='java')= javaSample 
+			hr
+		div.wrapper
+			p Q: TUOJ的评测环境是什么?
+			p A: TUOJ的评测机与选手所使用的机器的硬件和软件环境完全相同.
+			hr
+		div.wrapper
+			p Q: TUOJ出现错误如何处理?
+			p A: 请向现场工作人员求助.
+
