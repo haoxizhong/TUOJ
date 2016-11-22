@@ -85,25 +85,28 @@ router.get('/:id([0-9]+)',function(req,res,next){
 })
 
 router.post('/:id([0-9]+)/edited',function(req,res,next){
-	var contestid=req.params.id;
+	var contestid=parseInt(req.params.id);
 	var starttime=req.body.startdate+' '+req.body.starttime;
 	var endtime=req.body.enddate+' '+req.body.endtime;
 	var name=req.body.contestname;
-	var problemlist=req.body.gitlist.split('\r\n');
+	var problemlist=req.body.gitlist.trim().split('\r\n');
 	var len=problemlist.length;
 	
 	var int_start=new Date(starttime).getTime();
 	var int_end=new Date(endtime).getTime();
 	
 	contest.findOne({_id:contestid},function(err,x){
+		if (err) return next(err);
 		x.name=name;
 		x.start_time=int_start;
 		x.end_time=int_end;
 		x.problems=[];
 		for (var i=0;i<len;i++)
 			x.problems.push(parseInt(problemlist[i]));
-		x.save();
-		res.redirect('/contests');
+		x.save(function (err, x) {
+			if (err) return next(err);
+			res.redirect('/contests');
+		});
 	})
 })
 
