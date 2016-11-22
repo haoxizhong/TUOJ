@@ -31,7 +31,7 @@ block content_contest
 									td
 										small #{now.submitted_time}
 									td 
-										a(href='/contests/#{contestid}/detail/#{now.id}')
+										a(href='/contests/#{contestid}/detail/#{now._id}')
 											span.label(class='label-#{statusMap[now.status]}') #{statusText[now.status]} 
 									td #{now.score}
 										- if ( best_solution && now._id == best_solution) {
