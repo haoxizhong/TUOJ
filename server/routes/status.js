@@ -52,8 +52,9 @@ router.get('/detail/:id([0-9]+)', function (req, res, next) {
 		var d = {
 			user: req.session.user,
 			is_admin: req.session.is_admin,
-			j: j,
-			code: code
+			res: j,
+			code: code,
+			contestid: j.contest._id.toString();
 		};
 		res.render('judge_detail', d)
 	});
