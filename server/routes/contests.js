@@ -124,9 +124,21 @@ router.get('/:cid([0-9]+)/problems/:pid([0-9]+)',function(req,res,next){
 		dict.contestid = contestid;
 		dict.active = 'problem';
         SubmitRecord.getSubmitRecord(req.session.uid, c._id, problemid, function (err, s) {
-            judge.find({user: req.session.uid, contest: c._id, rproblem_id: problemid}, function (err, judge_staus) {
-                dict.judge_status = judge_staus;
-                dict.best_solution = s.judge;
+            if (err) return next(err);
+            console.log(dict)
+            dict.best_solution = s.judge;
+            dict.submitted_times = s.submitted_times;
+            judge.find({user: req.session.uid, contest: c._id, problem_id: problemid}, function (err, judge_staus) {
+                if (err) return next(err);
+                dict.judge_status = [];
+                judge_staus.forEach(function (item) {
+                    dict.judge_status.push({
+                        _id: item._id,
+                        status: item.status,
+                        submitted_time: helper.timestampToString(item.submitted_time),
+                        score: item.score
+                    });
+                });
                 res.render('contest_problem', dict);
             });
         });
@@ -148,9 +160,10 @@ router.post('/:cid([0-9]+)/problems/:pid([0-9]+)/upload',upload.single('inputfil
     contest.findOne({_id: contestid}).populate('problems').exec(function (err, x) {
         if (err) return next(err);
         if (problemid >= x.problems.length) return next();
-        if (x.get_status != 'in_progress') return next(new Error('Contest is not in progress!'));
+        if (x.get_status() != 'in_progress') return next(new Error('Contest is not in progress!'));
 
         p = x.problems[problemid];
+        var s;
 
         Step(function() {
 			SubmitRecord.getSubmitRecord(req.session.uid, x._id, problemid, this);
@@ -159,6 +172,7 @@ router.post('/:cid([0-9]+)/problems/:pid([0-9]+)/upload',upload.single('inputfil
 			submit_record = x;
 			submit_record.submitted_times += 1;
 			submit_record.save(this);
+            s = submit_record;
 		}, function(err) {
 			if (err) throw err;
 			fse.move(req.file.path, path.join(SOURCE_DIR, source_file), this);
@@ -196,10 +210,13 @@ router.post('/:cid([0-9]+)/problems/:pid([0-9]+)/upload',upload.single('inputfil
             // console.log(newjudge);
 
             newjudge.save(this);
+        }, function (err, j) {
+            if (err) throw err;
+            s.update(j, this);
         }, function (err) {
-			if (err) return next(err);
-			res.redirect('/contests/'+contestid+'/status/');
-		});
+            if (err) return next(err);
+            res.redirect('/contests/'+contestid+'/status/');
+        });
     });
 });
 
