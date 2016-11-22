@@ -123,11 +123,16 @@ router.get('/:cid([0-9]+)/problems/:pid([0-9]+)',function(req,res,next){
 		dict.problemid = problemid;
 		dict.contestid = contestid;
 		dict.active = 'problem';
-		// console.log(dict);
-		res.render('contest_problem', dict);
+        SubmitRecord.getSubmitRecord(req.session.uid, c._id, problemid, function (err, s) {
+            judge.find({user: req.session.uid, contest: c._id, rproblem_id: problemid}, function (err, judge_staus) {
+                dict.judge_status = judge_staus;
+                dict.best_solution = s.judge;
+                res.render('contest_problem', dict);
+            });
+        });
 	});
 
-})
+});
 
 router.post('/:cid([0-9]+)/problems/:pid([0-9]+)/upload',upload.single('inputfile'),function(req,res,next){
 	if (typeof(req.file) == 'undefined') {
