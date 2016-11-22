@@ -32,7 +32,7 @@ block content_contest
 										a(href='/contests/#{contestid}/detail/#{now.id}')
 											span.label(class='label-#{statusMap[now.status]}') #{now.status} 
 									td #{now.score}
-										- if ( best_solution && now._id == best_soulution) {
+										- if ( best_solution && now._id == best_solution) {
 											span.label.label-success 最好递交
 										- }
 							- }
