@@ -2,11 +2,12 @@ extends layout
 
 block content
 	div(class="article")
-		ul
+		ul.list-group
 			- for (var i = 0; i < contestlist.length; ++i) {
-				div.row
-					p
-						a(href='contests/#{contestlist[i].id}') #{contestlist[i].id}: #{contestlist[i].name}
+				a.list-group-item(href='contests/#{contestlist[i].id}')
+					span.mono16
+						big 比赛: #{contestlist[i].name}
+						br
 						- if (contestlist[i].status == 'in_progress') {
 							span.label.label-success 进行中
 						- } else if (contest[i].status == 'ended') {
@@ -14,7 +15,8 @@ block content
 						- } else {
 							span.label.label-danger 未开始
 						- }
-					p 开始时间: #{contestlist[i].start_time}
-					p 结束时间: #{contestlist[i].end_time} 
-				hr
+					span.mono32 
+						span 开始时间: #{contestlist[i].start_time} 
+						br
+						span 结束时间: #{contestlist[i].end_time} 
 			- }

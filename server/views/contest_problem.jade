@@ -6,18 +6,20 @@ append head
 
 block content_contest
 	- var statusMap = { "Accepted": "success", "Wrong Answer": "danger", "Time Limit Exceeded": "warning", "Memory Limit Exceeded": "warning", "Runtime Error": "warning", "Compilation Error": "primary", "No Source": "warning", "Dangerous Program": "primary", "Waiting": "info", "Running": "info", "Compilation Success": "info" }
+	- var statusText = { "Accepted": "AC", "Wrong Answer": "WA", "Time Limit Exceeded": "TLE", "Memory Limit Exceeded": "MLE", "Runtime Error": "RE", "Compilation Error": "CE", "No Source": "NS", "Dangerous Program": "DP", "Waiting": "W", "Running": "R", "Compilation Success": "CS" }
 	div.row
-		div.col-xs-9
+		div.col-xs-8
 			div.panel.panel-default
 				div.panel-body
 					h2.text-center #{title}
 					p !{description}
-		div.col-xs-3
+		div.col-xs-4
 			div.panel.panel-default
 				div.panel-heading
-					p 递交历史 已提交#{submitted_times}次
+					p 递交历史 
+						small.pull-right 已递交#{submitted_times}次
 				div.panel-body
-					table.table
+					table.table(style='max-height: 256px; overflow-y: scroll; display: block;')
 						thead
 							tr
 								th 递交时间
@@ -27,14 +29,15 @@ block content_contest
 							- for (var i in judge_status) {
 								- var now=judge_status[i]
 								tr
-									td #{now.submitted_time}
+									td
+										small #{now.submitted_time}
 									td 
-										a(href='/contests/#{contestid}/detail/#{now.id}')
-											span.label(class='label-#{statusMap[now.status]}') #{now.status} 
-									td #{now.score}
-										- if ( best_solution && now._id == best_solution) {
+										a(href='/contests/#{contestid}/detail/#{now._id}')
+											span.label(class='label-#{statusMap[now.status]}') #{statusText[now.status]} 
+										- if (best_solution && now._id == best_solution) {
 											span.label.label-success 最好递交
 										- }
+									td #{now.score}
 							- }
 			form(method='POST',action='/contests/#{contestid}/problems/#{problemid}/upload',enctype='multipart/form-data')
 				div.panel.panel-default

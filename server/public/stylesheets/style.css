@@ -2,3 +2,16 @@ body {
   padding: 16px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
+
+a:hover {
+	text-decoration: none;
+}
+
+.mono16 {
+	display: inline-block;
+	width: 16em;
+}
+.mono32 {
+	display: inline-block;
+	width: 32em;
+}

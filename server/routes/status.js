@@ -11,7 +11,7 @@ router.get('/:page([0-9]+)',function(req,res,next){
 	var page=parseInt(req.params.page);
 	judge.find({}).populate("user").populate("problem").exec(function(err,judgelist){
 		var len=judgelist.length;
-		if (page<1 || (page>(len-1)/10+1 && len)) next();
+		if (page<1 || (page>parseInt((len-1)/10)+1 && len)) next();
 		if (!len && page>1) next();
 		dict={'user':req.session.user,'is_admin':req.session.is_admin};
 		
@@ -32,7 +32,7 @@ router.get('/:page([0-9]+)',function(req,res,next){
 			
 		//console.log(judict);
 		dict.judgelist=jlist;
-		dict.maxpage=(len-1)/10+1;
+		dict.maxpage=parseInt((len-1)/10)+1;
 		dict.nowpage=page;
 		res.render('all_status',dict);
 	})

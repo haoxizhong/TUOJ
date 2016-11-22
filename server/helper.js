@@ -84,9 +84,16 @@ var timestampToString = function (t) {
     var d = new Date();
     d.setTime(t);
     return d.toLocaleString();
+}
+var timestampToTimeString = function (t) {
+    var d = new Date();
+    d.setTime(t);
+    return d.toLocaleTimeString();
 };
+;
 
 module.exports = {
     generateRankList: generateRankList,
-    timestampToString:timestampToString
+    timestampToString:timestampToString,
+    timestampToTimeString:timestampToTimeString
 };

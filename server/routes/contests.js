@@ -50,7 +50,6 @@ router.get('/:id([0-9]+)',function(req,res,next){
 		dict.active = 'problems';
 		//console.log(x.problems[0])
 		res.render('contest',dict);
-		// contest: contains hrefs leading to problems and status
 	})
 }) 
 
@@ -131,14 +130,16 @@ router.get('/:cid([0-9]+)/problems/:pid([0-9]+)',function(req,res,next){
             judge.find({user: req.session.uid, contest: c._id, problem_id: problemid}, function (err, judge_staus) {
                 if (err) return next(err);
                 dict.judge_status = [];
+				var tmpStatus = [];
                 judge_staus.forEach(function (item) {
-                    dict.judge_status.push({
+                    tmpStatus.push({
                         _id: item._id,
                         status: item.status,
-                        submitted_time: helper.timestampToString(item.submitted_time),
+                        submitted_time: helper.timestampToTimeString(item.submitted_time),
                         score: item.score
                     });
                 });
+				dict.judge_status = tmpStatus.reverse();
                 res.render('contest_problem', dict);
             });
         });
@@ -242,11 +243,15 @@ router.get('/:contestId/detail/:judgeId', function(req, res, next) {
             problem_id: doc.problem_id,
             problem_name: doc.problem.title,
 			lang: doc.lang,
-            source: fs.readFileSync(path.resolve(__dirname, '../public/source', doc.source_file)),
+            source: 'Source not found',
             status: doc.status,
             score: doc.score,
             results: doc.results
         };
+		try {
+			renderArgs.source = fs.readFileSync(path.resolve(__dirname, '../public/source', doc.source_file));
+		} catch (error) {
+		}
         res.status(200).render('judge_detail', {
 			active: 'judge_detail',
             title: 'TUOJ Judge details',
