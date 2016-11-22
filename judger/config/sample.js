@@ -12,7 +12,7 @@ module.exports = {
             token: 'sampleToken'
 		},
 		fetchUrl: 'http://localhost:3333/api/judge/get_task/acm',
-		uploadUrl: 'http://localhost:3333/api/judge/update_results',
+		uploadUrl: 'http://localhost:3333/api/judge/update_results/acm',
 		reqInterval: 1000
 	},
 	local: {
