@@ -36,6 +36,7 @@ router.get('/:id([0-9]+)',function(req,res,next){
 		dict.problems=x.problems;
 		dict.start=x.start_time;
 		dict.end=x.end_time;
+		dict.active = 'problems';
 		//console.log(x.problems[0])
 		res.render('contest',dict);
 		// contest: contains hrefs leading to problems and status
@@ -73,8 +74,10 @@ router.get('/:id([0-9]+)/status',function(req,res,next){
 			jlist.push(judict);
 		}
 		dict.judgelist=jlist.reverse();
-        // TODO: When the judgelist is empty, it will raise error. So we should consider show contestname at each line of judge detail.
-        // dict.contestname = judgelist[0].contest.name;
+		dict.active = 'status';
+		if (judgelist.length) {
+			dict.contestname = judgelist[0].contest.name;
+		}
 		res.render('contest_status',dict)
 	});
 })
@@ -107,6 +110,7 @@ router.get('/:cid([0-9]+)/problems/:pid([0-9]+)',function(req,res,next){
 		dict.description = description;
 		dict.problemid = problemid;
 		dict.contestid = contestid;
+		dict.active = 'problem';
 		// console.log(dict);
 		res.render('contest_problem', dict);
 	});
@@ -209,6 +213,7 @@ router.get('/detail/:contestId/:judgeId', function(req, res, next) {
             results: doc.results
         };
         res.status(200).render('judge_detail', {
+			active: 'judge_detail',
             title: 'TUOJ Judge details',
             contestid: contestId,
             user: req.session.user,
@@ -231,7 +236,8 @@ router.get('/:cid([0-9]+)/rank_list', function (req, res, next) {
                     is_admin: req.session.is_admin,
                     contestid: c._id,
                     problems: [],
-                    players: rank_list
+                    players: rank_list,
+					active: 'ranklist'
                 };
                 for (var i in c.problems) {
                     if (c.problems[i].title) {

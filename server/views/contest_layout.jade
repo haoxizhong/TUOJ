@@ -1,17 +1,21 @@
 extends layout
 
 block content
-	div.container-fluid
-		div.row
-			ul.nav.nav-pills
-				li 
-					a(href='/contests/#{contestid}') 题目列表
-				li 
-					a(href='/contests/#{contestid}/status/') 评测状态
-				li 
-					a(href='/contests/#{contestid}/rank_list') 排行榜
-				- if (power)
-					li
-						a(href='/addcontests/#{contestid}') 管理比赛
-	div.container-fluid
-		block content_contest
+    - var navs = { problems: { ref: '/contests/' + contestid, title: '题目列表' }, status: { ref: '/contests/' + contestid + '/status/', title: '评测记录' }, ranklist: { ref: '/contests/' + contestid + '/rank_list/', title: '排行榜' } };
+    - if (navs[active]) { navs[active].active = true; };
+    - if (power) { navs.addcontest = { ref: '/addcontests/' + contestid, title: '管理比赛' }; }
+    div.container-fluid
+        div.row
+            ul.nav.nav-pills
+                - for (var i in navs) {
+                    - var nav = navs[i];
+                    - if (nav.active) {
+                        li.active
+                            a(href='#{nav.ref}')= nav.title
+                    - } else {
+                        li
+                            a(href='#{nav.ref}')= nav.title
+                    - }
+                - }
+    div.container-fluid
+        block content_contest

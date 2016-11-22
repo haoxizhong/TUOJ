@@ -1,29 +1,33 @@
 extends contest_layout
 
 block content_contest
-    div.container-fluid
-        h3 #{user}在#{contestname}的提交
-        table.table
-            thead
-                tr
-                    th #
-                    th 题目
-                    th 用户
-                    th 状态
-                    th 得分
-                    th 提交时间
-            tbody
-                - for (var i in judgelist) {
-                    - var now=judgelist[i]
-                    tr
-                        td 
-                            a(href='/contests/detail/#{contestid}/#{now.id}') #{now.id}
-                        td 
-                            a(href='/contests/#{contestid}/problems/#{now.problemid}') #{now.title}
-                        td #{now.user}
-                        td #{now.status}
-                        td #{now.score}
-                        td #{now.time}
-                - }
-
-
+	div.container-fluid
+		- if (contestname !== undefined) {
+			h3 #{user}在#{contestname}的提交
+			table.table
+				thead
+					tr
+						th #
+						th 题目
+						th 用户
+						th 状态
+						th 得分
+						th 提交时间
+				tbody
+					- for (var i in judgelist) {
+						- var now=judgelist[i]
+						tr
+							td 
+								a(href='/contests/detail/#{contestid}/#{now.id}') #{now.id}
+							td 
+								a(href='/contests/#{contestid}/problems/#{now.problemid}') #{now.title}
+							td #{now.user}
+							td #{now.status}
+							td #{now.score}
+							td #{now.time}
+					- }
+		- } else {
+			h3 #{user}当前没有提交记录
+		- }
+	
+	
