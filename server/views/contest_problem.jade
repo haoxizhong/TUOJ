@@ -16,9 +16,10 @@ block content_contest
 		div.col-xs-4
 			div.panel.panel-default
 				div.panel-heading
-					p 递交历史 已提交#{submitted_times}次
+					p 递交历史 
+						small.pull-right 已递交#{submitted_times}次
 				div.panel-body
-					table.table
+					table.table(style='max-height: 256px; overflow-y: scroll; display: block;')
 						thead
 							tr
 								th 递交时间
@@ -33,10 +34,10 @@ block content_contest
 									td 
 										a(href='/contests/#{contestid}/detail/#{now._id}')
 											span.label(class='label-#{statusMap[now.status]}') #{statusText[now.status]} 
-									td #{now.score}
-										- if ( best_solution && now._id == best_solution) {
+										- if (best_solution && now._id == best_solution) {
 											span.label.label-success 最好递交
 										- }
+									td #{now.score}
 							- }
 			form(method='POST',action='/contests/#{contestid}/problems/#{problemid}/upload',enctype='multipart/form-data')
 				div.panel.panel-default
