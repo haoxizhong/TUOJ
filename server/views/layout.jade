@@ -14,31 +14,35 @@ body
 	div.container-fluid
 		div.container-fluid
 			nav.navbar.navbar-default
-				div.navbar-header
-					a.navbar-brand(href='/') TUOJ
-				ul.nav.navbar-nav
-					li
-						a(href="/contests") 比赛列表
-					- if (is_admin)
-						li
-							a(href="/problem_pool") 题目池
-						li
-							a(href="/addcontests") 添加比赛
-						li
-							a(href="/status/1") 评测队列
-					li
-						a(href='/faq/faq') FAQ
-
-				div.collapse.navbar-collapse
-					ul.nav.navbar-nav.navbar-right
-						- if (!user)
+				div.container-fluid
+					div.navbar-header
+						a.navbar-brand(href='/') TUOJ
+						button.navbar-toggle.collapsed(data-toggle='collapse' data-target='#pagenav' aria-expanded='false')
+							span.icon-bar
+							span.icon-bar
+							span.icon-bar
+					div.collapse.navbar-collapse#pagenav
+						ul.nav.navbar-nav.navbar-left
 							li
-								a(href="/login") 登入
-						- else
+								a(href="/contests") 比赛列表
+							- if (is_admin)
+								li
+									a(href="/problem_pool") 题目池
+								li
+									a(href="/addcontests") 添加比赛
+								li
+									a(href="/status/1") 评测队列
 							li
-								a Hi #{user}
-							li
-								a(href="/logout") 注销
+								a(href='/faq/faq') FAQ
+						ul.nav.navbar-nav.navbar-right
+							- if (!user)
+								li
+									a(href="/login") 登入
+							- else
+								li
+									a Hi #{user}
+								li
+									a(href="/logout") 注销
 		div.content-main
 			div.container-fluid
 				block content
