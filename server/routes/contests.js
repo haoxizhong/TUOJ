@@ -199,9 +199,14 @@ router.post('/:cid([0-9]+)/problems/:pid([0-9]+)/upload',upload.single('inputfil
                 score: 0,
                 status: 'Waiting',
                 case_count: p.subtasks[0].testcase_count,
-                results: []
+                results: [{
+                    score: 0,
+                    memory: 0,
+                    time: 0,
+                    status: "Waiting"
+                }]
             });
-            for (var i = 0;  i < newjudge.case_count + 1; i++) {
+            for (var i = 0;  i < newjudge.case_count; i++) {
                 if (newjudge.lang == 'system_g++' || newjudge.lang == 'system_java') {
                     newjudge.results.push({
                         score: 0,

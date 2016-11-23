@@ -9,7 +9,7 @@ router.post('/get_task/acm', function (req, res, next) {
 	if (req.body.token != TOKEN) {
 		return next();
 	}
-	Judge.findOne({'status': 'Waiting', 'lang': {'$or': ['g++', 'java', 'answer']}}).populate('problem').exec(function (err, x) {
+	Judge.findOne({'status': 'Waiting', $or: [{'lang': 'g++'}, {'lang': 'java'}, {'lang': 'answer'}]}).populate('problem').exec(function (err, x) {
 		if (err) return next(err);
 		if (!x) {
 			return res.send({
@@ -84,7 +84,7 @@ router.post('/get_task/system', function (req, res, next) {
 	if (req.body.token != TOKEN) {
 		return next();
 	}
-	Judge.findOne({'status': 'Waiting', 'lang': {'$or': ['system_g++', 'system_java']}}).populate('problem').exec(function (err, x) {
+	Judge.findOne({'status': 'Waiting', $or: [{'lang': 'system_g++'}, {'lang': 'system_java'}]}).populate('problem').exec(function (err, x) {
 		if (err) return next(err);
 		if (!x) {
 			return res.send({
