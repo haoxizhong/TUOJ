@@ -51,6 +51,10 @@ var Executer = function() {
             args.push('-a');
             args.push(options.aType);
         }
+        if (options.lType) {
+            args.push('-o');
+            args.push(options.lType);
+        }
 		console.log(args);
         try {
             fs.emptyDirSync(self.path);
@@ -75,6 +79,9 @@ var Executer = function() {
                 memory: Number(tmStr[1]),
                 error: resStr[1]
             };
+            if (tmStr[0] == 'Dangerous') {
+                res.error = 'Dangerous Program';
+            }
             if (res.error == 'Accepted') {
                 res.error = 0;
             }

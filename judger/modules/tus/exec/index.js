@@ -58,16 +58,19 @@ module.exports = function(cmd, data) {
             stdin: '0.in',
             stdout: '.stdout',
             stderr: '.stderr',
-            //sysLimit: true,
+            sysLimit: true,
             timeLimit: self.cmd.timeLimit ? self.cmd.timeLimit : defaults.timeLimit,
             memLimit: self.cmd.memLimit ? self.cmd.memLimit : defaults.memLimit,
         };
 		if (data.lang == 'java') {
 			options.fileName = 'Main';
             options.aType = 'java';
+			options.lType = 'java';
             // options.memLimit = '999999999999999';
 			//options.args.push('Main');
-		}
+		} else if (data.lang == 'g++') {
+			options.lType = 'cpp';
+        }
         var runRes = exec.exec(options);
         if (!runRes || runRes.error) {
             var errMsg = 'run error ' + runRes.error;

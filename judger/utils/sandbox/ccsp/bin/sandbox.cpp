@@ -282,7 +282,6 @@ int Sandbox_t::Run()
 						if (do_pwhitelist)
 						{
 								sysft.add(regs.REG_SYSCALL);
-						//		cout<<"S>"<<regs.REG_SYSCALL<<endl;
 								if (regs.REG_SYSCALL == 2)
 								{
 										string fn=read_string_from_regs(regs.REG_ARG0,child);
@@ -313,6 +312,7 @@ int Sandbox_t::Run()
 												cerr<<"Unsafe System Call<"<<regs.REG_SYSCALL<<">"<<sysid[regs.REG_SYSCALL]<<endl;
 												resfile<<-1<<" "<<-1<<endl;
 												kill(timer,9);
+												kill(child,9);
 												if (do_debug)cerr<<"Kill timer"<<endl;
 												return RS_DGP;
 										}
