@@ -153,7 +153,7 @@ router.post('/:cid([0-9]+)/problems/:pid([0-9]+)/upload',upload.single('inputfil
         // console.log("xx");
         return next(new Error("Undefined file."));
     }
-    var suffix = {"g++": ".cpp", "java": ".java", "system": ".zip", "answer": ".ans"};
+    var suffix = {"g++": ".cpp", "java": ".java", "system": ".zip", "answer": ".ans", "system_g++": ".zip", "system_java": ".zip"};
 	source_file = randomstring.generate(15) + suffix[req.body.language];
 
 	var contestid=parseInt(req.params.cid);
@@ -202,12 +202,21 @@ router.post('/:cid([0-9]+)/problems/:pid([0-9]+)/upload',upload.single('inputfil
                 results: []
             });
             for (var i = 0;  i < newjudge.case_count + 1; i++) {
-                newjudge.results.push({
-                    score: 0,
-                    memory: 0,
-                    time: 0,
-                    status: "Waiting"
-                });
+                if (newjudge.lang == 'system_g++' || newjudge.lang == 'system_java') {
+                    newjudge.results.push({
+                        score: 0,
+                        total: 0,
+                        correct: 0,
+                        time: 0
+                    });
+                } else {
+                    newjudge.results.push({
+                        score: 0,
+                        memory: 0,
+                        time: 0,
+                        status: "Waiting"
+                    });
+                }
             }
             // console.log(newjudge);
 

@@ -93,13 +93,26 @@ var systemProblemUpdateScore = function (j, callback) {
             c.meta.best_time = new Array(j.results.length - 1).fill(1000000);
         }
 
-        for (var i = 1; i < j.results.length; j++) {
-            if (j.results[i].correct == j.results[i].total && j.results[i].total != 0) {
+        var all_correct = true;
+        for (var i = 2; i < j.results.length; j++) {
+            var is_correct = j.results[i].correct == j.results[i].total && j.results[i].total != 0;
+            all_correct = is_correct && all_correct;
+            if (is_correct) {
                 var t = j.results[i].time;
                 if (t < c.meta.best_time[i - 1]) {
                     updated = true;
                     c.meta.best_time[i - 1] = t;
                 }
+            }
+        }
+        if (all_correct) {
+            var total_time = 0;
+            for (var i = 1; i < j.results.length; i++) {
+                total_time += j.results[i].time;
+            }
+            if (total_time < c.meta.best_time[0]) {
+                updated = true;
+                c.meta.best_time[0] = total_time;
             }
         }
 
@@ -120,11 +133,32 @@ var systemProblemUpdateScore = function (j, callback) {
     }, function (err, judges) {
         if (err) throw err;
         judges.forEach(function (item) {
+            var all_correct = true;
+            var total_time = 0;
+            for (var i = 2; i < item.results.length; i++) {
+                var is_correct = item.results[i].correct == item.results[i].total && item.results[i].total != 0;
+                all_correct = is_correct && all_correct;
+                total_time += item.results[i].time;
+
+                item.results[i].score = 25 * (item.results[i].correct / item.results[i].total);
+                if (is_correct) {
+                    var ratio = meta.best_time[i - 1] / item.result[i].time;
+                    item.results[i].score += ratio * 25;
+                }
+            }
+
+            item.results[0].score = 0;
+            if (all_correct) {
+                total_time += item.results[1].time;
+                item.results[0].score = meta.best_time[i - 1] / total_time;
+            }
+
             item.score = 0;
             for (var i = 1; i < item.results.length; i++) {
-                item.results[i].score = Math.floor(meta.best_time[i - 1] / item.results[i].time);
                 item.score += item.results[i].score;
             }
+
+            item.save(); // TODO....
         });
         callback(null, j);
     });
