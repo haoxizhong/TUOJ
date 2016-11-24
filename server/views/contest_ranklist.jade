@@ -15,7 +15,7 @@ block content_contest
 				tbody
 					- for (var i in players) {
 						- var player = players[i];
-						tr
+						tr(class="#{(player.user.username==user)?'active':''}")
 							td #{parseInt(i) + 1}
 							td
 								span
