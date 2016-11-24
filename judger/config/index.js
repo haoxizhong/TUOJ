@@ -1,7 +1,8 @@
 var cfgs = {
 	sample: './sample',
     debug: './debug',
-    debugLan: './debug_lan'
+    debugLan: './debug_lan',
+	apply: './apply'
 };
-module.exports = require(cfgs.debug);
+module.exports = require(cfgs.apply);
 
