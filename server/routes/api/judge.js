@@ -42,7 +42,6 @@ router.post('/update_results/acm', function (req, res, next) {
 	if (req.body.token != TOKEN) {
 		return next();
 	}
-    console.log(req.body);
 	var run_id  = parseInt(req.body.run_id);
 	Judge.findOne({_id: run_id}).populate('problem').exec(function (err, x) {
 		//if (err) return next(err);

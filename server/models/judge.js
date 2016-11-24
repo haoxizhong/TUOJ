@@ -60,10 +60,14 @@ Judge.methods.updateStatus = function (results, callback) {
             self.results[test_id].status = result["status"];
             self.results[test_id].time = result["time"];
             self.results[test_id].memory = result["memory"];
-            if (self.results[test_id].status == "Accepted") {
-                self.results[test_id].score = self.problem.getPerCaseScore(self.subtask_id);
+
+            var case_score = self.problem.getCaseScore(self.subtask_id, test_id - 1);
+            if (typeof(result.score) == 'undefined') {
+                if (self.results[test_id].status == "Accepted") {
+                    self.results[test_id].score = case_score;
+                }
             } else {
-                self.results[test_id].score = 0;
+                self.results[test_id].score = Math.floor(result.score / 100 * case_score + 0.5);
             }
         });
 
@@ -105,7 +109,7 @@ Judge.methods.rejudge = function (callback) {
         status: "Waiting"
     }];
     for (var i = 0;  i < this.case_count; i++) {
-        if (this.lang == 'system_g++' || newjudge.lang == 'system_java') {
+        if (this.lang == 'system_g++' || this.lang == 'system_java') {
             this.results.push({
                 score: 0,
                 total: 0,

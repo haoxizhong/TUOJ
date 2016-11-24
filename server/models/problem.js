@@ -103,9 +103,17 @@ Problem.methods.getDataURL = function() {
     return urljoin(SITE_URL, 'test_data', this.data);
 };
 
-Problem.methods.getPerCaseScore = function (subtask_id) {
+Problem.methods.getCaseScore = function (subtask_id, case_id) {
     var s = this.subtasks[subtask_id];
-    return s.score / s.testcase_count;
+    var score = s.score / s.testcase_count;
+    if (typeof(s.scores) != 'undefined') {
+        try {
+            score = s.scores[case_id];
+        } catch (err) {
+            console.error(err);
+        }
+    }
+    return score;
 };
 
 module.exports = mongoose.model("problem", Problem);
