@@ -21,6 +21,6 @@ block content
 							span 结束时间: #{contestlist[i].end_time} 
 						- if (is_admin) {
 						span.mono16 
-							a.btn.btn-default(href='/editcontests/#{contestlist[i].id}') 编辑比赛
+							button.btn.btn-default(href='/editcontests/#{contestlist[i].id}') 编辑比赛
 						- }
 			- }
