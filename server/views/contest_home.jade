@@ -4,7 +4,7 @@ block content
 	div(class="article")
 		ul.list-group
 			- for (var i in contestlist) {
-				a.list-group-item(href='contests/#{contestlist[i].id}')
+				a.list-group-item(href='/contests/#{contestlist[i].id}')
 						span.mono16
 							big 比赛: #{contestlist[i].name}
 							br
