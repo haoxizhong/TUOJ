@@ -64,8 +64,7 @@ function gettime(inttime){
 router.get('/:id([0-9]+)',function(req,res,next){
 	var contestid=req.params.id;
 	contest.findOne({_id:contestid}).populate('problems').exec(function(err,x){
-		dict={'user':req.session.user,'is_admin':req.session.is_admin};
-		
+		var dict={'user':req.session.user,'is_admin':req.session.is_admin, call: req.session.call};
 		var str='';
 		console.log(x.problems)
 		for (var i=0;i<x.problems.length;i++)

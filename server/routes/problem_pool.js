@@ -8,6 +8,7 @@ router.get("/", function(req, res, next) {
         res.render("problem_pool", {
             problems: problems,
             user: req.session.user,
+			call: req.session.call,
             is_admin: req.session.is_admin
         });
     });
@@ -27,6 +28,7 @@ router.get("/:id(\\d+)", function(req, res, next) {
         }
         res.render("preview_problem", {
             "user": req.session.user,
+			call: req.session.call,
             "is_admin": req.session.is_admin,
             "p": p,
             "description": description

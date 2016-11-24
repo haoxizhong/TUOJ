@@ -17,7 +17,7 @@ body
 				div.container-fluid
 					div.navbar-header
 						a.navbar-brand(href='/') 
-							img(style='height: 128%' src='/images/logo.png')
+							img(style='height: 100%' src='/images/logo.png')
 						button.navbar-toggle.collapsed(data-toggle='collapse' data-target='#pagenav' aria-expanded='false')
 							span.icon-bar
 							span.icon-bar
@@ -41,7 +41,7 @@ body
 									a(href="/login") 登入
 							- else
 								li
-									a Hi #{user}
+									a 您好, #{call}
 								li
 									a(href="/logout") 注销
 		div.content-main

@@ -10,6 +10,7 @@ router.get('/', function(req, res, next) {
 	res.render('homepage', {
         title: "CCF CCSP",
         user: session.user,
+		call: session.call,
         is_admin: req.session.is_admin
 	});
 });
@@ -36,9 +37,10 @@ router.post('/login',function(req,res,next){
             return next(err);
 		}
 		req.session.user = username;
+		req.session.call = x.realname;
 		req.session.is_admin = x.is_admin;
-		req.session.uid = x._id
-        res.redirect('/')
+		req.session.uid = x._id;
+        res.redirect('/');
 	});
 });
 module.exports = router;

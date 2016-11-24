@@ -13,10 +13,18 @@ var updateRankList = function (c, rank_list, records, callback) {
 
     for (var i = 0; i < records.length; i++) {
         var record =records[i];
-        if (user2it[record.user.username] == undefined) {
+		if (!record.user) {
+			continue;
+		}
+		if (user2it[record.user.username] == undefined) {
             user2it[record.user.username] = rank_list.length;
             rank_list.push({
-                user: {user_id: record.user._id, username: record.user.username},
+                user: {
+					user_id: record.user._id, 
+					username: record.user.username, 
+					realname: record.user.realname,
+					school: record.user.school
+				},
                 total_score:0,
                 details: new Array(c.problems.length).fill({judge_id: undefined, score: 0})
             });
