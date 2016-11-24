@@ -3,15 +3,15 @@ extends layout
 block content
 	div(class="article")
 		ul.list-group
-			- for (var i = 0; i < contestlist.length; ++i) {
+			- for (var i in contestlist) {
 				a.list-group-item(href='contests/#{contestlist[i].id}')
 						span.mono16
 							big 比赛: #{contestlist[i].name}
 							br
 							- if (contestlist[i].status == 'in_progress') {
 								span.label.label-success 进行中
-							- } else if (contest[i].status == 'ended') {
-								span.label.label-danger 已结束
+							- } else if (contestlist[i].status == 'ended') {
+								span.label.label-info 已结束
 							- } else {
 								span.label.label-danger 未开始
 							- }
