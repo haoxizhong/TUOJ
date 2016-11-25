@@ -18,6 +18,7 @@ var SOURCE_DIR = require('../config').SOURCE_DIR
 
 router.get('/', function(req, res, next) {
 	contest.find({},function(err,contestlist){
+        if (err) return next(err);
 		var dict={
 			user: req.session.user,
 			call: req.session.call,
@@ -41,8 +42,8 @@ router.get('/', function(req, res, next) {
 router.get('/:id([0-9]+)',function(req,res,next){
 	var contestid=parseInt(req.params.id)
 	contest.findOne({_id:contestid}).populate('problems').exec(function(err,x){
-		if (err) next(err)
-		if (!x) next()
+		if (err) return next(err)
+		if (!x) return next()
         if (x.get_status() == 'unstated') return next(new Error('Contest is not in progress!'));
 
 		var dict={
@@ -69,7 +70,7 @@ router.get('/:id([0-9]+)/status',function(req,res,next){
 	var attr = {'contest':contestid}
 	Step(function() {
 		attr.user = req.session.uid;
-		judge.find(attr).populate('problem').populate('user').populate('contest').exec(this);
+		judge.find(attr).sort('-_id').populate('problem').populate('user').populate('contest').exec(this);
 	}, function(err, judgelist){
 		//console.log(judgelist)
 		var len=judgelist.length;
@@ -102,7 +103,7 @@ router.get('/:id([0-9]+)/status',function(req,res,next){
 			judict.time=newtime.toLocaleString();
 			jlist.push(judict);
 		}
-		dict.judgelist=jlist.reverse();
+		dict.judgelist=jlist;
 		dict.active = 'status';
 		if (judgelist.length) {
 			dict.contestname = judgelist[0].contest.name;
@@ -121,7 +122,8 @@ router.get('/:cid([0-9]+)/problems/:pid([0-9]+)',function(req,res,next){
     var contestid=parseInt(req.params.cid)
 	var problemid=parseInt(req.params.pid)
     contest.findOne({_id: contestid}).populate("problems").exec(function (err, c) {
-		if (err) next(err)
+		if (err) return next(err);
+        if (!c) return next();
         if (c.get_status() == 'unstarted') return next(new Error('Contest is not in progress!'));
 		if (!c || problemid < 0 || problemid > c.problems.length) next()
 
@@ -149,7 +151,7 @@ router.get('/:cid([0-9]+)/problems/:pid([0-9]+)',function(req,res,next){
             if (err) return next(err);
             dict.best_solution = s.judge;
             dict.submitted_times = s.submitted_times;
-            judge.find({user: req.session.uid, contest: c._id, problem_id: problemid}, function (err, judge_staus) {
+            judge.find({user: req.session.uid, contest: c._id, problem_id: problemid}).sort('-_id').exec(function (err, judge_staus) {
                 if (err) return next(err);
                 dict.judge_status = [];
 				var tmpStatus = [];
@@ -161,7 +163,7 @@ router.get('/:cid([0-9]+)/problems/:pid([0-9]+)',function(req,res,next){
                         score: item.score
                     });
                 });
-				dict.judge_status = tmpStatus.reverse();
+				dict.judge_status = tmpStatus;
                 res.render('contest_problem', dict);
             });
         });
@@ -170,7 +172,7 @@ router.get('/:cid([0-9]+)/problems/:pid([0-9]+)',function(req,res,next){
 });
 
 router.post('/:cid([0-9]+)/problems/:pid([0-9]+)/upload',upload.single('inputfile'),function(req,res,next){
-	console.log(req.session);
+	// console.log(req.session);
 	if (typeof(req.file) == 'undefined') {
         // console.log("xx");
         return next(new Error("Undefined file."));
@@ -189,6 +191,7 @@ router.post('/:cid([0-9]+)/problems/:pid([0-9]+)/upload',upload.single('inputfil
 
     contest.findOne({_id: contestid}).populate('problems').exec(function (err, x) {
         if (err) return next(err);
+        if (!x) return next();
         if (problemid >= x.problems.length) return next();
         if (x.get_status() != 'in_progress') return next(new Error('Contest is not in progress!'));
 
@@ -281,6 +284,7 @@ router.get('/:contestId/detail/:judgeId', function(req, res, next) {
     var contestId = req.params.contestId;
     var judgeId = req.params.judgeId;
     judge.findOne({ _id: judgeId }).populate('user').populate('problem').populate('contest').exec(function(err, doc) {
+        if (err) return next(err);
         if (err || !doc) {
             return res.status(400).render('error', {
                 status: 400,
@@ -326,7 +330,7 @@ router.get('/:contestId/detail/:judgeId', function(req, res, next) {
             }
         }
 
-        console.log(renderArgs);
+        // console.log(renderArgs);
 
         res.status(200).render('judge_detail', {
             active: 'judge_detail',

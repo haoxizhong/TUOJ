@@ -62,7 +62,9 @@ router.post("/:id(\\d+)/update", function(req, res, next) {
 
         p.git_url = git_url;
         p.update(function (err, p) {
-           console.log(p);
+            if (err) console.error(err);
+            else console.log("Successfully update " + p.repo_name);
+           // console.log(p);
         });
     });
     res.redirect("/problem_pool/" + id);
