@@ -56,12 +56,12 @@ var generateRankList = function(c, user, callback) {
                 contest: c._id,
                 user: user._id
             };
-            this(null, null);
+            RankList.findOne({contest: c._id}, this);
         } else {
             find_cond = {
                 contest: c._id
             };
-            RankList.findOne(find_cond, this);
+            this(null, null);
         }
     }, function (err, r) {
         if (err) throw err;

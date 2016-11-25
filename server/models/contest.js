@@ -12,7 +12,7 @@ Contest.plugin(autoIncrement.plugin, "Contest");
 
 Contest.methods.is_frozen = function () {
     var remain = this.end_time - Date.now();
-    return remain < 60*60 && remain > 0;
+    return remain < 60*60*1000 && remain > 0;
 };
 
 Contest.methods.get_status = function () {

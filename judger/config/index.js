@@ -4,5 +4,5 @@ var cfgs = {
     debugLan: './debug_lan',
 	apply: './apply'
 };
-module.exports = require(cfgs.apply);
+module.exports = require(cfgs.debug);
 
