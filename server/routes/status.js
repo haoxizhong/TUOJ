@@ -21,7 +21,11 @@ router.get('/:page([0-9]+)',function(req,res,next){
 			//console.log(judgelist[i].user.username)
 			judict.id=judgelist[i]._id;
 			judict.title=judgelist[i].problem.title;
-			judict.user=judgelist[i].user.username;
+			if (!judgelist[i].user) {
+				judict.user = 'Unknown';
+			} else {
+				judict.user=judgelist[i].user.username;
+			}
 			judict.status=judgelist[i].status;
 			judict.score=judgelist[i].score;
 			judict.contest=judgelist[i].contest;

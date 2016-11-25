@@ -88,7 +88,11 @@ router.get('/:id([0-9]+)/status',function(req,res,next){
 			judict.id=judgelist[i]._id;
 			judict.title=judgelist[i].problem.title;
 			judict.problemid=judgelist[i].problem_id;
-			judict.user=judgelist[i].user.username;
+			if (!judgelist[i].user) {
+				judict.user = 'Unknown';
+			} else {
+				judict.user=judgelist[i].user.username;
+			}
 			judict.status=judgelist[i].status;
 			judict.score=judgelist[i].score;
 			judict.lang = judgelist[i].lang;
@@ -282,7 +286,6 @@ router.get('/:contestId/detail/:judgeId', function(req, res, next) {
         }
         var renderArgs = {
             id: doc._id,
-            user: doc.user.username,
             problem_id: doc.problem_id,
             problem_name: doc.problem.title,
             lang: doc.lang,
@@ -291,6 +294,11 @@ router.get('/:contestId/detail/:judgeId', function(req, res, next) {
             score: doc.score,
             results: doc.results
         };
+		if (!doc.user) {
+			renderArgs.user = 'Unknown';
+		} else {
+            renderArgs.user = doc.user.username;
+		}
 
         if (doc.lang == 'system_g++' || doc.lang == 'system_java') {
             var total_time = 0;
