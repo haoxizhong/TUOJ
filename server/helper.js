@@ -26,11 +26,11 @@ var updateRankList = function (c, rank_list, records, callback) {
 					school: record.user.school
 				},
                 total_score:0,
-                details: new Array(c.problems.length).fill({judge_id: undefined, score: 0})
+                details: new Array(c.problems.length).fill({judge_id: undefined, score: 0, is_system: false})
             });
         }
         var list_it = user2it[record.user.username];
-        rank_list[list_it].details[record.contest_problem_id] = {judge_id: record.judge, score: record.score};
+        rank_list[list_it].details[record.contest_problem_id] = {judge_id: record.judge._id, score: record.score, is_system: record.judge.isSystem()};
     }
 
     for (var i = 0; i < rank_list.length; i++) {
@@ -71,7 +71,7 @@ var generateRankList = function(c, user, callback) {
         this();
     }, function (err) {
         if (err) throw err;
-        SubmitRecord.find(find_cond).populate('user').exec(this);
+        SubmitRecord.find(find_cond).populate('user').populate('judge').exec(this);
     }, function (err, records) {
         if (err) throw err;
         updateRankList(c, rank_list, records, this);
