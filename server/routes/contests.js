@@ -41,7 +41,7 @@ router.get('/', function(req, res, next) {
 
 router.get('/:id([0-9]+)',function(req,res,next){
 	var contestid=parseInt(req.params.id)
-	contrrst.findOne({_id:contestid}).populate('problems').exec(function(err,x){
+	contest.findOne({_id:contestid}).populate('problems').exec(function(err,x){
 		if (err) return next(err)
 		if (!x) return next()
         if (x.get_status() == 'unstated') return next(new Error('Contest is not in progress!'));
