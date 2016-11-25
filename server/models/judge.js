@@ -46,6 +46,10 @@ Judge.methods.getSource = function () {
     }
 };
 
+Judge.methods.isSystem = function () {
+    return this.lang == 'system_g++' || this.lang == 'system_java';
+};
+
 Judge.methods.updateStatus = function (results, callback) {
     self = this;
     try {
