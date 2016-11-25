@@ -278,14 +278,18 @@ router.post('/rejudge/:id([0-9]+)/:judgeid([0-9]+)',function(req,res,next){
 router.get('/:contestId/detail/:judgeId', function(req, res, next) {
     var contestId = req.params.contestId;
     var judgeId = req.params.judgeId;
-    judge.findOne({ _id: judgeId }).populate('user').populate('problem').exec(function(err, doc) {
+    judge.findOne({ _id: judgeId }).populate('user').populate('problem').populate('contest').exec(function(err, doc) {
         if (err || !doc) {
             return res.status(400).render('error', {
                 status: 400,
                 message: 'No such submission'
             });
         }
-        if (!req.session.is_admin && req.session.user != doc.user.username) {
+
+        var has_permission = req.session.is_admin || (req.session.user  == doc.user.username); // 是管理员或者是自己的提交
+        has_permission |= !doc.contest.is_frozen() && doc.isSystem(); // 没有封榜且是系统题
+
+        if (!has_permission) {
             return res.status(400).render('error', {
                 status: 400,
                 message: 'Access denied'
