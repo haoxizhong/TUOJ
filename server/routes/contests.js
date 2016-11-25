@@ -69,7 +69,7 @@ router.get('/:id([0-9]+)/status',function(req,res,next){
 	var attr = {'contest':contestid}
 	Step(function() {
 		attr.user = req.session.uid;
-		judge.find(attr).populate('problem').populate('user').populate('contest').exec(this);
+		judge.find(attr).sort('-_id').populate('problem').populate('user').populate('contest').exec(this);
 	}, function(err, judgelist){
 		//console.log(judgelist)
 		var len=judgelist.length;
@@ -102,7 +102,7 @@ router.get('/:id([0-9]+)/status',function(req,res,next){
 			judict.time=newtime.toLocaleString();
 			jlist.push(judict);
 		}
-		dict.judgelist=jlist.reverse();
+		dict.judgelist=jlist;
 		dict.active = 'status';
 		if (judgelist.length) {
 			dict.contestname = judgelist[0].contest.name;
@@ -149,7 +149,7 @@ router.get('/:cid([0-9]+)/problems/:pid([0-9]+)',function(req,res,next){
             if (err) return next(err);
             dict.best_solution = s.judge;
             dict.submitted_times = s.submitted_times;
-            judge.find({user: req.session.uid, contest: c._id, problem_id: problemid}, function (err, judge_staus) {
+            judge.find({user: req.session.uid, contest: c._id, problem_id: problemid}).sort('-_id').exec(function (err, judge_staus) {
                 if (err) return next(err);
                 dict.judge_status = [];
 				var tmpStatus = [];
@@ -161,7 +161,7 @@ router.get('/:cid([0-9]+)/problems/:pid([0-9]+)',function(req,res,next){
                         score: item.score
                     });
                 });
-				dict.judge_status = tmpStatus.reverse();
+				dict.judge_status = tmpStatus;
                 res.render('contest_problem', dict);
             });
         });
