@@ -20,7 +20,7 @@ config = {
         saveUninitialized: false
     },
 
-    MULTER_UPLOAD: multer({dest: path.join(__dirname, "data", "tmp", "uploads")})
+    MULTER_UPLOAD: multer({dest: path.join(__dirname, "data", "tmp", "uploads"), limits: {fileSize: 10 * 1024 * 1024}})
 };
 
 module.exports = config;

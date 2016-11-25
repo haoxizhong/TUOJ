@@ -141,6 +141,7 @@ var updateScore = function (judge, best_times, mid_times) {
     }
 
     total_score += r.score;
+    total_score = total_score.toFixed(2);
     judge.score = total_score;
 
 };
