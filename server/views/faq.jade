@@ -9,9 +9,6 @@ block content
 	div.container
 		ul.list-group
 			li.list-group-item
-				p Q: TUOJ是什么?
-				p A: TUOJ是一个在线评测系统.
-			li.list-group-item
 				p Q: 在TUOJ上递交java程序的要求是什么?
 				p A: 选手可以任起文件名, 并完成一个名称为 "Main" 的类. 示例如下.
 				pre 
@@ -19,9 +16,33 @@ block content
 	
 					code(class='java')= javaSample 
 			li.list-group-item
-				p Q: TUOJ的评测环境是什么?
-				p A: TUOJ的评测机与选手所使用的机器的硬件和软件环境完全相同.
+				p Q: Makefile文件是不是已经写好了？可以修改吗？
+				p A: 已经写好了，不可以修改。
 			li.list-group-item
-				p Q: TUOJ出现错误如何处理?
+				p Q: 编译参数是哪些？
+				p A: C++：
+					code -std=C++11 -O2
+					span , Java无特殊的参数。
+			li.list-group-item
+				p Q: 对于第三题，我们是不是只需要修改core目录下面的文件，而其余的文件都不需要修改？
+				p A: 是。
+			li.list-group-item
+				p Q: 第三题怎么提交？
+				p A: 运行第三题工程中的打包脚本，然后在网站上提交打好包的文件。
+			li.list-group-item
+				p Q: 是否可以使用非报名语言？
+				p A: 报名语言仅供参考，每道题可以分别选择编程语言。
+			li.list-group-item
+				p Q: 第三题支持系统内嵌汇编代码吗？
+				p A: 可以，只要能通过编译。
+			li.list-group-item
+				p Q: 比赛形式是同ACM竞赛形式一样吗？就是说可以多次提交，每次都能看到结果，而不像CSP那样只能提交一次，看不到结果。
+				p A: 可多次提交，但每道题目只能提交10次，取成绩最好的一次。比赛会提供尽量实时的反馈，比赛最后两个小时排行榜冻结，自己的提交还能看到评测结果。
+			li.list-group-item
+				p Q: 比赛全程可以使用U盘和移动硬盘等介质吗？
+				p A: 可以。
+			li.list-group-item
+				p Q: 有其它问题怎么办?
 				p A: 请向现场工作人员求助.
+
 	
