@@ -41,7 +41,7 @@ body
 									a(href="/login") 登入
 							- else
 								li
-									a 您好, #{call}
+									a 您好, #{call ? call : user}
 								li
 									a(href="/logout") 注销
 		div.content-main
