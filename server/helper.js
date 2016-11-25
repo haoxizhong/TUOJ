@@ -30,7 +30,12 @@ var updateRankList = function (c, rank_list, records, callback) {
             });
         }
         var list_it = user2it[record.user.username];
-        rank_list[list_it].details[record.contest_problem_id] = {judge_id: record.judge._id, score: record.score, is_system: record.judge.isSystem()};
+		var judge_id = record.judge ? record.judge._id : 'null';
+        rank_list[list_it].details[record.contest_problem_id] = {
+			judge_id: judge_id, 
+			score: record.score, 
+			is_system: record.judge ? record.judge.isSystem() : false
+		};
     }
 
     for (var i = 0; i < rank_list.length; i++) {
@@ -56,7 +61,7 @@ var generateRankList = function(c, user, callback) {
                 contest: c._id,
                 user: user._id
             };
-            RankList.findOne({contest: c._id}, this);
+            RankList.findOne({contest: c._id}).sort('-_id').exec(this);
         } else {
             find_cond = {
                 contest: c._id
