@@ -27,10 +27,12 @@ block content_contest
 								- if (player.details[j] && player.details[j].judge_id) {
 									- if (player.details[j].is_system) {
 									td
-										a(href='/contests/#{contestid}/detail/#{now.id}')= player.details[j].score
-                                    - }
+										a(href='/contests/#{contestid}/detail/#{player.details[j].judge_id}')= player.details[j].score
+									- } else {
+										td= player.details[j].score
+									- }
 								- } else {
-									td &nbsp;
+									td
 								- }
 							- }
 						- }
