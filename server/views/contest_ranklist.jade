@@ -24,7 +24,7 @@ block content_contest
 								span= player.user.realname
 							td= player.total_score
 							- for (var j in problems) {
-								- if (player.details[j] && player.details[j].judge_id) {
+								- if (player.details[j] && player.details[j].judge_id !== "null" && player.details[j].judge_id) {
 									- if (player.details[j].is_system && !is_frozen) {
 									td
 										a(href='/contests/#{contestid}/detail/#{player.details[j].judge_id}')= player.details[j].score
