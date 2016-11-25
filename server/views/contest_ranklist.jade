@@ -25,7 +25,10 @@ block content_contest
 							td= player.total_score
 							- for (var j in problems) {
 								- if (player.details[j] && player.details[j].judge_id) {
-									td= player.details[j].score
+									- if (player.details[j].is_system) {
+									td
+										a(href='/contests/#{contestid}/detail/#{now.id}')= player.details[j].score
+                                    - }
 								- } else {
 									td &nbsp;
 								- }
