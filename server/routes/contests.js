@@ -124,7 +124,7 @@ router.get('/:cid([0-9]+)/problems/:pid([0-9]+)',function(req,res,next){
     contest.findOne({_id: contestid}).populate("problems").exec(function (err, c) {
 		if (err) return next(err);
         if (!c) return next();
-        if (c.get_status() == 'unstarted') return next(new Error('Contest is not in progress!'));
+        if (c.get_status() == 'unstarted' && !req.session.is_admin) return next(new Error('Contest is not in progress!'));
 		if (!c || problemid < 0 || problemid > c.problems.length) next()
 
 		p = c.problems[problemid];
