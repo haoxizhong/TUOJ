@@ -173,11 +173,17 @@ router.post('/:cid([0-9]+)/problems/:pid([0-9]+)/upload',upload.single('inputfil
         // console.log("xx");
         return next(new Error("Undefined file."));
     }
+
+    if (req.file.size > 0.5 * 1024 * 1024) {
+        return next(new Error("The solution size is at most 512 KB."));
+    }
+
     var suffix = {"g++": ".cpp", "java": ".java", "system": ".zip", "answer": ".ans", "system_g++": ".zip", "system_java": ".zip"};
 	source_file = randomstring.generate(15) + suffix[req.body.language];
 
 	var contestid=parseInt(req.params.cid);
 	var problemid=parseInt(req.params.pid);
+
 
     contest.findOne({_id: contestid}).populate('problems').exec(function (err, x) {
         if (err) return next(err);
@@ -191,6 +197,7 @@ router.post('/:cid([0-9]+)/problems/:pid([0-9]+)/upload',upload.single('inputfil
 			SubmitRecord.getSubmitRecord(req.session.uid, x._id, problemid, this);
 		}, function (err, x) {
 			if (err) throw err;
+            if (submit_record.submitted_times > 10) throw (new Error("You do not have s"));
 			submit_record = x;
 			submit_record.submitted_times += 1;
 			submit_record.save(this);
