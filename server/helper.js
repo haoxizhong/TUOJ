@@ -89,84 +89,135 @@ var generateRankList = function(c, user, callback) {
     });
 };
 
-var systemProblemUpdateScore = function (p, callback) {
-    var inf = 10000000;
-    var judges;
+var isPassQuery = function(r) {
+    return r.correct > 0 && r.total == r.correct;
+};
 
-    // TODO: ...
-    var best_time = new Array(5).fill(inf);
-    var times;
-    var corrects;
+var isPassAllQuery = function (r) {
+    for (var i = 2; i < r.length; i++) {
+        if (r[i].correct > 0 && isPassQuery(r[i])) {
+        } else {
+            return false;
+        }
+    }
+    return true;
+};
+
+var calTotalTime = function (r) {
+    var total_time = 0;
+    for (var i = 0; i < r.length; i++) {
+        if (typeof(r[i].time) != 'undefined') {
+            total_time += r[i].time;
+        }
+    }
+    return total_time;
+};
+
+var updateScore = function (judge, best_times, mid_times) {
+
+    var total_score = 0;
+    for (var i = 2; i < judge.results.length; i++) {
+        var r = judge.results[i];
+        if (isPassQuery(r)) {
+            r.score = 25;
+            if (r.time != 0) r.score += Math.min(10, 10 * mid_times[i - 1] / r.time) + Math.min(15, 15 * best_times[i - 1] / r.time);
+            else r.score += 25;
+        } else {
+            if (r.total != 0) r.score = 25 * r.correct / r.total;
+            else r.score = 0;
+        }
+        total_score += r.score;
+    }
+
+    var r =  judge.results[1];
+
+    if (isPassAllQuery(judge.results)) {
+        var t = calTotalTime(judge.results);
+        if (t == 0) r.score = 50;
+        else r.score = Math.min(20, 20 * mid_times[0] / t) + Math.min(30, 30 * best_times[0] / t);
+
+    } else {
+        r.score = 0;
+    }
+
+    total_score += r.score;
+    judge.score = total_score;
+
+};
+
+var systemProblemUpdateScore = function (contest_id, problem_id, callback) {
+    var inf = 100000000;
+    var judges = {}; // judges[user]: judges
+    var times = new Array(5);
+    for (var i = 0; i < times.length; i++) times[i] = [inf]
 
     Step(function () {
-        Judge.find({problem: p._id, $or: [{'status': 'Running success'}, {'status': 'Running timeout'}, {'status': 'Running error'}]}, this);
-    }, function (err, x) {
-        judges = x;
-        times = new Array(judges.length).fill(inf);
-        corrects = new Array(judges.length).fill(false);
-        for (var i = 0; i < judges.length; i++) {
-            var all_correct = true;
-            var total_time = 0;
-            for (var j = 2; j < judges[i].results.length; j++) {
-                var r = judges[i].results[j];
-                var is_correct = r.total && r.correct == r.total;
-                all_correct = all_correct && is_correct;
-                total_time += r.time;
-                if (is_correct) {
-                    best_time[j-1] = Math.min(best_time[j-1], r.time);
-                }
-
-                if (r.total <= 0) {
-                    r.score = 0;
-                } else {
-                    r.score = r.correct / r.total * 25;
-                }
-            }
-            total_time += judges[i].results[1].time;
-            if (all_correct) {
-                best_time[0] = Math.min(total_time);
-            }
-
-            times[i] = total_time;
-            corrects[i] = all_correct;
+        Judge.find({problem: problem_id, $or: [{'status': 'Running success'}, {'status': 'Running timeout'}, {'status': 'Running error'}]}, this);
+    }, function (err, js) {
+        if (err) throw err;
+        for (var i = 0; i < js.length; i++) {
+            var j = js[i];
+            if (typeof(judges[j.user]) == 'undefined') judges[j.user] = [];
+            judges[j.user].push(j);
         }
 
-        for (var i = 0; i < judges.length; i++) {
-            var total_score = 0;
-            if (corrects[i]) {
-                judges[i].results[1].score = 50 * (best_time[0] / times[i]);
-                total_score += judges.results[1].score;
-            } else {
-                judges[i].results[1].score = 0;
+        for (var user_id in judges) {
+            if (typeof(user_id) == 'undefined') continue;
+            var user_best_times = new Array(5).fill(inf);
+            for (var i = 0; i < judges[user_id].length; i++) {
+                var r = judges[user_id][i].results;
+
+                if (isPassAllQuery(r)) user_best_times[0] = Math.min(user_best_times[0], calTotalTime(r));
+                for (var j = 2; j < r.length; j++) {
+                    if (isPassQuery(r[j])) user_best_times[j - 1] = Math.min(user_best_times[j - 1], r[j].time);
+                }
+            }
+            for (var i = 0; i < 5; i++) if (user_best_times[i] < inf) {
+                times[i].push(user_best_times[i]);
+            }
+        }
+
+        var best_times = new Array(5).fill(inf);
+        var mid_times = new Array(5).fill(inf);
+        for (var i = 0; i < 5; i++) {
+            times[i] = times[i].sort();
+            best_times[i] = times[i][0];
+            mid_times[i] = times[i][Math.floor(times[i].length / 2)];
+        }
+        for (var user_id in judges) {
+            for (var i = 0; i < judges[user_id].length; i++) {
+                updateScore(judges[user_id][i], best_times, mid_times);
             }
 
-            for (var j = 2; j < judges[i].results.length; j++) {
-                var r = judges[i].results[j];
-                var is_correct = r.total && r.correct == r.total;
-                if (is_correct) {
-                    if (r.time <= 0) {
-                        r.score += 25;
-                    } else {
-                        r.score += 25 * (best_time[j - 1] / r.time);
+            (function (user_id) {
+                for (var i = 0; i < judges[user_id].length; i++) {
+                    judges[user_id][i].markModified('results');
+                    judges[user_id][i].save(function (err) {
+                       if (err) console.error(err);
+                    });
+                }
+                var problem_id = judges[user_id][0].problem_id;
+                SubmitRecord.getSubmitRecord(user_id, contest_id, problem_id, function (err, s) {
+                    if (err) return console.error(err);
+                    s.score = -1;
+                    for (var i = 0; i < judges[user_id].length; i++) {
+                        var j =judges[user_id][i];
+                        if (j.score >= s.score) {
+                            s.score = j.score;
+                            s.judge = j._id;
+                        }
                     }
-                }
-                total_score += judges[i].results[j].score;
-            }
-
-            judges[i].score = total_score;
-
-            judges[i].markModified('results');
-            // console.log(judges[i]);
-            judges[i].save(function (err) {
-                if (err) {
-                    console.error(err);
-                }
-            });
+                    s.save(function (err) {
+                        if (err) console.error(err);
+                    })
+                });
+            })(user_id);
         }
 
-        callback(null);
+        this(null);
+    }, function (err) {
+        callback(err);
     });
-
 };
 
 var timestampToString = function (t) {

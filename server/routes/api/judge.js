@@ -112,16 +112,32 @@ router.post('/update_results/system', function (req, res, next) {
 		return next();
 	}
 	var run_id = parseInt(req.body.run_id);
+	var judge;
 	Step(function () {
-		Judge.findOne({_id: run_id}).populate('problem').exec(this);
+		Judge.findOne({_id: run_id}).exec(this);
 	}, function (err, j) {
 		if (err) throw err;
 		var results = req.body.results;
 		j.systemProblemUpdate(results, this);
 	}, function (err, j) {
 		if (err) throw err;
-		helper.systemProblemUpdateScore(j.problem, this);
-	}, function (err, j) {
+		judge = j;
+		if (!(j.status == 'Running' || j.status == 'Waiting')) {
+			SubmitRecord.getSubmitRecord(j.user, j.contest, j.problem_id, this);
+		} else {
+			this(null, null);
+		}
+	}, function(err, s) {
+		if (err) throw err;
+		if (s) {
+			s.update(judge, this);
+		} else {
+			this(null, null);
+		}
+	}, function (err) {
+		if (err) throw err;
+		helper.systemProblemUpdateScore(judge.contest, judge.problem, this);
+	}, function (err) {
 		if (err) {
 			res.send({
 				"status": "failure",
