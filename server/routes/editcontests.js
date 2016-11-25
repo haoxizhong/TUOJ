@@ -49,7 +49,7 @@ function getdate(inttime){
 	var y=time.getFullYear();
 	var m=time.getMonth()+1;
 	var d=time.getDate();
-	console.log(y+'-'+add0(m)+'-'+add0(d));
+	// console.log(y+'-'+add0(m)+'-'+add0(d));
 	return y+'-'+add0(m)+'-'+add0(d);
 }
 function gettime(inttime){
@@ -57,7 +57,7 @@ function gettime(inttime){
 	var h=time.getHours();
 	var m=time.getMinutes();
 	var s=time.getSeconds();
-	console.log(add0(h)+':'+add0(m)+':'+add0(s));
+	// console.log(add0(h)+':'+add0(m)+':'+add0(s));
 	return add0(h)+':'+add0(m)+':'+add0(s);
 }
 
@@ -66,16 +66,16 @@ router.get('/:id([0-9]+)',function(req,res,next){
 	contest.findOne({_id:contestid}).populate('problems').exec(function(err,x){
 		var dict={'user':req.session.user,'is_admin':req.session.is_admin, call: req.session.call};
 		var str='';
-		console.log(x.problems)
+		// console.log(x.problems)
 		for (var i=0;i<x.problems.length;i++)
 			str=str+x.problems[i]._id.toString()+'\n';
-		console.log(str);
+		// console.log(str);
 		dict.startdate=getdate(x.start_time);
 		dict.starttime=gettime(x.start_time);
 		dict.enddate=getdate(x.end_time);
 		dict.endtime=gettime(x.end_time);
 		dict.contestid=contestid;
-		console.log(dict);
+		// console.log(dict);
 		
 		dict.gitlist=str;
 		dict.name=x.name;

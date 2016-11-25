@@ -170,7 +170,7 @@ router.get('/:cid([0-9]+)/problems/:pid([0-9]+)',function(req,res,next){
 });
 
 router.post('/:cid([0-9]+)/problems/:pid([0-9]+)/upload',upload.single('inputfile'),function(req,res,next){
-	console.log(req.session);
+	// console.log(req.session);
 	if (typeof(req.file) == 'undefined') {
         // console.log("xx");
         return next(new Error("Undefined file."));
@@ -326,7 +326,7 @@ router.get('/:contestId/detail/:judgeId', function(req, res, next) {
             }
         }
 
-        console.log(renderArgs);
+        // console.log(renderArgs);
 
         res.status(200).render('judge_detail', {
             active: 'judge_detail',
