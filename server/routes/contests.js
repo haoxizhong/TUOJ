@@ -18,6 +18,7 @@ var SOURCE_DIR = require('../config').SOURCE_DIR
 
 router.get('/', function(req, res, next) {
 	contest.find({},function(err,contestlist){
+        if (err) return next(err);
 		var dict={
 			user: req.session.user,
 			call: req.session.call,
@@ -40,9 +41,9 @@ router.get('/', function(req, res, next) {
 
 router.get('/:id([0-9]+)',function(req,res,next){
 	var contestid=parseInt(req.params.id)
-	contest.findOne({_id:contestid}).populate('problems').exec(function(err,x){
-		if (err) next(err)
-		if (!x) next()
+	contrrst.findOne({_id:contestid}).populate('problems').exec(function(err,x){
+		if (err) return next(err)
+		if (!x) return next()
         if (x.get_status() == 'unstated') return next(new Error('Contest is not in progress!'));
 
 		var dict={
@@ -189,6 +190,7 @@ router.post('/:cid([0-9]+)/problems/:pid([0-9]+)/upload',upload.single('inputfil
 
     contest.findOne({_id: contestid}).populate('problems').exec(function (err, x) {
         if (err) return next(err);
+        if (!x) return next();
         if (problemid >= x.problems.length) return next();
         if (x.get_status() != 'in_progress') return next(new Error('Contest is not in progress!'));
 
@@ -281,6 +283,7 @@ router.get('/:contestId/detail/:judgeId', function(req, res, next) {
     var contestId = req.params.contestId;
     var judgeId = req.params.judgeId;
     judge.findOne({ _id: judgeId }).populate('user').populate('problem').populate('contest').exec(function(err, doc) {
+        if (err) return next(err);
         if (err || !doc) {
             return res.status(400).render('error', {
                 status: 400,
