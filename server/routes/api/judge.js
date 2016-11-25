@@ -2,13 +2,14 @@ var router = require('express').Router();
 var Judge = require('../../models/judge');
 var SubmitRecord = require('../../models/submit_record');
 var Step = require('step');
+var helper = require('../../helper');
 var TOKEN = require('../../config').TOKEN;
 
 router.post('/get_task/acm', function (req, res, next) {
 	if (req.body.token != TOKEN) {
 		return next();
 	}
-	Judge.findOne({'status': 'Waiting', 'lang': {'$ne': 'system'}}).populate('problem').exec(function (err, x) {
+	Judge.findOne({'status': 'Waiting', $or: [{'lang': 'g++'}, {'lang': 'java'}, {'lang': 'answer'}]}).populate('problem').exec(function (err, x) {
 		if (err) return next(err);
 		if (!x) {
 			return res.send({
@@ -41,7 +42,6 @@ router.post('/update_results/acm', function (req, res, next) {
 	if (req.body.token != TOKEN) {
 		return next();
 	}
-    console.log(req.body);
 	var run_id  = parseInt(req.body.run_id);
 	Judge.findOne({_id: run_id}).populate('problem').exec(function (err, x) {
 		//if (err) return next(err);
@@ -83,7 +83,7 @@ router.post('/get_task/system', function (req, res, next) {
 	if (req.body.token != TOKEN) {
 		return next();
 	}
-	Judge.findOne({'status': 'Waiting', 'lang': 'system'}).populate('problem').exec(function (err, x) {
+	Judge.findOne({'status': 'Waiting', $or: [{'lang': 'system_g++'}, {'lang': 'system_java'}]}).populate('problem').exec(function (err, x) {
 		if (err) return next(err);
 		if (!x) {
 			return res.send({
@@ -94,9 +94,12 @@ router.post('/get_task/system', function (req, res, next) {
 		x.judge_start_time = Date.now();
 		x.save(function (err, x) {
 			if (err) return next(err);
+			var lang = 'system';
+			if (x.lang == 'system_g++') lang = 'g++';
+			else if (x.lang == 'system_java') lang = 'java';
 			info = {
 				'run_id': x._id,
-				'lang': x.lang,
+				'lang': lang,
 				'source_url': x.getSourceURL()
 			};
 			res.send(info);
@@ -110,14 +113,14 @@ router.post('/update_results/system', function (req, res, next) {
 	}
 	var run_id = parseInt(req.body.run_id);
 	Step(function () {
-		Judge.findOne({_id: run_id}, this);
+		Judge.findOne({_id: run_id}).populate('problem').exec(this);
 	}, function (err, j) {
 		if (err) throw err;
 		var results = req.body.results;
-		j.systemProblemUpdate(this);
+		j.systemProblemUpdate(results, this);
 	}, function (err, j) {
 		if (err) throw err;
-		helper.systemProblemUpdateScore(j, this);
+		helper.systemProblemUpdateScore(j.problem, this);
 	}, function (err, j) {
 		if (err) {
 			res.send({

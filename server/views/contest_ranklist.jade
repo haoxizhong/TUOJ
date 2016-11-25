@@ -1,29 +1,33 @@
 extends contest_layout
 
 block content_contest
-    div.container-fluid
-        div.row
-            table.table
-                thead
-                    th #
-                    th 选手
-                    th 分数
-                    - for (var i in problems) {
-                        th
-                            a(href='/contests/#{contestid}/problems/#{problems[i].id}')= problems[i].title
-                    - }
-                tbody
-                    - for (var i in players) {
-                        - var player = players[i];
-                        tr
-                            td #{parseInt(i) + 1}
-                            td= player.user.username
-                            td= player.total_score
-                            - for (var j in problems) {
-                                - if (player.details[j] && player.details[j].judge_id) {
-                                    td= player.details[j].score
-                                - } else {
-                                    td &nbsp;
-                                - }
-                            - }
-                        - }
+	div.container-fluid
+		div.row
+			table.table.table-hover
+				thead
+					th #
+					th 选手
+					th 分数
+					- for (var i in problems) {
+						th
+							a(href='/contests/#{contestid}/problems/#{problems[i].id}')= problems[i].title
+					- }
+				tbody
+					- for (var i in players) {
+						- var player = players[i];
+						tr(class="#{(player.user.username==user)?'active':''}")
+							td #{parseInt(i) + 1}
+							td
+								span
+									small= player.user.school
+								br
+								span= player.user.realname
+							td= player.total_score
+							- for (var j in problems) {
+								- if (player.details[j] && player.details[j].judge_id) {
+									td= player.details[j].score
+								- } else {
+									td &nbsp;
+								- }
+							- }
+						- }

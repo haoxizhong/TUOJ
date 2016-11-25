@@ -60,10 +60,14 @@ Judge.methods.updateStatus = function (results, callback) {
             self.results[test_id].status = result["status"];
             self.results[test_id].time = result["time"];
             self.results[test_id].memory = result["memory"];
-            if (self.results[test_id].status == "Accepted") {
-                self.results[test_id].score = self.problem.getPerCaseScore(self.subtask_id);
+
+            var case_score = self.problem.getCaseScore(self.subtask_id, test_id - 1);
+            if (typeof(result.score) == 'undefined') {
+                if (self.results[test_id].status == "Accepted") {
+                    self.results[test_id].score = case_score;
+                }
             } else {
-                self.results[test_id].score = 0;
+                self.results[test_id].score = Math.floor(result.score / 100 * case_score + 0.5);
             }
         });
 
@@ -98,22 +102,37 @@ Judge.methods.rejudge = function (callback) {
     this.status = 'Waiting';
     this.score = 0;
     this.case_count = this.problem.subtasks[0].testcase_count;
-
-    for (var i = 0;  i < this.case_count + 1; i++) {
-        this.results.push({
-            score: 0,
-            memory: 0,
-            time: 0,
-            status: "Waiting"
-        });
+    this.results = [{
+        score: 0,
+        memory: 0,
+        time: 0,
+        status: "Waiting"
+    }];
+    for (var i = 0;  i < this.case_count; i++) {
+        if (this.lang == 'system_g++' || this.lang == 'system_java') {
+            this.results.push({
+                score: 0,
+                total: 0,
+                correct: 0,
+                time: 0
+            });
+        } else {
+            this.results.push({
+                score: 0,
+                memory: 0,
+                time: 0,
+                status: "Waiting"
+            });
+        }
     }
     this.markModified('results');
     this.save(callback);
 };
 
 Judge.methods.systemProblemUpdate = function (results, callback) {
+    var self = this;
     try {
-        if (results.status.code == 0) {
+        if (results.status.code != 0) {
             this.results[0] = {
                 status: 'Compilation Error'
             };
@@ -123,14 +142,12 @@ Judge.methods.systemProblemUpdate = function (results, callback) {
             };
         }
         this.status = results.status.content;
-
-        Object.keys(results).forEach(function (test_id_str) {
-            test_id = parseInt(test_id_str) + 1;
-            this.results[test_id] = {
-                status: results[test_id_str].status,
-                time: results[test_id_str].time,
-                total: results[test_id_str].total,
-                correct: results[test_id_str].correct
+        Object.keys(results.answers).forEach(function (test_id_str) {
+            var test_id = parseInt(test_id_str) + 1;
+            self.results[test_id] = {
+                time: results.answers[test_id_str].time,
+                total: results.answers[test_id_str].total,
+                correct: results.answers[test_id_str].correct
             };
         });
 

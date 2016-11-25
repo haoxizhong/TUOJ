@@ -42,7 +42,7 @@ var TMP_DIR = CONFIG.TMP_DIR;
 */
 
 router.get('/',function(req,res,next){
-	res.render('addcontests',{'user':req.session.user,'is_admin':req.session.is_admin})
+	res.render('addcontests',{'user':req.session.user,'is_admin':req.session.is_admin, call: req.session.call})
 })
 
 router.post('/added',function(req,res,next){

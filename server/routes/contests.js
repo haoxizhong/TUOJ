@@ -18,7 +18,11 @@ var SOURCE_DIR = require('../config').SOURCE_DIR
 
 router.get('/', function(req, res, next) {
 	contest.find({},function(err,contestlist){
-		dict={'user':req.session.user,'is_admin':req.session.is_admin};
+		var dict={
+			user: req.session.user,
+			call: req.session.call,
+			is_admin: req.session.is_admin
+		};
 		dict.contestlist=[];
         contestlist.forEach(function (item) {
             var d = new Date();
@@ -40,7 +44,11 @@ router.get('/:id([0-9]+)',function(req,res,next){
 		if (err) next(err)
 		if (!x) next()
 		
-		dict={'user':req.session.user,"is_admin":req.session.is_admin}
+		var dict={
+			user: req.session.user,
+			call: req.session.call,
+			is_admin: req.session.is_admin
+		};
 		dict.contestid=contestid;
 		dict.contesttitle = x.name;
 		dict.problems=x.problems;
@@ -66,7 +74,11 @@ router.get('/:id([0-9]+)/status',function(req,res,next){
 		var len=judgelist.length;
 		if (page<1 || (page>(len-1)/10+1 && len)) next();
 		if (!len && page>1) next();
-		dict={'user':req.session.user,'is_admin':req.session.is_admin};
+		var dict={
+			user: req.session.user,
+			call: req.session.call,
+			is_admin: req.session.is_admin
+		};
 		dict.contestid=contestid;
 		
 		var jlist=[];
@@ -115,8 +127,11 @@ router.get('/:cid([0-9]+)/problems/:pid([0-9]+)',function(req,res,next){
 		} catch (err) {
 			var description = JSON.stringify(err);
 		}
-
-		dict = {'user': req.session.user, "is_admin": req.session.is_admin}
+		var dict={
+			user: req.session.user,
+			call: req.session.call,
+			is_admin: req.session.is_admin
+		};
 		dict.title = p.title;
 		dict.problem = p;
 		dict.description = description;
@@ -149,11 +164,12 @@ router.get('/:cid([0-9]+)/problems/:pid([0-9]+)',function(req,res,next){
 });
 
 router.post('/:cid([0-9]+)/problems/:pid([0-9]+)/upload',upload.single('inputfile'),function(req,res,next){
+	console.log(req.session);
 	if (typeof(req.file) == 'undefined') {
         // console.log("xx");
         return next(new Error("Undefined file."));
     }
-    var suffix = {"g++": ".cpp", "java": ".java", "system": ".zip", "answer": ".ans"};
+    var suffix = {"g++": ".cpp", "java": ".java", "system": ".zip", "answer": ".ans", "system_g++": ".zip", "system_java": ".zip"};
 	source_file = randomstring.generate(15) + suffix[req.body.language];
 
 	var contestid=parseInt(req.params.cid);
@@ -199,15 +215,29 @@ router.post('/:cid([0-9]+)/problems/:pid([0-9]+)/upload',upload.single('inputfil
                 score: 0,
                 status: 'Waiting',
                 case_count: p.subtasks[0].testcase_count,
-                results: []
-            });
-            for (var i = 0;  i < newjudge.case_count + 1; i++) {
-                newjudge.results.push({
+                results: [{
                     score: 0,
                     memory: 0,
                     time: 0,
                     status: "Waiting"
-                });
+                }]
+            });
+            for (var i = 0;  i < newjudge.case_count; i++) {
+                if (newjudge.lang == 'system_g++' || newjudge.lang == 'system_java') {
+                    newjudge.results.push({
+                        score: 0,
+                        total: 0,
+                        correct: 0,
+                        time: 0
+                    });
+                } else {
+                    newjudge.results.push({
+                        score: 0,
+                        memory: 0,
+                        time: 0,
+                        status: "Waiting"
+                    });
+                }
             }
             // console.log(newjudge);
 
@@ -270,6 +300,7 @@ router.get('/:contestId/detail/:judgeId', function(req, res, next) {
             title: 'TUOJ Judge details',
             contestid: contestId,
             user: req.session.user,
+			call: req.session.call,
 			is_admin: req.session.is_admin,
             res: renderArgs
         });
@@ -287,6 +318,7 @@ router.get('/:cid([0-9]+)/rank_list', function (req, res, next) {
                 if (err) return next(err);
                 var renderArgs = {
                     user: req.session.user,
+					call: req.session.call,
                     is_admin: req.session.is_admin,
                     contestid: c._id,
                     problems: [],

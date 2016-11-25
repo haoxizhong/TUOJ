@@ -13,7 +13,7 @@ router.get('/:page([0-9]+)',function(req,res,next){
 		var len=judgelist.length;
 		if (page<1 || (page>parseInt((len-1)/10)+1 && len)) next();
 		if (!len && page>1) next();
-		dict={'user':req.session.user,'is_admin':req.session.is_admin};
+		var dict={'user':req.session.user,'is_admin':req.session.is_admin, call: req.session.call};
 		
 		var jlist=[];
 		for(var i=0;i<len;i++){
@@ -52,6 +52,7 @@ router.get('/detail/:id([0-9]+)', function (req, res, next) {
 		var code = j.getSource();
 		var d = {
 			user: req.session.user,
+			call: req.session.call,
 			is_admin: req.session.is_admin,
 			res: j,
 			code: code,

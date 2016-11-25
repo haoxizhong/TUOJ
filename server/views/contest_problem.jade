@@ -16,10 +16,10 @@ block content_contest
 		div.col-xs-4
 			div.panel.panel-default
 				div.panel-heading
-					p 递交历史 
+					p 最近递交 
 						small.pull-right 已递交#{submitted_times}次
 				div.panel-body
-					table.table(style='max-height: 256px; overflow-y: scroll; display: block;')
+					table.table.table-hover
 						thead
 							tr
 								th 递交时间
@@ -28,6 +28,7 @@ block content_contest
 						tbody
 							- for (var i in judge_status) {
 								- var now=judge_status[i]
+								- if (i > 8 && now._id != best_solution) continue;
 								tr
 									td
 										small #{now.submitted_time}
