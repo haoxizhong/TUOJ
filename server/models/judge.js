@@ -30,6 +30,11 @@ var Judge = new Schema({
     case_count: Number,
     results: Object
 });
+
+Judge.index({ contest: 1, user: 1 });
+Judge.index({ status: 1 });
+Judge.index({ status: 1, lang: 1 });
+
 Judge.plugin(autoIncrement.plugin, "Judge");
 
 Judge.methods.getSourceURL = function () {
