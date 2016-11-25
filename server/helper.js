@@ -134,8 +134,10 @@ var systemProblemUpdateScore = function (p, callback) {
         for (var i = 0; i < judges.length; i++) {
             var total_score = 0;
             if (corrects[i]) {
-                judges.results[1].score = 50 * (best_time[0] / times[i]);
+                judges[i].results[1].score = 50 * (best_time[0] / times[i]);
                 total_score += judges.results[1].score;
+            } else {
+                judges[i].results[1].score = 0;
             }
 
             for (var j = 2; j < judges[i].results.length; j++) {
@@ -153,7 +155,8 @@ var systemProblemUpdateScore = function (p, callback) {
 
             judges[i].score = total_score;
 
-            console.log(judges[i]);
+            judges[i].markModified('results');
+            // console.log(judges[i]);
             judges[i].save(function (err) {
                 if (err) {
                     console.error(err);

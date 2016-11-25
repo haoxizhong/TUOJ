@@ -25,12 +25,44 @@ block content_contest
 					td #{ res.lang }
 					td #{ res.status }
 					td #{ res.score }
+	- if (!(res.lang == 'system_g++' || res.lang == 'system_java')) {
 	div.row
 		pre
 			code(class="#{ res.lang }")= res.source
+	- }
 	div.row
 		p.具体信息
 		table.table.table-hover
+			- if (res.lang == 'system_g++' || res.lang == 'system_java') {
+			thead
+				tr
+					th #
+					th 总点数
+					th 正确数
+					th 时间(ms)
+					th 得分
+			tbodd
+				tr
+					td 整体性能分
+					td -
+					td -
+					td #{ res.total_time }
+					td #{ res.results[1].score } 
+				tr
+					td 预处理
+					td -
+					td -
+					td #{ res.results[1].time }
+					td -
+				- for (var i = 2; i < res.results.length; i++) {
+				tr
+					td Query #{ i - 1 }
+					td #{ res.results[i].total }
+					td #{ res.results[i].correct }
+					td #{ res.results[i].time }
+					td #{ res.results[i].score }
+				- }
+			- } else {
 			thead
 				tr
 					th #
@@ -55,6 +87,7 @@ block content_contest
 							td= cs.score
 						- }
 				- }
+			- }
 	- if (is_admin) {
 		div.row
 			form(method='POST' action='/contests/rejudge/#{contestid}/#{res.id}')

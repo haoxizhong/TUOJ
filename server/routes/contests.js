@@ -285,23 +285,35 @@ router.get('/:contestId/detail/:judgeId', function(req, res, next) {
             user: doc.user.username,
             problem_id: doc.problem_id,
             problem_name: doc.problem.title,
-			lang: doc.lang,
+            lang: doc.lang,
             source: 'Source not found',
             status: doc.status,
             score: doc.score,
             results: doc.results
         };
-		try {
-			renderArgs.source = fs.readFileSync(path.resolve(__dirname, '../public/source', doc.source_file));
-		} catch (error) {
-		}
+
+        if (doc.lang == 'system_g++' || doc.lang == 'system_java') {
+            var total_time = 0;
+            for (var i = 1; i < doc.results.length; i++) {
+                total_time += doc.results[i].time;
+            }
+            renderArgs.total_time = total_time;
+        } else {
+            try {
+                renderArgs.source = fs.readFileSync(path.resolve(__dirname, '../public/source', doc.source_file));
+            } catch (error) {
+            }
+        }
+
+        console.log(renderArgs);
+
         res.status(200).render('judge_detail', {
-			active: 'judge_detail',
+            active: 'judge_detail',
             title: 'TUOJ Judge details',
             contestid: contestId,
             user: req.session.user,
-			call: req.session.call,
-			is_admin: req.session.is_admin,
+            call: req.session.call,
+            is_admin: req.session.is_admin,
             res: renderArgs
         });
     });
