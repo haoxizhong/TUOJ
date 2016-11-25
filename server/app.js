@@ -12,6 +12,7 @@ var autoIncrement = require("mongoose-auto-increment");
 
 var app = express();
 
+app.set('env', 'release');
 
 // set up mongo connection and session
 mongoose.connect('mongodb://127.0.0.1/tuoj');
