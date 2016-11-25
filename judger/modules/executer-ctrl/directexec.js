@@ -39,11 +39,17 @@ var Executer = function() {
         if (options.timeLimit) {
             args.push('-t');
             args.push(String(options.timeLimit));
-        }
+        } else {
+            args.push('-t');
+            args.push('99999');
+		}
         if (options.memLimit) {
             args.push('-m');
             args.push(String(options.memLimit));
-        }
+        } else {
+            args.push('-m');
+            args.push('4096');
+		}
         if (!options.sysLimit) {
             args.push('-r');
         }
