@@ -43,7 +43,8 @@ router.get('/:id([0-9]+)',function(req,res,next){
 	contest.findOne({_id:contestid}).populate('problems').exec(function(err,x){
 		if (err) next(err)
 		if (!x) next()
-		
+        if (x.get_status() != 'in_progress') return next(new Error('Contest is not in progress!'));
+
 		var dict={
 			user: req.session.user,
 			call: req.session.call,
@@ -121,6 +122,7 @@ router.get('/:cid([0-9]+)/problems/:pid([0-9]+)',function(req,res,next){
 	var problemid=parseInt(req.params.pid)
     contest.findOne({_id: contestid}).populate("problems").exec(function (err, c) {
 		if (err) next(err)
+        if (x.get_status() != 'in_progress') return next(new Error('Contest is not in progress!'));
 		if (!c || problemid < 0 || problemid > c.problems.length) next()
 
 		p = c.problems[problemid];
