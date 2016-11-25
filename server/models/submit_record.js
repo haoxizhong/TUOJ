@@ -29,7 +29,7 @@ SubmitRecord.statics.getSubmitRecord = function (user_id, contest_id, contest_pr
 
 SubmitRecord.methods.update = function (judge, callback) {
     if (judge.status == "Compilation Error") {
-        judge.submitted_times -= 1;
+        this.submitted_times -= 1;
     } if (judge.score >= this.score) {
         this.score = judge.score;
         this.judge = judge._id;
