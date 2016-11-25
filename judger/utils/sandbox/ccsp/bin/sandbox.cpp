@@ -304,6 +304,11 @@ int Sandbox_t::Run()
 												}
 										}
 								}
+								if (regs.REG_SYSCALL == 16) {
+									if (regs.REG_ARG0 <= 2) {
+										goto nokill;
+									}
+								}
 								if (!sysft.check(regs.REG_SYSCALL))
 								{
 										if (!do_pwhitelist)
@@ -317,6 +322,7 @@ int Sandbox_t::Run()
 												return RS_DGP;
 										}
 								}
+nokill: ;
 						}
 						if (do_ptrace)ptrace(PTRACE_SYSCALL,child, NULL, NULL);
 				}
