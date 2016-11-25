@@ -18,7 +18,7 @@ Contest.methods.is_frozen = function () {
 Contest.methods.get_status = function () {
     var now = Date.now();
     if (now < this.start_time) {
-        return 'unstated';
+        return 'unstarted';
     } else if (now > this.end_time) {
         return 'ended';
     } else {
