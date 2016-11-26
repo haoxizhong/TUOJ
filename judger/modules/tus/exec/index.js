@@ -22,7 +22,7 @@ module.exports = function(cmd, data) {
 			}
 			fs.mkdirSync(self.path);
             if (data.lang == 'java') {
-                fs.copySync(self.source.target, path.resolve(self.path, 'Main.class'));
+                fs.copySync(self.source.target, path.resolve(self.path));
             } else {
                 fs.copySync(self.source.target, path.resolve(self.path, 'exe'));
             }
