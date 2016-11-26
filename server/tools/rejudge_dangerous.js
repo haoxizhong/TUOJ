@@ -2,6 +2,7 @@ var mongoose = require('mongoose');
 var autoIncrement = require("mongoose-auto-increment");
 var Step = require('step');
 mongoose.connect('mongodb://127.0.0.1/tuoj');
+autoIncrement.initialize(mongoose.connection);
 
 var Judge = require('../models/judge');
 
@@ -15,13 +16,16 @@ var rejudge_dangerous = function() {
             if (j.status == "Dangerous Program") {
                 is_dp = true;
             }
-            judges.results.forEach(function (r) {
-                if (typeof(r.status) != 'undefined') {
-                    if (r.status == "Dangerous Program") {
-                        is_dp = true;
+            // console.log(j);
+            if (typeof(j.results) != 'undefined') {
+                j.results.forEach(function (r) {
+                    if (typeof(r.status) != 'undefined') {
+                        if (r.status == "Dangerous Program") {
+                            is_dp = true;
+                        }
                     }
-                }
-            });
+                });
+            }
 
             if (is_dp) {
                 j.rejudge(function (err, j) {
