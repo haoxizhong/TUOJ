@@ -6,13 +6,17 @@ var Contest = new Schema({
     start_time: Number,
     end_time: Number,
     name: String,
+	released: {
+		type: Boolean,
+		default: false
+	},
     problems: [{ type: Number, ref: "problem"}]
 });
 Contest.plugin(autoIncrement.plugin, "Contest");
 
 Contest.methods.is_frozen = function () {
     var remain = this.end_time - Date.now();
-    return remain < 2*60*60*1000 && remain > 0;
+    return remain < 2*60*60*1000 && (remain > 0 || !this.released);
 };
 
 Contest.methods.get_status = function () {
