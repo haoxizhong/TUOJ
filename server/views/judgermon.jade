@@ -1,0 +1,21 @@
+html
+	head
+		title TUOJ Judger Monitor
+		meta(http-equiv='Content-Type', content='text/html; charset=utf-8')
+		meta(name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no')
+		link(rel='stylesheet' href='/bower_components/bootstrap/dist/css/bootstrap.min.css')
+		link(rel='stylesheet' href='/stylesheets/style.css')
+		script(src='/bower_components/jquery/dist/jquery.min.js')
+		script(src='/bower_components/bootstrap/dist/js/bootstrap.min.js')
+	body
+		table.table.table-hover
+			thead
+				td ip
+				td last ping
+			tbody
+				- for (var i in doc) {
+					- var timeObj = new Date(doc[i].lastPing);
+					tr
+						td= doc[i].ip
+						td #{timeObj.toLocaleString()}
+				- }

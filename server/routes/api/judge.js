@@ -4,11 +4,43 @@ var SubmitRecord = require('../../models/submit_record');
 var Step = require('step');
 var helper = require('../../helper');
 var TOKEN = require('../../config').TOKEN;
+var JudgerMon = require('../../models/judgermon');
+
+router.get('/topjudger', function(req, res, next) {
+	JudgerMon.find({}, function(err, doc) {
+		if (err) {
+			res.send(err);
+		} else {
+			res.render('judgermon', {
+				doc: doc
+			});
+		}
+	});
+});
 
 router.post('/get_task/acm', function (req, res, next) {
 	if (req.body.token != TOKEN) {
 		return next();
 	}
+	var remoteIp = (function(req) {
+		return req.headers['x-forwarded-for'] ||
+			req.connection.remoteAddress ||
+			req.socket.remoteAddress ||
+			req.connection.socket.remoteAddress;
+	})(req);
+	JudgerMon.update({
+		ip: remoteIp
+	}, {
+		$set: {
+			lastPing: Date.now()
+		}
+	}, {
+		upsert: true
+	}, function(err) {
+		if (err) {
+			console.error(err);
+		}
+	});
 	Judge.findOne({'status': 'Waiting', $or: [{'lang': 'g++'}, {'lang': 'java'}, {'lang': 'answer'}]}).populate('problem').exec(function (err, x) {
 		if (err) return next(err);
 		if (!x) {
