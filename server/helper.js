@@ -186,7 +186,9 @@ var systemProblemUpdateScore = function (contest_id, problem_id, callback) {
         var best_times = new Array(5).fill(inf);
         var mid_times = new Array(5).fill(inf);
         for (var i = 0; i < 5; i++) {
-            times[i] = times[i].sort();
+            times[i].sort(function (a, b) {
+                return a - b;
+            });
             best_times[i] = times[i][0];
             mid_times[i] = times[i][Math.floor(times[i].length / 2)];
         }
