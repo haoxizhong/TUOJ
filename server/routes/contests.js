@@ -198,6 +198,8 @@ router.post('/:cid([0-9]+)/problems/:pid([0-9]+)/upload',upload.single('inputfil
         p = x.problems[problemid];
         var s;
 
+        if (p.meta.supported_languages.indexOf(req.body.language) < 0) return next(new Error('Unsupported languages.'));
+
         Step(function() {
 			SubmitRecord.getSubmitRecord(req.session.uid, x._id, problemid, this);
 		}, function (err, x) {
