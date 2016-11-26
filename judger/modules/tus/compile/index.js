@@ -49,7 +49,7 @@ module.exports = function(cmd, data) {
         }
         var targetPath = path.resolve(self.path, 'exe');
         if (self.lang == 'java') {
-            targetPath = path.resolve(self.path, 'Main.class');
+            targetPath = self.path;
         }
         var langFunc = langMods[self.lang];
         data.updateSource(cmd.sourceId, function(err) {
